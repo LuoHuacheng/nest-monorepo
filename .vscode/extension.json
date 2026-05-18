@@ -1,0 +1,13 @@
+{
+	"recommendations": [
+		"oxc.oxc-vscode",
+		"ms-vscode.vscode-typescript-next",
+		"formulahendry.auto-rename-tag",
+		"formulahendry.auto-complete-tag",
+		"christian-kohler.path-intellisense",
+		"streetsidesoftware.code-spell-checker",
+		"bradlc.vscode-tailwindcss",
+		"edwinhuish.better-comments-next",
+		"oderwat.indent-rainbow"
+	]
+}

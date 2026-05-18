@@ -1,0 +1,127 @@
+@import "./variables.css" layer(theme);
+
+:root,
+page {
+	/* 品牌颜色 */
+	--nutui-brand-1: var(--color-red-50);
+	--nutui-brand-2: var(--color-red-100);
+	--nutui-brand-3: var(--color-red-200);
+	--nutui-brand-4: var(--color-red-300);
+	--nutui-brand-5: var(--color-red-400);
+	--nutui-brand-6: var(--color-red-500);
+	--nutui-brand-7: var(--color-red-600);
+	--nutui-brand-8: var(--color-red-700);
+	--nutui-brand-9: var(--color-red-800);
+	--nutui-brand-10: var(--color-red-900);
+	--nutui-brand-11: var(--color-red-950);
+
+	--nutui-brand-stop-1: var(--color-red-400); /* 渐变色起 */
+	--nutui-brand-stop-2: var(--color-red-500); /* 渐变色止 */
+
+	/* service color */
+	--nutui-golden-1: #fff4e8;
+	--nutui-golden-2: rgba(181, 105, 26, 0.02);
+	--nutui-golden-3: rgba(181, 105, 26, 0.2);
+	--nutui-golden-4: #b5691a;
+	--nutui-golden-5: #ffe7cc;
+	--nutui-golden-6: #ffd8ad;
+	--nutui-golden-7: #664100;
+
+	--nutui-golden-stop-1: #fff9f0;
+	--nutui-golden-stop-2: #ffe3c2;
+
+	/* success color */
+	--nutui-green-1: var(--color-green-50);
+	--nutui-green-2: var(--color-green-500);
+	--nutui-green-3: var(--color-green-800);
+
+	/* danger color 发现不一致TODO */
+
+	/* red color */
+	--nutui-red-1: var(--color-red-50);
+	--nutui-red-2: var(--color-red-100);
+	--nutui-red-3: var(--color-red-200);
+	--nutui-red-4: var(--color-red-300);
+	--nutui-red-5: var(--color-red-400);
+	--nutui-red-6: var(--color-red-500);
+	--nutui-red-7: var(--color-red-600);
+	--nutui-red-8: var(--color-red-700);
+	--nutui-red-9: var(--color-red-800);
+	--nutui-red-10: var(--color-red-900);
+	--nutui-red-11: var(--color-red-950);
+
+	/* warning color */
+	--nutui-yellow-1: var(--color-yellow-50);
+	--nutui-yellow-2: var(--color-yellow-500);
+	--nutui-yellow-3: var(--color-yellow-800);
+
+	/* info color */
+	--nutui-blue-1: var(--color-blue-50);
+	--nutui-blue-2: var(--color-blue-500);
+
+	--nutui-secondary-1: var(--color-green-500); /* 辅助色 */
+
+	/* 背景色 */
+	/* 卡片背景色 */
+	--nutui-gray-1: var(--color-neutral-50);
+	/* 卡片内嵌背景色，用于卡片内部的信息包裹，感知较弱。 */
+	--nutui-gray-2: var(--color-neutral-100);
+	/* 页面基底色，用于卡片式页面的兜底，永远置于页面最底层。 */
+	--nutui-gray-3: var(--color-neutral-200);
+	/* 组件背景色，2025年新增 */
+	--nutui-gray-9: var(--color-neutral-50);
+	/* 文字色 */
+	/* 四级文字色，不可操作内容色，用于预置内容、无效内容、特殊不可点击按钮、组件边框线等。 */
+	--nutui-gray-4: var(--color-neutral-400);
+	/* 三级文字色（次要） */
+	--nutui-gray-5: var(--color-neutral-500);
+	/* 二级文字色（常规），用于次级标题、属性标示、非主要信息引导等。 */
+	--nutui-gray-6: var(--color-neutral-600);
+	/* 一级文字色（重要）主要内容用色，常用语常规标题内容、细文浏览、常规按钮文字以及图表引导。 */
+	--nutui-gray-7: var(--color-neutral-950);
+	/* icon 未选中颜色 */
+	--nutui-gray-8: var(--color-neutral-300);
+
+	--nutui-black-1: rgba(0, 0, 0, 0);
+	/* 蒙层色 */
+	/* 容错蒙层 */
+	--nutui-black-2: rgba(0, 0, 0, 0.02);
+	/* 线条色 */
+	/* 间隔线/容错线，用于结构或信息分割 */
+	--nutui-black-3: rgba(0, 0, 0, 0.08);
+	--nutui-black-4: rgba(0, 0, 0, 0.1);
+	--nutui-black-5: rgba(0, 0, 0, 0.2);
+	--nutui-black-6: rgba(0, 0, 0, 0.3);
+	/* 蒙层色 */
+	/* 局部蒙层，像图片上的小蒙层，无货、采购中等 */
+	--nutui-black-7: rgba(0, 0, 0, 0.4);
+	--nutui-black-8: rgba(0, 0, 0, 0.5);
+	--nutui-black-9: rgba(0, 0, 0, 0.6);
+	/* 蒙层色 */
+	/* 全局蒙层，用于弹出层、弹窗、新功能引导出现的整页遮罩 */
+	--nutui-black-10: rgba(0, 0, 0, 0.7);
+	--nutui-black-11: rgba(0, 0, 0, 0.8);
+	--nutui-black-12: rgba(0, 0, 0, 0.9);
+	--nutui-black-13: rgba(0, 0, 0, 1);
+
+	--nutui-white-1: rgba(255, 255, 255, 0);
+	--nutui-white-2: rgba(255, 255, 255, 0.02);
+	--nutui-white-3: rgba(255, 255, 255, 0.05);
+	--nutui-white-4: rgba(255, 255, 255, 0.1);
+	--nutui-white-5: rgba(255, 255, 255, 0.2);
+	--nutui-white-6: rgba(255, 255, 255, 0.3);
+	--nutui-white-7: rgba(255, 255, 255, 0.4);
+	--nutui-white-8: rgba(255, 255, 255, 0.5);
+	--nutui-white-9: rgba(255, 255, 255, 0.6);
+	--nutui-white-10: rgba(255, 255, 255, 0.7);
+	--nutui-white-11: rgba(255, 255, 255, 0.8);
+	--nutui-white-12: rgba(255, 255, 255, 0.9);
+	--nutui-white-13: rgba(255, 255, 255, 1);
+
+	--nutui-color-text: var(--color-neutral-500);
+	--nutui-tabbar-height: 120px;
+	--nutui-tabbar-active-color: var(--color-red-500);
+	--nutui-tabbar-inactive-color: var(--color-neutral-500);
+
+	--nutui-form-item-label-width: auto;
+}
