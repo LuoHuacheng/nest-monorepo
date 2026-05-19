@@ -1,6 +1,8 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/api/query-client";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
 
@@ -31,16 +33,18 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <Suspense
-          fallback={<div className="flex min-h-svh items-center justify-center">Loading...</div>}
-        >
-          {children}
-        </Suspense>
-        <Toaster />
-        <TanStackDevtools
-          config={{ position: "bottom-right" }}
-          plugins={[{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> }]}
-        />
+        <QueryClientProvider client={queryClient}>
+          <Suspense
+            fallback={<div className="flex min-h-svh items-center justify-center">Loading...</div>}
+          >
+            {children}
+          </Suspense>
+          <Toaster />
+          <TanStackDevtools
+            config={{ position: "bottom-right" }}
+            plugins={[{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> }]}
+          />
+        </QueryClientProvider>
         <Scripts />
       </body>
     </html>
