@@ -5,10 +5,10 @@ import {
   CreateRegistrationCardDto,
   UpdateRegistrationCardDto,
 } from "./dto/create-registration-card.dto";
-import { PaginationDto } from "../../common/dto/pagination.dto";
+import { QueryRegistrationCardDto } from "./dto/query-registration-card.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("报名卡管理")
+@ApiTags("RegistrationCards")
 @ApiBearerAuth()
 @Controller("registration-cards")
 export class RegistrationCardController {
@@ -17,7 +17,7 @@ export class RegistrationCardController {
   @Get()
   @Permissions("registration-card:list")
   @ApiOperation({ summary: "报名卡列表" })
-  findAll(@Query() query: PaginationDto & { keyword?: string; phone?: string; idNumber?: string }) {
+  findAll(@Query() query: QueryRegistrationCardDto) {
     return this.registrationCardService.findAll(query);
   }
 

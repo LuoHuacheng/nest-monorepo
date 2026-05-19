@@ -5,7 +5,7 @@ import { CreateMenuDto } from "./dto/create-menu.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
-@ApiTags("菜单管理")
+@ApiTags("Menus")
 @ApiBearerAuth()
 @Controller("menus")
 export class MenuController {

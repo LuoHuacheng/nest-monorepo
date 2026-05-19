@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
+import { PaginatedResult } from "../../common/dto/pagination.dto";
+import { QueryLogDto } from "./dto/query-log.dto";
 
 @Injectable()
 export class LogService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: PaginationDto & { module?: string; userId?: string }) {
+  async findAll(query: QueryLogDto) {
     const { page, pageSize, module, userId } = query;
     const where: any = {};
     if (module) where.module = module;

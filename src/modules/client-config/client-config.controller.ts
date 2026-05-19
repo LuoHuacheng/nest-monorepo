@@ -4,7 +4,7 @@ import { ClientConfigService } from "./client-config.service";
 import { BatchUpdateClientConfigDto } from "./dto/update-client-config.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("客户端配置")
+@ApiTags("ClientConfigs")
 @ApiBearerAuth()
 @Controller("client-configs")
 export class ClientConfigController {

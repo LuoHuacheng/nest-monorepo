@@ -4,15 +4,14 @@ import {
   CreateRegistrationCardDto,
   UpdateRegistrationCardDto,
 } from "./dto/create-registration-card.dto";
-import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
+import { PaginatedResult } from "../../common/dto/pagination.dto";
+import { QueryRegistrationCardDto } from "./dto/query-registration-card.dto";
 
 @Injectable()
 export class RegistrationCardService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(
-    query: PaginationDto & { keyword?: string; phone?: string; idNumber?: string },
-  ): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryRegistrationCardDto): Promise<PaginatedResult<any>> {
     const { page, pageSize, keyword, phone, idNumber } = query;
     const where: any = {};
     if (keyword) where.name = { contains: keyword, mode: "insensitive" };

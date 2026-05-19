@@ -6,7 +6,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { QueryUserDto } from "./dto/query-user.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("用户管理")
+@ApiTags("Users")
 @ApiBearerAuth()
 @Controller("users")
 export class UserController {

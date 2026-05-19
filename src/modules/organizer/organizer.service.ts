@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateOrganizerDto, UpdateOrganizerDto } from "./dto/create-organizer.dto";
-import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
+import { PaginatedResult } from "../../common/dto/pagination.dto";
+import { QueryOrganizerDto } from "./dto/query-organizer.dto";
 
 @Injectable()
 export class OrganizerService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: PaginationDto & { keyword?: string }): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryOrganizerDto): Promise<PaginatedResult<any>> {
     const { page, pageSize, keyword } = query;
     const where: any = {};
     if (keyword) {

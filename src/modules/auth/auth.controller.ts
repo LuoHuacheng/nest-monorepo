@@ -6,7 +6,7 @@ import { Public } from "../../common/decorators/public.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { PrismaService } from "../../prisma/prisma.service";
 
-@ApiTags("认证")
+@ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   constructor(

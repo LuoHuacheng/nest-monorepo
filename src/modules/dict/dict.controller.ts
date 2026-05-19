@@ -4,7 +4,7 @@ import { DictService } from "./dict.service";
 import { CreateDictDto, CreateDictItemDto } from "./dto/create-dict.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("字典管理")
+@ApiTags("Dicts")
 @ApiBearerAuth()
 @Controller("dicts")
 export class DictController {

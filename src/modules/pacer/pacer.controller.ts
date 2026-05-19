@@ -9,7 +9,7 @@ import {
 } from "./dto/create-pacer.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("配速员管理")
+@ApiTags("Pacers")
 @ApiBearerAuth()
 @Controller("pacers")
 export class PacerController {

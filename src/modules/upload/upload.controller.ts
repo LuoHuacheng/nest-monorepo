@@ -4,7 +4,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes } from "@nestjs/swagg
 import { UploadService } from "./upload.service";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
-@ApiTags("文件上传")
+@ApiTags("Upload")
 @ApiBearerAuth()
 @Controller("files")
 export class UploadController {

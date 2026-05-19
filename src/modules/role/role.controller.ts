@@ -4,7 +4,7 @@ import { RoleService } from "./role.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("角色管理")
+@ApiTags("Roles")
 @ApiBearerAuth()
 @Controller("roles")
 export class RoleController {

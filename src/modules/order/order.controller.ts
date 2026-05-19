@@ -5,7 +5,7 @@ import { QueryOrderDto } from "./dto/query-order.dto";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("订单管理")
+@ApiTags("Orders")
 @ApiBearerAuth()
 @Controller("orders")
 export class OrderController {

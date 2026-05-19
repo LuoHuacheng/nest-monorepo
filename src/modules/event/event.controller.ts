@@ -12,7 +12,7 @@ import { UpdatePublishStatusDto } from "./dto/update-publish-status.dto";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("赛事管理")
+@ApiTags("Events")
 @ApiBearerAuth()
 @Controller("events")
 export class EventController {

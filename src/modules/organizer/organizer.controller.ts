@@ -2,10 +2,10 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from "@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { OrganizerService } from "./organizer.service";
 import { CreateOrganizerDto, UpdateOrganizerDto } from "./dto/create-organizer.dto";
-import { PaginationDto } from "../../common/dto/pagination.dto";
+import { QueryOrganizerDto } from "./dto/query-organizer.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("组委会")
+@ApiTags("Organizers")
 @ApiBearerAuth()
 @Controller("organizers")
 export class OrganizerController {
@@ -14,7 +14,7 @@ export class OrganizerController {
   @Get()
   @Permissions("organizer:list")
   @ApiOperation({ summary: "组委会列表" })
-  findAll(@Query() query: PaginationDto & { keyword?: string }) {
+  findAll(@Query() query: QueryOrganizerDto) {
     return this.organizerService.findAll(query);
   }
 

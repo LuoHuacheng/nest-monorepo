@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateAthleticCenterDto } from "./dto/create-athletic-center.dto";
-import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
+import { PaginatedResult } from "../../common/dto/pagination.dto";
+import { QueryAthleticCenterDto } from "./dto/query-athletic-center.dto";
 
 @Injectable()
 export class AthleticCenterService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: PaginationDto & { keyword?: string }): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryAthleticCenterDto): Promise<PaginatedResult<any>> {
     const { page, pageSize, keyword } = query;
     const where: any = {};
     if (keyword) where.name = { contains: keyword, mode: "insensitive" };

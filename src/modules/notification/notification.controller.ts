@@ -5,7 +5,7 @@ import { CreateNotificationDto } from "./dto/create-notification.dto";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("消息通知")
+@ApiTags("Notifications")
 @ApiBearerAuth()
 @Controller("notifications")
 export class NotificationController {

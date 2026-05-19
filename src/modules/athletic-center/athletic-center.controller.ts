@@ -2,10 +2,10 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from "@nestj
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { AthleticCenterService } from "./athletic-center.service";
 import { CreateAthleticCenterDto } from "./dto/create-athletic-center.dto";
-import { PaginationDto } from "../../common/dto/pagination.dto";
+import { QueryAthleticCenterDto } from "./dto/query-athletic-center.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("田管中心")
+@ApiTags("AthleticCenters")
 @ApiBearerAuth()
 @Controller("athletic-centers")
 export class AthleticCenterController {
@@ -14,7 +14,7 @@ export class AthleticCenterController {
   @Get()
   @Permissions("athletic-center:list")
   @ApiOperation({ summary: "田管中心列表" })
-  findAll(@Query() query: PaginationDto & { keyword?: string }) {
+  findAll(@Query() query: QueryAthleticCenterDto) {
     return this.athleticCenterService.findAll(query);
   }
 

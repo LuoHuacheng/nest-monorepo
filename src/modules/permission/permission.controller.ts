@@ -4,7 +4,7 @@ import { PermissionService } from "./permission.service";
 import { CreatePermissionDto } from "./dto/create-permission.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 
-@ApiTags("权限管理")
+@ApiTags("Permissions")
 @ApiBearerAuth()
 @Controller("permissions")
 export class PermissionController {
