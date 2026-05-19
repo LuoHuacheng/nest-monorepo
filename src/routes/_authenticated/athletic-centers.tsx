@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { mockAthleticCenters } from "@/mocks/data/organizers";
+import {
+  useAthleticCenterList,
+  useDeleteAthleticCenter,
+  useUpdateAthleticCenterStatus,
+} from "@/api/modules/athletic-centers";
 
 export const Route = createFileRoute("/_authenticated/athletic-centers")({
   component: AthleticCentersPage,
@@ -16,11 +20,18 @@ function AthleticCentersPage() {
   const [page, setPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const filtered = mockAthleticCenters.filter(
+  const { data, isLoading } = useAthleticCenterList({ page, pageSize: 10 });
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const total = (data as { total?: number })?.total ?? 0;
+  const deleteMutation = useDeleteAthleticCenter();
+  const updateStatusMutation = useUpdateAthleticCenterStatus();
+
+  const filtered = (items as Record<string, unknown>[]).filter(
     (c) =>
-      c.name.includes(search) ||
-      (c.contact?.includes(search) ?? false) ||
-      (c.address?.includes(search) ?? false),
+      !search ||
+      (c.name as string)?.includes(search) ||
+      (c.contact as string)?.includes(search) ||
+      (c.address as string)?.includes(search),
   );
 
   const columns = [
@@ -43,7 +54,16 @@ function AthleticCentersPage() {
           <Button variant="ghost" size="sm">
             编辑
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              updateStatusMutation.mutate({
+                id: record.id as string,
+                status: record.status === 1 ? 0 : 1,
+              })
+            }
+          >
             {record.status === 1 ? "禁用" : "启用"}
           </Button>
           <Button
@@ -75,21 +95,29 @@ function AthleticCentersPage() {
         }}
         placeholder="搜索名称、联系人或地址..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={10}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
       <ConfirmDialog
         open={deleteId !== null}
         onOpenChange={() => setDeleteId(null)}
         title="确认删除"
         description="确定要删除该田管中心吗？此操作不可撤销。"
         onConfirm={() => {
-          setDeleteId(null);
+          if (deleteId) {
+            deleteMutation.mutate(deleteId, {
+              onSettled: () => setDeleteId(null),
+            });
+          }
         }}
         confirmText="确认删除"
         variant="destructive"

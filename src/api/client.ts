@@ -4,7 +4,6 @@ import { useAuthStore } from "@/stores/auth";
 // 配置 baseUrl
 client.setConfig({
   baseUrl: "http://localhost:4001",
-  responseStyle: "data",
 });
 
 // 请求拦截：注入 auth token

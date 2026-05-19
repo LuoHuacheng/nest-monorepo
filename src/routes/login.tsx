@@ -1,12 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthStore } from "@/stores/auth";
-import { loginHandler } from "@/mocks/handlers/auth";
+import { useLogin } from "@/api/modules/auth";
 import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
@@ -19,8 +18,7 @@ const loginSchema = z.object({
 });
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const login = useAuthStore((s) => s.login);
+  const loginMutation = useLogin();
   const [error, setError] = useState("");
 
   const form = useForm({
@@ -28,9 +26,7 @@ function LoginPage() {
     onSubmit: async ({ value }) => {
       setError("");
       try {
-        const result = await loginHandler(value.username, value.password);
-        login(result.token, result.user);
-        navigate({ to: "/" });
+        await loginMutation.mutateAsync(value);
       } catch (e) {
         setError(e instanceof Error ? e.message : "登录失败");
       }

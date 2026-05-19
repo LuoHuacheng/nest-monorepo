@@ -5,33 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-
-const mockRoles = [
-  {
-    id: "1",
-    name: "管理员",
-    code: "admin",
-    description: "系统管理员，拥有全部权限",
-    status: 1,
-    createdAt: "2025-01-01",
-  },
-  {
-    id: "2",
-    name: "编辑员",
-    code: "editor",
-    description: "可编辑赛事和订单",
-    status: 1,
-    createdAt: "2025-03-01",
-  },
-  {
-    id: "3",
-    name: "查看员",
-    code: "viewer",
-    description: "只读权限",
-    status: 0,
-    createdAt: "2025-06-01",
-  },
-];
+import { useRoleList, useDeleteRole } from "@/api/modules/roles";
 
 export const Route = createFileRoute("/_authenticated/roles")({
   component: RolesPage,
@@ -42,7 +16,20 @@ function RolesPage() {
   const [page, setPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const filtered = mockRoles.filter((r) => r.name.includes(search) || r.code.includes(search));
+  const { data } = useRoleList();
+  const allItems = (Array.isArray(data) ? data : ((data as any)?.items ?? [])) as Record<
+    string,
+    unknown
+  >[];
+  const filtered = search
+    ? allItems.filter(
+        (r) => String(r.name ?? "").includes(search) || String(r.code ?? "").includes(search),
+      )
+    : allItems;
+  const pageSize = 10;
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  const deleteMut = useDeleteRole();
 
   const columns = [
     { key: "name", title: "角色名称" },
@@ -95,9 +82,9 @@ function RolesPage() {
       />
       <DataTable
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={paged}
         page={page}
-        pageSize={10}
+        pageSize={pageSize}
         total={filtered.length}
         onPageChange={setPage}
       />
@@ -107,6 +94,7 @@ function RolesPage() {
         title="确认删除"
         description="确定要删除该角色吗？此操作不可撤销。"
         onConfirm={() => {
+          if (deleteId) deleteMut.mutate(deleteId);
           setDeleteId(null);
         }}
         confirmText="确认删除"

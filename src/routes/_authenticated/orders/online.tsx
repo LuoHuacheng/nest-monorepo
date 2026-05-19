@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useOrderList, useRefundOrder } from "@/api/modules/orders";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { mockOnlineOrders } from "@/mocks/data/orders";
 
 export const Route = createFileRoute("/_authenticated/orders/online")({
   component: OnlineOrdersPage,
@@ -26,10 +26,18 @@ function OnlineOrdersPage() {
   const [page, setPage] = useState(1);
   const [refundId, setRefundId] = useState<string | null>(null);
 
-  const filtered = mockOnlineOrders.filter(
-    (o) =>
-      o.orderNo.includes(search) || o.eventName.includes(search) || o.userName.includes(search),
-  );
+  const queryParams: Record<string, unknown> = {
+    page,
+    pageSize: 10,
+    type: "online",
+    keyword: search || undefined,
+  };
+
+  const { data, isLoading } = useOrderList(queryParams);
+  const orders = (data?.items ?? []) as Record<string, unknown>[];
+  const total = data?.total ?? 0;
+
+  const refundMutation = useRefundOrder();
 
   const columns = [
     { key: "orderNo", title: "订单号" },
@@ -81,20 +89,25 @@ function OnlineOrdersPage() {
         }}
         placeholder="搜索订单号、赛事或用户..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={orders}
+          page={page}
+          pageSize={10}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
       <ConfirmDialog
         open={refundId !== null}
         onOpenChange={() => setRefundId(null)}
         title="确认退款"
         description="确定要对此订单进行退款操作吗？此操作不可撤销。"
         onConfirm={() => {
+          if (refundId) refundMutation.mutate(refundId);
           setRefundId(null);
         }}
         confirmText="确认退款"

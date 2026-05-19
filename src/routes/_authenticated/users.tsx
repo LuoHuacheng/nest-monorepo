@@ -5,41 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-
-const mockUsers = [
-  {
-    id: "1",
-    username: "admin",
-    name: "管理员",
-    avatar: "/logo192.png",
-    phone: "13800000001",
-    email: "admin@example.com",
-    status: 1,
-    createdAt: "2025-01-01",
-    updatedAt: "2026-05-01",
-  },
-  {
-    id: "2",
-    username: "editor",
-    name: "编辑员",
-    avatar: "/logo192.png",
-    phone: "13800000002",
-    email: "editor@example.com",
-    status: 1,
-    createdAt: "2025-03-15",
-    updatedAt: "2026-04-20",
-  },
-  {
-    id: "3",
-    username: "viewer",
-    name: "查看员",
-    phone: "13800000003",
-    email: "viewer@example.com",
-    status: 0,
-    createdAt: "2025-06-01",
-    updatedAt: "2026-03-18",
-  },
-];
+import { useUserList, useDeleteUser, useUpdateUserStatus } from "@/api/modules/users";
 
 export const Route = createFileRoute("/_authenticated/users")({
   component: UsersPage,
@@ -50,7 +16,12 @@ function UsersPage() {
   const [page, setPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const filtered = mockUsers.filter((u) => u.username.includes(search) || u.name.includes(search));
+  const { data } = useUserList({ page, pageSize: 10, keyword: search || undefined });
+  const items = ((data as any)?.items ?? []) as Record<string, unknown>[];
+  const total = (data as any)?.total ?? 0;
+
+  const deleteMut = useDeleteUser();
+  const statusMut = useUpdateUserStatus();
 
   const columns = [
     { key: "username", title: "用户名" },
@@ -75,7 +46,7 @@ function UsersPage() {
           <Button variant="ghost" size="sm">
             编辑
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={() => statusMut.mutate(record.id as string)}>
             {record.status === 1 ? "禁用" : "启用"}
           </Button>
           <Button
@@ -106,10 +77,10 @@ function UsersPage() {
       />
       <DataTable
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={items}
         page={page}
         pageSize={10}
-        total={filtered.length}
+        total={total}
         onPageChange={setPage}
       />
       <ConfirmDialog
@@ -118,6 +89,7 @@ function UsersPage() {
         title="确认删除"
         description="确定要删除该用户吗？此操作不可撤销。"
         onConfirm={() => {
+          if (deleteId) deleteMut.mutate(deleteId);
           setDeleteId(null);
         }}
         confirmText="确认删除"

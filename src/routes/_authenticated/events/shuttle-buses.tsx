@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useShuttleBuses } from "@/api/modules/events";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-import { mockShuttleBuses } from "@/mocks/data/events";
 
 export const Route = createFileRoute("/_authenticated/events/shuttle-buses")({
   component: ShuttleBusesPage,
@@ -44,9 +44,13 @@ const columns = [
 function ShuttleBusesPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [eventId] = useState("");
 
-  const filtered = mockShuttleBuses.filter(
-    (b) => b.eventName.includes(search) || b.route.includes(search),
+  const { data, isLoading } = useShuttleBuses(eventId);
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const filtered = (items as Record<string, unknown>[]).filter(
+    (b) =>
+      !search || (b.eventName as string)?.includes(search) || (b.route as string)?.includes(search),
   );
 
   return (
@@ -62,14 +66,18 @@ function ShuttleBusesPage() {
         }}
         placeholder="搜索赛事或路线..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={10}
+          total={filtered.length}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

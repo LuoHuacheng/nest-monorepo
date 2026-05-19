@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useEventResults } from "@/api/modules/events";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-import { mockEventResults } from "@/mocks/data/events";
 
 export const Route = createFileRoute("/_authenticated/events/results")({
   component: ResultsPage,
@@ -33,9 +33,17 @@ const columns = [
 function ResultsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const [eventId] = useState("");
 
-  const filtered = mockEventResults.filter(
-    (r) => r.eventName.includes(search) || (r.userName?.includes(search) ?? false),
+  const { data, isLoading } = useEventResults(eventId, { page, pageSize });
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const total = (data as { total?: number })?.total ?? 0;
+  const filtered = (items as Record<string, unknown>[]).filter(
+    (r) =>
+      !search ||
+      (r.eventName as string)?.includes(search) ||
+      (r.userName as string)?.includes(search),
   );
 
   return (
@@ -51,14 +59,18 @@ function ResultsPage() {
         }}
         placeholder="搜索赛事或选手..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

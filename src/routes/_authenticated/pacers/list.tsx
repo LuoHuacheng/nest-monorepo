@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { mockPacers } from "@/mocks/data/pacers";
+import {
+  usePacerList,
+  useDeletePacer,
+  useApprovePacer,
+  useSuspendPacer,
+  useRevokePacer,
+} from "@/api/modules/pacers";
 
 export const Route = createFileRoute("/_authenticated/pacers/list")({
   component: PacersPage,
@@ -26,13 +32,14 @@ function PacersPage() {
   const [page, setPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const filtered = mockPacers.filter(
-    (p) =>
-      p.name.includes(search) ||
-      p.phone.includes(search) ||
-      p.idCard.includes(search) ||
-      (p.pacerNo?.includes(search) ?? false),
-  );
+  const { data } = usePacerList({ page, pageSize: 10, keyword: search || undefined });
+  const items = ((data as any)?.items ?? []) as Record<string, unknown>[];
+  const total = (data as any)?.total ?? 0;
+
+  const deleteMut = useDeletePacer();
+  const approveMut = useApprovePacer();
+  const suspendMut = useSuspendPacer();
+  const revokeMut = useRevokePacer();
 
   const columns = [
     { key: "pacerNo", title: "PacerID" },
@@ -42,7 +49,8 @@ function PacersPage() {
     {
       key: "paceSegments",
       title: "配速段",
-      render: (val: unknown) => ((val as string[]).length ? (val as string[]).join(" / ") : "-"),
+      render: (val: unknown) =>
+        (val as string[] | undefined)?.length ? (val as string[]).join(" / ") : "-",
     },
     { key: "targetTime", title: "目标时间" },
     { key: "clothingSize", title: "尺码" },
@@ -53,7 +61,7 @@ function PacersPage() {
     {
       key: "marathonCertificates",
       title: "成绩证书",
-      render: (val: unknown) => `${(val as string[]).length} 张`,
+      render: (val: unknown) => `${((val as string[] | undefined) ?? []).length} 张`,
     },
     { key: "pacePlanImageUrl", title: "配速计划" },
     {
@@ -77,19 +85,26 @@ function PacersPage() {
             导出
           </Button>
           {record.status === "pending" && (
-            <>
-              <Button variant="ghost" size="sm" className="text-green-600">
-                审核
-              </Button>
-            </>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-green-600"
+              onClick={() => approveMut.mutate(record.id as string)}
+            >
+              审核
+            </Button>
           )}
           {record.status === "approved" && (
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => suspendMut.mutate(record.id as string)}
+            >
               暂停授权
             </Button>
           )}
           {record.status === "suspended" && (
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => revokeMut.mutate(record.id as string)}>
               解除授权
             </Button>
           )}
@@ -121,10 +136,10 @@ function PacersPage() {
       />
       <DataTable
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={items}
         page={page}
         pageSize={10}
-        total={filtered.length}
+        total={total}
         onPageChange={setPage}
       />
       <ConfirmDialog
@@ -133,6 +148,7 @@ function PacersPage() {
         title="确认删除"
         description="确定要删除该配速员吗？此操作不可撤销。"
         onConfirm={() => {
+          if (deleteId) deleteMut.mutate(deleteId);
           setDeleteId(null);
         }}
         confirmText="确认删除"

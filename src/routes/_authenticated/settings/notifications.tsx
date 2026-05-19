@@ -4,53 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-
-const mockNotifications = [
-  {
-    id: "1",
-    title: "订单支付成功通知",
-    content: "您的订单已支付成功。",
-    type: "order",
-    targetType: "all",
-    targetId: "",
-    status: "sent",
-    sentAt: "2026-05-01 09:00",
-    createdAt: "2025-01-01",
-  },
-  {
-    id: "2",
-    title: "赛事报名成功通知",
-    content: "您的赛事报名已提交。",
-    type: "event",
-    targetType: "all",
-    targetId: "",
-    status: "sent",
-    sentAt: "2026-05-02 10:00",
-    createdAt: "2025-01-01",
-  },
-  {
-    id: "3",
-    title: "退款处理通知",
-    content: "您的退款申请已受理。",
-    type: "order",
-    targetType: "user",
-    targetId: "u1",
-    status: "pending",
-    sentAt: "",
-    createdAt: "2025-02-01",
-  },
-  {
-    id: "4",
-    title: "赛事提醒通知",
-    content: "您报名的赛事即将开始。",
-    type: "event",
-    targetType: "all",
-    targetId: "",
-    status: "pending",
-    sentAt: "",
-    createdAt: "2025-03-01",
-  },
-];
+import { useNotificationList } from "@/api/modules/notifications";
 
 export const Route = createFileRoute("/_authenticated/settings/notifications")({
   component: NotificationsPage,
@@ -60,7 +14,13 @@ function NotificationsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const filtered = mockNotifications.filter((n) => n.title.includes(search));
+  const { data, isLoading } = useNotificationList({ page, pageSize: 10 });
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const total = (data as { total?: number })?.total ?? 0;
+
+  const filtered = (items as Record<string, unknown>[]).filter(
+    (n) => !search || (n.title as string)?.includes(search),
+  );
 
   const columns = [
     { key: "title", title: "通知标题" },
@@ -113,14 +73,18 @@ function NotificationsPage() {
         }}
         placeholder="搜索通知标题..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={10}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

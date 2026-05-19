@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-import { mockPacerTests } from "@/mocks/data/pacers";
+import { usePacerTests } from "@/api/modules/pacers";
 
 export const Route = createFileRoute("/_authenticated/pacers/tests")({
   component: PacerTestsPage,
@@ -45,12 +45,21 @@ function PacerTestsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const filtered = mockPacerTests.filter(
-    (t) =>
-      t.pacerName.includes(search) ||
-      t.pacerId.includes(search) ||
-      (t.location?.includes(search) ?? false),
-  );
+  const { data } = usePacerTests();
+  const allItems = (Array.isArray(data) ? data : ((data as any)?.items ?? [])) as Record<
+    string,
+    unknown
+  >[];
+  const filtered = search
+    ? allItems.filter(
+        (t) =>
+          String(t.pacerName ?? "").includes(search) ||
+          String(t.pacerId ?? "").includes(search) ||
+          String(t.location ?? "").includes(search),
+      )
+    : allItems;
+  const pageSize = 10;
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="space-y-4">
@@ -67,9 +76,9 @@ function PacerTestsPage() {
       />
       <DataTable
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={paged}
         page={page}
-        pageSize={10}
+        pageSize={pageSize}
         total={filtered.length}
         onPageChange={setPage}
       />

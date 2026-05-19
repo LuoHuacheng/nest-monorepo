@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import { useDeleteEvent, useEventList, useUpdatePublishStatus } from "@/api/modules/events";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
@@ -22,12 +23,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { mockEvents } from "@/mocks/data/events";
-import type { Event, EventAttribute, EventStatus, PublishStatus } from "@/types/event";
 
 export const Route = createFileRoute("/_authenticated/events/list")({
   component: EventsPage,
 });
+
+type EventStatus =
+  | "registration_not_started"
+  | "registration_open"
+  | "registration_ended"
+  | "event_not_started"
+  | "event_in_progress"
+  | "event_ended";
+type PublishStatus = "draft" | "published" | "offline";
+type EventAttribute = "online" | "shuttle_bus" | "pacer_recruitment";
 
 const eventStatusMap: Record<
   EventStatus,
@@ -61,14 +70,15 @@ const ALL = "__ALL__";
 function EventsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [statusAction, setStatusAction] = useState<{
     id: string;
     action: "publish" | "offline" | "republish";
   } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [participantsEvent, setParticipantsEvent] = useState<Event | null>(null);
-  const [ordersEvent, setOrdersEvent] = useState<Event | null>(null);
-  const [drawEvent, setDrawEvent] = useState<Event | null>(null);
+  const [participantsEvent, setParticipantsEvent] = useState<Record<string, unknown> | null>(null);
+  const [ordersEvent, setOrdersEvent] = useState<Record<string, unknown> | null>(null);
+  const [drawEvent, setDrawEvent] = useState<Record<string, unknown> | null>(null);
 
   const [filterEventStatus, setFilterEventStatus] = useState(ALL);
   const [filterPublishStatus, setFilterPublishStatus] = useState(ALL);
@@ -78,20 +88,25 @@ function EventsPage() {
   const [filterDateStart, setFilterDateStart] = useState("");
   const [filterDateEnd, setFilterDateEnd] = useState("");
 
-  const categories = [...new Set(mockEvents.map((e) => e.category))];
+  const queryParams: Record<string, unknown> = {
+    page,
+    pageSize,
+    keyword: search || undefined,
+    eventStatus: filterEventStatus !== ALL ? filterEventStatus : undefined,
+    publishStatus: filterPublishStatus !== ALL ? filterPublishStatus : undefined,
+    category: filterCategory !== ALL ? filterCategory : undefined,
+    attribute: filterAttribute !== ALL ? filterAttribute : undefined,
+    isHot: filterIsHot !== ALL ? filterIsHot === "true" : undefined,
+    dateStart: filterDateStart || undefined,
+    dateEnd: filterDateEnd || undefined,
+  };
 
-  const filtered = mockEvents.filter((e) => {
-    if (search && !e.name.includes(search) && !e.location.includes(search)) return false;
-    if (filterPublishStatus !== ALL && e.publishStatus !== filterPublishStatus) return false;
-    if (filterCategory !== ALL && e.category !== filterCategory) return false;
-    if (filterAttribute !== ALL && !e.attributes.includes(filterAttribute as EventAttribute)) {
-      return false;
-    }
-    if (filterIsHot !== ALL && e.isHot !== (filterIsHot === "true")) return false;
-    if (filterDateStart && e.endDate < filterDateStart) return false;
-    if (filterDateEnd && e.startDate > `${filterDateEnd} 23:59`) return false;
-    return true;
-  });
+  const { data, isLoading } = useEventList(queryParams);
+  const events = (data?.items ?? []) as Record<string, unknown>[];
+  const total = data?.total ?? 0;
+
+  const deleteMutation = useDeleteEvent();
+  const updateStatusMutation = useUpdatePublishStatus();
 
   function resetFilters() {
     setFilterEventStatus(ALL);
@@ -163,7 +178,6 @@ function EventsPage() {
       fixed: "right" as const,
       width: 80,
       render: (_: unknown, record: Record<string, unknown>) => {
-        const event = record as unknown as Event;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -174,36 +188,40 @@ function EventsPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>编辑</DropdownMenuItem>
               <DropdownMenuSeparator />
-              {event.publishStatus === "draft" && (
+              {record.publishStatus === "draft" && (
                 <DropdownMenuItem
-                  onClick={() => setStatusAction({ id: event.id, action: "publish" })}
+                  onClick={() => setStatusAction({ id: record.id as string, action: "publish" })}
                 >
                   发布
                 </DropdownMenuItem>
               )}
-              {event.publishStatus === "published" && (
+              {record.publishStatus === "published" && (
                 <DropdownMenuItem
-                  onClick={() => setStatusAction({ id: event.id, action: "offline" })}
+                  onClick={() => setStatusAction({ id: record.id as string, action: "offline" })}
                 >
                   下架
                 </DropdownMenuItem>
               )}
-              {event.publishStatus === "offline" && (
+              {record.publishStatus === "offline" && (
                 <DropdownMenuItem
-                  onClick={() => setStatusAction({ id: event.id, action: "republish" })}
+                  onClick={() => setStatusAction({ id: record.id as string, action: "republish" })}
                 >
                   重新上架
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => setParticipantsEvent(event)}>
+              <DropdownMenuItem onClick={() => setParticipantsEvent(record)}>
                 查看报名人员
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setOrdersEvent(event)}>查看订单</DropdownMenuItem>
-              {event.currentParticipants > 0 && event.publishStatus === "published" && (
-                <DropdownMenuItem onClick={() => setDrawEvent(event)}>赛事抽签</DropdownMenuItem>
-              )}
+              <DropdownMenuItem onClick={() => setOrdersEvent(record)}>查看订单</DropdownMenuItem>
+              {(record.currentParticipants as number) > 0 &&
+                record.publishStatus === "published" && (
+                  <DropdownMenuItem onClick={() => setDrawEvent(record)}>赛事抽签</DropdownMenuItem>
+                )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive" onClick={() => setDeleteId(event.id)}>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => setDeleteId(record.id as string)}
+              >
                 删除
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -271,25 +289,15 @@ function EventsPage() {
         </FilterItem>
 
         <FilterItem label="赛事分类">
-          <Select
-            value={filterCategory}
-            onValueChange={(v) => {
-              setFilterCategory(v);
+          <Input
+            className="min-w-40"
+            value={filterCategory !== ALL ? filterCategory : ""}
+            onChange={(e) => {
+              setFilterCategory(e.target.value || ALL);
               setPage(1);
             }}
-          >
-            <SelectTrigger className="w-full min-w-40">
-              <SelectValue placeholder="全部" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL}>全部</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder="输入分类名称"
+          />
         </FilterItem>
 
         <FilterItem label="赛事属性">
@@ -356,14 +364,18 @@ function EventsPage() {
         </FilterItem>
       </FilterBar>
 
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={events as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
 
       <ConfirmDialog
         open={statusAction !== null}
@@ -382,7 +394,16 @@ function EventsPage() {
               ? "确定要下架该赛事吗？下架后选手将无法看到该赛事。"
               : "确定要重新上架该赛事吗？上架后选手将重新看到该赛事。"
         }
-        onConfirm={() => setStatusAction(null)}
+        onConfirm={() => {
+          if (statusAction) {
+            const publishStatus =
+              statusAction.action === "publish" || statusAction.action === "republish"
+                ? "published"
+                : "offline";
+            updateStatusMutation.mutate({ id: statusAction.id, publishStatus });
+          }
+          setStatusAction(null);
+        }}
         confirmText={
           statusAction?.action === "publish"
             ? "确认发布"
@@ -397,7 +418,10 @@ function EventsPage() {
         onOpenChange={() => setDeleteId(null)}
         title="确认删除"
         description="确定要删除该赛事吗？此操作不可撤销。"
-        onConfirm={() => setDeleteId(null)}
+        onConfirm={() => {
+          if (deleteId) deleteMutation.mutate(deleteId);
+          setDeleteId(null);
+        }}
         confirmText="确认删除"
         variant="destructive"
       />
@@ -405,10 +429,10 @@ function EventsPage() {
       <Dialog open={participantsEvent !== null} onOpenChange={() => setParticipantsEvent(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>报名人员 - {participantsEvent?.name}</DialogTitle>
+            <DialogTitle>报名人员 - {participantsEvent?.name as string}</DialogTitle>
           </DialogHeader>
           <p className="text-muted-foreground text-sm">
-            当前报名人数：{participantsEvent?.currentParticipants ?? 0} 人
+            当前报名人数：{(participantsEvent?.currentParticipants as number) ?? 0} 人
           </p>
           <p className="text-muted-foreground text-sm">（报名人员列表待接口对接后展示）</p>
         </DialogContent>
@@ -417,7 +441,7 @@ function EventsPage() {
       <Dialog open={ordersEvent !== null} onOpenChange={() => setOrdersEvent(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>赛事订单 - {ordersEvent?.name}</DialogTitle>
+            <DialogTitle>赛事订单 - {ordersEvent?.name as string}</DialogTitle>
           </DialogHeader>
           <p className="text-muted-foreground text-sm">（订单列表待接口对接后展示）</p>
         </DialogContent>
@@ -426,10 +450,10 @@ function EventsPage() {
       <Dialog open={drawEvent !== null} onOpenChange={() => setDrawEvent(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>赛事抽签 - {drawEvent?.name}</DialogTitle>
+            <DialogTitle>赛事抽签 - {drawEvent?.name as string}</DialogTitle>
           </DialogHeader>
           <p className="text-muted-foreground text-sm">
-            当前报名人数：{drawEvent?.currentParticipants ?? 0} 人
+            当前报名人数：{(drawEvent?.currentParticipants as number) ?? 0} 人
           </p>
           <p className="text-muted-foreground text-sm">（抽签功能待接口对接后实现）</p>
         </DialogContent>

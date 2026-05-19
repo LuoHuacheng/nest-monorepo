@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  useOrganizerList,
+  useUpdateOrganizerStatus,
+  useResetOrganizerPassword,
+} from "@/api/modules/organizers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { mockOrganizers } from "@/mocks/data/organizers";
 
 export const Route = createFileRoute("/_authenticated/organizers")({
   component: OrganizersPage,
@@ -15,14 +19,20 @@ function OrganizersPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [resetId, setResetId] = useState<string | null>(null);
+  const [statusToggle, setStatusToggle] = useState<{ id: string; status: number } | null>(null);
 
-  const filtered = mockOrganizers.filter(
-    (o) =>
-      o.name.includes(search) ||
-      o.loginAccount.includes(search) ||
-      o.contact.includes(search) ||
-      o.phone.includes(search),
-  );
+  const queryParams: Record<string, unknown> = {
+    page,
+    pageSize: 10,
+    keyword: search || undefined,
+  };
+
+  const { data, isLoading } = useOrganizerList(queryParams);
+  const organizers = (data?.items ?? []) as Record<string, unknown>[];
+  const total = data?.total ?? 0;
+
+  const updateStatusMutation = useUpdateOrganizerStatus();
+  const resetPasswordMutation = useResetOrganizerPassword();
 
   const columns = [
     { key: "loginAccount", title: "登录账号" },
@@ -64,7 +74,13 @@ function OrganizersPage() {
           <Button variant="ghost" size="sm" onClick={() => setResetId(record.id as string)}>
             重置密码
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setStatusToggle({ id: record.id as string, status: record.status === 1 ? 0 : 1 })
+            }
+          >
             {record.status === 1 ? "停用" : "启用"}
           </Button>
         </div>
@@ -88,23 +104,46 @@ function OrganizersPage() {
         }}
         placeholder="搜索名称、账号、联系人或电话..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={organizers}
+          page={page}
+          pageSize={10}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
       <ConfirmDialog
         open={resetId !== null}
         onOpenChange={() => setResetId(null)}
         title="重置密码"
         description="确定要重置该组委会的登录密码吗？"
         onConfirm={() => {
+          if (resetId) resetPasswordMutation.mutate(resetId);
           setResetId(null);
         }}
         confirmText="确认重置"
+      />
+      <ConfirmDialog
+        open={statusToggle !== null}
+        onOpenChange={() => setStatusToggle(null)}
+        title={statusToggle?.status === 1 ? "确认启用" : "确认停用"}
+        description={
+          statusToggle?.status === 1
+            ? "确定要启用该组委会吗？启用后可正常登录使用。"
+            : "确定要停用该组委会吗？停用后将无法登录。"
+        }
+        onConfirm={() => {
+          if (statusToggle) {
+            updateStatusMutation.mutate(statusToggle);
+          }
+          setStatusToggle(null);
+        }}
+        confirmText={statusToggle?.status === 1 ? "确认启用" : "确认停用"}
+        variant={statusToggle?.status === 1 ? "default" : "destructive"}
       />
     </div>
   );

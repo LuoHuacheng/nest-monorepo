@@ -11,42 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardStats, recentOrders, recentEvents } from "@/mocks/data/dashboard";
+import { useDashboardRecentOrders, useDashboardRecentEvents } from "@/api/modules/dashboard";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: DashboardPage,
 });
-
-const statCards = [
-  {
-    title: "今日订单",
-    value: dashboardStats.todayOrders,
-    icon: ShoppingCart,
-    change: "+12%",
-    accent: "bg-blue-500",
-  },
-  {
-    title: "今日新增用户",
-    value: dashboardStats.todayUsers,
-    icon: Users,
-    change: "+8%",
-    accent: "bg-emerald-500",
-  },
-  {
-    title: "待处理退款",
-    value: dashboardStats.pendingRefunds,
-    icon: RotateCcw,
-    change: "-3%",
-    accent: "bg-amber-500",
-  },
-  {
-    title: "本月营收",
-    value: `¥${dashboardStats.monthlyRevenue.toLocaleString()}`,
-    icon: DollarSign,
-    change: "+23%",
-    accent: "bg-primary",
-  },
-];
 
 const statusMap: Record<
   string,
@@ -62,6 +31,49 @@ const statusMap: Record<
 };
 
 function DashboardPage() {
+  const { data: ordersData, isLoading: ordersLoading } = useDashboardRecentOrders();
+  const { data: eventsData, isLoading: eventsLoading } = useDashboardRecentEvents();
+
+  const recentOrders = ((ordersData as { items?: unknown[] })?.items ?? []) as Record<
+    string,
+    unknown
+  >[];
+  const recentEvents = ((eventsData as { items?: unknown[] })?.items ?? []) as Record<
+    string,
+    unknown
+  >[];
+
+  const statCards = [
+    {
+      title: "今日订单",
+      value: "—",
+      icon: ShoppingCart,
+      change: "",
+      accent: "bg-blue-500",
+    },
+    {
+      title: "今日新增用户",
+      value: "—",
+      icon: Users,
+      change: "",
+      accent: "bg-emerald-500",
+    },
+    {
+      title: "待处理退款",
+      value: "—",
+      icon: RotateCcw,
+      change: "",
+      accent: "bg-amber-500",
+    },
+    {
+      title: "本月营收",
+      value: "—",
+      icon: DollarSign,
+      change: "",
+      accent: "bg-primary",
+    },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -90,11 +102,13 @@ function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold tracking-tight">{card.value}</div>
-              <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                <TrendingUp className="size-3 text-emerald-500" />
-                <span className="text-emerald-600 dark:text-emerald-400">{card.change}</span>
-                <span>较昨日</span>
-              </div>
+              {card.change && (
+                <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <TrendingUp className="size-3 text-emerald-500" />
+                  <span className="text-emerald-600 dark:text-emerald-400">{card.change}</span>
+                  <span>较昨日</span>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -136,20 +150,46 @@ function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentOrders.map((order) => (
-                  <TableRow key={order.id} className="table-row-hover border-border/15">
-                    <TableCell className="pl-6 font-mono text-xs text-muted-foreground">
-                      {order.orderNo}
-                    </TableCell>
-                    <TableCell className="text-sm">{order.userName}</TableCell>
-                    <TableCell className="text-sm font-medium">¥{order.amount}</TableCell>
-                    <TableCell className="pr-6">
-                      <Badge variant={statusMap[order.status]?.variant} className="text-[11px]">
-                        {statusMap[order.status]?.label}
-                      </Badge>
+                {ordersLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                      加载中...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : recentOrders.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                      暂无数据
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  recentOrders.map((order, index) => (
+                    <TableRow
+                      key={(order.id as string) ?? index}
+                      className="table-row-hover border-border/15"
+                    >
+                      <TableCell className="pl-6 font-mono text-xs text-muted-foreground">
+                        {(order.orderNo as string) ?? "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {(order.userName as string) ??
+                          (order.user as Record<string, unknown>)?.name ??
+                          "—"}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        ¥{String(order.amount ?? "—")}
+                      </TableCell>
+                      <TableCell className="pr-6">
+                        <Badge
+                          variant={statusMap[order.status as string]?.variant}
+                          className="text-[11px]"
+                        >
+                          {statusMap[order.status as string]?.label ?? String(order.status ?? "")}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
@@ -186,21 +226,43 @@ function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentEvents.map((event) => (
-                  <TableRow key={event.id} className="table-row-hover border-border/15">
-                    <TableCell className="pl-6 text-sm font-medium">{event.name}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusMap[event.status]?.variant} className="text-[11px]">
-                        {statusMap[event.status]?.label}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="pr-6">
-                      <span className="text-sm tabular-nums">
-                        {event.currentParticipants.toLocaleString()} 人
-                      </span>
+                {eventsLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center text-muted-foreground">
+                      加载中...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : recentEvents.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center text-muted-foreground">
+                      暂无数据
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  recentEvents.map((event, index) => (
+                    <TableRow
+                      key={(event.id as string) ?? index}
+                      className="table-row-hover border-border/15"
+                    >
+                      <TableCell className="pl-6 text-sm font-medium">
+                        {(event.name as string) ?? "—"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={statusMap[event.status as string]?.variant}
+                          className="text-[11px]"
+                        >
+                          {statusMap[event.status as string]?.label ?? String(event.status ?? "")}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="pr-6">
+                        <span className="text-sm tabular-nums">
+                          {Number(event.currentParticipants ?? 0).toLocaleString()} 人
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>

@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useRegistrationCardList } from "@/api/modules/registration-cards";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-import { mockRegistrationCards } from "@/mocks/data/events";
 
 export const Route = createFileRoute("/_authenticated/events/registration-cards")({
   component: RegistrationCardsPage,
@@ -54,9 +54,17 @@ const columns = [
 function RegistrationCardsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const pageSize = 10;
 
-  const filtered = mockRegistrationCards.filter(
-    (c) => c.name.includes(search) || c.phone.includes(search) || c.idNumber.includes(search),
+  const { data, isLoading } = useRegistrationCardList({ page, pageSize });
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const total = (data as { total?: number })?.total ?? 0;
+  const filtered = (items as Record<string, unknown>[]).filter(
+    (c) =>
+      !search ||
+      (c.name as string)?.includes(search) ||
+      (c.phone as string)?.includes(search) ||
+      (c.idNumber as string)?.includes(search),
   );
 
   return (
@@ -72,14 +80,18 @@ function RegistrationCardsPage() {
         }}
         placeholder="搜索姓名、手机号或身份证号..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

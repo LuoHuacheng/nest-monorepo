@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useInviteCodes } from "@/api/modules/events";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
-import { mockInviteCodes } from "@/mocks/data/events";
 
 export const Route = createFileRoute("/_authenticated/events/invite-codes")({
   component: InviteCodesPage,
@@ -48,9 +48,13 @@ const columns = [
 function InviteCodesPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [eventId] = useState("");
 
-  const filtered = mockInviteCodes.filter(
-    (c) => c.code.includes(search) || c.eventName.includes(search),
+  const { data, isLoading } = useInviteCodes(eventId);
+  const items = (data as { items?: unknown[] })?.items ?? [];
+  const filtered = (items as Record<string, unknown>[]).filter(
+    (c) =>
+      !search || (c.code as string)?.includes(search) || (c.eventName as string)?.includes(search),
   );
 
   return (
@@ -66,14 +70,18 @@ function InviteCodesPage() {
         }}
         placeholder="搜索邀请码或赛事..."
       />
-      <DataTable
-        columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
-        page={page}
-        pageSize={10}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-muted-foreground">加载中...</div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered as unknown as Record<string, unknown>[]}
+          page={page}
+          pageSize={10}
+          total={filtered.length}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
