@@ -97,11 +97,5 @@
 			"Android >= 4.1",
 			"ios >= 8"
 		]
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@weapp-tailwindcss/merge",
-			"weapp-tailwindcss"
-		]
 	}
 }

@@ -3,25 +3,25 @@ pre-commit:
   jobs:
     - name: lint-api
       glob: "apps/api/**/*.ts"
-      run: pnpm --filter api lint:check {staged_files}
+      run: pnpm --filter api lint:check
       stage_fixed: true
     - name: lint-admin
       glob: "apps/admin/**/*.{ts,tsx}"
-      run: pnpm --filter admin lint {staged_files}
+      run: pnpm --filter admin lint
       stage_fixed: true
     - name: lint-miniapp
       glob: "apps/miniapp/**/*.{ts,tsx}"
-      run: pnpm --filter miniapp lint {staged_files}
+      run: pnpm --filter miniapp lint
       stage_fixed: true
     - name: format-api
       glob: "apps/api/**/*.ts"
-      run: pnpm --filter api format:check {staged_files}
+      run: pnpm --filter api format
       stage_fixed: true
     - name: format-admin
       glob: "apps/admin/**/*.{ts,tsx,js,jsx,json,jsonc}"
-      run: pnpm --filter admin format {staged_files}
+      run: pnpm --filter admin format
       stage_fixed: true
     - name: format-miniapp
       glob: "apps/miniapp/**/*.{ts,tsx,css,json}"
-      run: pnpm --filter miniapp format {staged_files}
+      run: pnpm --filter miniapp format
       stage_fixed: true
