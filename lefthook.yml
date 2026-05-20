@@ -1,27 +1,27 @@
 pre-commit:
   parallel: true
   jobs:
-    - name: lint-backend
-      glob: "backend/**/*.ts"
-      run: pnpm --filter backend lint:check {staged_files}
+    - name: lint-api
+      glob: "apps/api/**/*.ts"
+      run: pnpm --filter api lint:check {staged_files}
       stage_fixed: true
     - name: lint-admin
-      glob: "admin/**/*.{ts,tsx}"
+      glob: "apps/admin/**/*.{ts,tsx}"
       run: pnpm --filter admin lint {staged_files}
       stage_fixed: true
-    - name: lint-client
-      glob: "client/**/*.{ts,tsx}"
-      run: pnpm --filter client lint {staged_files}
+    - name: lint-miniapp
+      glob: "apps/miniapp/**/*.{ts,tsx}"
+      run: pnpm --filter miniapp lint {staged_files}
       stage_fixed: true
-    - name: format-backend
-      glob: "backend/**/*.ts"
-      run: pnpm --filter backend format:check {staged_files}
+    - name: format-api
+      glob: "apps/api/**/*.ts"
+      run: pnpm --filter api format:check {staged_files}
       stage_fixed: true
     - name: format-admin
-      glob: "admin/**/*.{ts,tsx,js,jsx,json,jsonc}"
+      glob: "apps/admin/**/*.{ts,tsx,js,jsx,json,jsonc}"
       run: pnpm --filter admin format {staged_files}
       stage_fixed: true
-    - name: format-client
-      glob: "client/**/*.{ts,tsx,css,json}"
-      run: pnpm --filter client format {staged_files}
+    - name: format-miniapp
+      glob: "apps/miniapp/**/*.{ts,tsx,css,json}"
+      run: pnpm --filter miniapp format {staged_files}
       stage_fixed: true

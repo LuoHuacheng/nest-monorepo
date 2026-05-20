@@ -8,21 +8,24 @@ coverage/
 *.local
 *.tsbuildinfo
 
-# Backend
-backend/generated/prisma/
-backend/uploads/
+# API (backend)
+apps/api/generated/prisma/
+apps/api/uploads/
 
-# Client
-client/deploy_versions/
-client/.temp/
-client/.rn_temp/
-client/.swc
+# Miniapp (client)
+apps/miniapp/deploy_versions/
+apps/miniapp/.temp/
+apps/miniapp/.rn_temp/
+apps/miniapp/.swc
 
 # Admin
-admin/.nitro
-admin/.tanstack
-admin/.wrangler
-admin/.output
-admin/.vinxi
-admin/__unconfig*
-admin/todos.json
+apps/admin/.nitro
+apps/admin/.tanstack
+apps/admin/.wrangler
+apps/admin/.output
+apps/admin/.vinxi
+apps/admin/__unconfig*
+apps/admin/todos.json
+
+# Packages
+packages/*/dist/
