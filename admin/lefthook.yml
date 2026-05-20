@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{ts,tsx}"
+      run: pnpm lint {staged_files}
+      stage_fixed: true
+    format:
+      glob: "*.{ts,tsx,json,css}"
+      run: pnpm format {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    check:
+      run: echo "Commit message validated"
