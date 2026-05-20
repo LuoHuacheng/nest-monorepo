@@ -377,7 +377,7 @@ export interface Order {
 - 删除
 - 启用/禁用
 
-**字段**：`name`, `contact`, `phone`, `address`, `status`, `createdAt`, `updatedAt`
+**字段**：`loginAccount`, `password`, `name`, `contact`, `phone`, `address`, `remark`, `status`, `createdAt`, `updatedAt`
 
 ---
 
