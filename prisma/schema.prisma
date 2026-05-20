@@ -318,14 +318,17 @@ model Organizer {
 }
 
 model AthleticCenter {
-  id        String   @id @default(cuid())
-  name      String
-  contact   String?
-  phone     String?
-  address   String?
-  status    Int      @default(1)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  name         String
+  contact      String?
+  phone        String?
+  address      String?
+  loginAccount String   @unique @map("login_account")
+  password     String
+  remark       String?
+  status       Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("athletic_center")
 }
