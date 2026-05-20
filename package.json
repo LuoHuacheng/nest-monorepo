@@ -2,19 +2,21 @@
   "name": "match",
   "private": true,
   "scripts": {
-    "dev:admin": "pnpm --filter admin dev",
-    "dev:api": "pnpm --filter api start:dev",
-    "dev:miniapp": "pnpm --filter miniapp dev:weapp",
-    "build:admin": "pnpm --filter admin build",
-    "build:api": "pnpm --filter api build",
-    "build:miniapp": "pnpm --filter miniapp build:weapp",
-    "lint": "pnpm -r lint",
-    "lint:check": "pnpm -r lint:check",
-    "format": "pnpm -r format",
-    "format:check": "pnpm -r format:check",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck",
-    "generate:api-client": "pnpm --filter @match/api-client generate",
+    "dev": "turbo dev",
+    "dev:api": "turbo dev --filter=api",
+    "dev:admin": "turbo dev --filter=admin",
+    "dev:miniapp": "turbo dev --filter=miniapp",
+    "build": "turbo build",
+    "build:api": "turbo build --filter=api",
+    "build:admin": "turbo build --filter=admin",
+    "build:miniapp": "turbo build --filter=miniapp",
+    "lint": "turbo lint",
+    "lint:check": "turbo lint:check",
+    "format": "turbo format",
+    "format:check": "turbo format:check",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "generate:api-client": "turbo generate --filter=@match/api-client",
     "prisma:generate": "pnpm --filter api prisma:generate",
     "prisma:migrate": "pnpm --filter api prisma:migrate",
     "prepare": "lefthook install"
@@ -22,7 +24,8 @@
   "devDependencies": {
     "lefthook": "^2.1.6",
     "oxfmt": "^0.50.0",
-    "oxlint": "^1.65.0"
+    "oxlint": "^1.65.0",
+    "turbo": "^2.9.14"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
