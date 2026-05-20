@@ -4,6 +4,8 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
 import { HttpExceptionFilter } from "./common/filters/http-exception.filter";
+import { ApiResponseDto, PaginatedApiResponseDto } from "./common/dto/api-response.dto";
+import { EntityDtos } from "./common/dto/response-dto";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -45,7 +47,9 @@ async function bootstrap() {
     .addTag("Notifications", "消息通知")
     .addTag("ClientConfigs", "客户端配置")
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: [ApiResponseDto, PaginatedApiResponseDto, ...EntityDtos],
+  });
   SwaggerModule.setup("docs", app, document);
 
   await app.listen(process.env.PORT ?? 4001);

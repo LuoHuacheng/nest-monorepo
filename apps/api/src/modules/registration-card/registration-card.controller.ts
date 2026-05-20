@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
 import { RegistrationCardService } from "./registration-card.service";
 import {
   CreateRegistrationCardDto,
@@ -7,6 +7,11 @@ import {
 } from "./dto/create-registration-card.dto";
 import { QueryRegistrationCardDto } from "./dto/query-registration-card.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
+import {
+  apiOkResponse,
+  paginatedApiOkResponse,
+  RegistrationCardDto,
+} from "../../common/dto/response-dto";
 
 @ApiTags("RegistrationCards")
 @ApiBearerAuth()
@@ -17,6 +22,7 @@ export class RegistrationCardController {
   @Get()
   @Permissions("registration-card:list")
   @ApiOperation({ summary: "报名卡列表" })
+  @ApiResponse({ ...paginatedApiOkResponse(RegistrationCardDto), description: "分页报名卡列表" })
   findAll(@Query() query: QueryRegistrationCardDto) {
     return this.registrationCardService.findAll(query);
   }
@@ -24,6 +30,7 @@ export class RegistrationCardController {
   @Get(":id")
   @Permissions("registration-card:list")
   @ApiOperation({ summary: "报名卡详情" })
+  @ApiResponse({ ...apiOkResponse(RegistrationCardDto), description: "报名卡详情" })
   findOne(@Param("id") id: string) {
     return this.registrationCardService.findOne(id);
   }
@@ -31,6 +38,7 @@ export class RegistrationCardController {
   @Post()
   @Permissions("registration-card:create")
   @ApiOperation({ summary: "创建报名卡" })
+  @ApiResponse({ ...apiOkResponse(RegistrationCardDto), description: "创建的报名卡" })
   create(@Body() dto: CreateRegistrationCardDto) {
     return this.registrationCardService.create(dto);
   }
@@ -38,6 +46,7 @@ export class RegistrationCardController {
   @Patch(":id")
   @Permissions("registration-card:update")
   @ApiOperation({ summary: "更新报名卡" })
+  @ApiResponse({ ...apiOkResponse(RegistrationCardDto), description: "更新后的报名卡" })
   update(@Param("id") id: string, @Body() dto: UpdateRegistrationCardDto) {
     return this.registrationCardService.update(id, dto);
   }
@@ -45,6 +54,7 @@ export class RegistrationCardController {
   @Delete(":id")
   @Permissions("registration-card:delete")
   @ApiOperation({ summary: "删除报名卡" })
+  @ApiResponse({ ...apiOkResponse(RegistrationCardDto), description: "删除的报名卡" })
   remove(@Param("id") id: string) {
     return this.registrationCardService.remove(id);
   }

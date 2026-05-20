@@ -1,8 +1,9 @@
 import { Controller, Get, Patch, Body } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
 import { ClientConfigService } from "./client-config.service";
 import { BatchUpdateClientConfigDto } from "./dto/update-client-config.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
+import { apiOkResponse, ClientConfigDto } from "../../common/dto/response-dto";
 
 @ApiTags("ClientConfigs")
 @ApiBearerAuth()
@@ -13,6 +14,7 @@ export class ClientConfigController {
   @Get()
   @Permissions("client-config:list")
   @ApiOperation({ summary: "配置列表" })
+  @ApiResponse({ ...apiOkResponse(ClientConfigDto), description: "客户端配置列表" })
   findAll() {
     return this.clientConfigService.findAll();
   }
@@ -20,6 +22,7 @@ export class ClientConfigController {
   @Patch()
   @Permissions("client-config:update")
   @ApiOperation({ summary: "批量更新配置" })
+  @ApiResponse({ ...apiOkResponse(ClientConfigDto), description: "更新后的配置列表" })
   batchUpdate(@Body() dto: BatchUpdateClientConfigDto) {
     return this.clientConfigService.batchUpdate(dto.configs);
   }

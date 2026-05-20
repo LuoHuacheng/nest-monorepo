@@ -1,6 +1,6 @@
 import { IsInt, IsOptional, Min } from "class-validator";
 import { Type } from "class-transformer";
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class PaginationDto {
   @ApiPropertyOptional({ default: 1 })
@@ -18,9 +18,16 @@ export class PaginationDto {
   pageSize: number = 10;
 }
 
-export interface PaginatedResult<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
+export class PaginatedResult<T> {
+  @ApiProperty({ description: "数据列表" })
+  items!: T[];
+
+  @ApiProperty({ example: 100, description: "总条数" })
+  total!: number;
+
+  @ApiProperty({ example: 1, description: "当前页码" })
+  page!: number;
+
+  @ApiProperty({ example: 10, description: "每页条数" })
+  pageSize!: number;
 }
