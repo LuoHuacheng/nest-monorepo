@@ -24,6 +24,11 @@ export interface AuthState {
   setToken: (token: string) => void;
 }
 
+let rehydrateResolve: () => void;
+export const authRehydratePromise = new Promise<void>((resolve) => {
+  rehydrateResolve = resolve;
+});
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -46,6 +51,11 @@ export const useAuthStore = create<AuthState>()(
         })),
       setToken: (token) => set({ token }),
     }),
-    { name: "auth-storage" },
+    {
+      name: "auth-storage",
+      onRehydrateStorage: () => (_state, _error) => {
+        rehydrateResolve();
+      },
+    },
   ),
 );
