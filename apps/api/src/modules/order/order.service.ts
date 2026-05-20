@@ -14,7 +14,7 @@ export class OrderService {
       if (!dto.eventId) throw new BadRequestException("赛事订单必须关联赛事");
       if (!dto.registrationCardId) throw new BadRequestException("赛事订单必须选择报名卡");
 
-      const card = await this.prisma.eventRegistrationCard.findUnique({
+      const card = await this.prisma.registrationGroup.findUnique({
         where: { id: dto.registrationCardId },
       });
       if (!card) throw new NotFoundException("报名卡不存在");
@@ -36,7 +36,7 @@ export class OrderService {
         });
 
         // 更新已售数量
-        await tx.eventRegistrationCard.update({
+        await tx.registrationGroup.update({
           where: { id: dto.registrationCardId },
           data: { soldCount: { increment: 1 } },
         });
@@ -98,7 +98,7 @@ export class OrderService {
         take: pageSize,
         include: {
           event: { select: { id: true, name: true } },
-          registrationCard: { select: { id: true, name: true } },
+          registrationGroup: { select: { id: true, name: true } },
         },
         orderBy: { createdAt: "desc" },
       }),
@@ -112,7 +112,7 @@ export class OrderService {
       where: { id },
       include: {
         event: { select: { id: true, name: true } },
-        registrationCard: { select: { id: true, name: true } },
+        registrationGroup: { select: { id: true, name: true } },
       },
     });
     if (!order) throw new NotFoundException("订单不存在");

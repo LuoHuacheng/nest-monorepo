@@ -111,7 +111,7 @@ export class EventDto {
   @ApiProperty({ description: "更新时间" }) updatedAt!: string;
 }
 
-export class EventRegistrationCardDto {
+export class RegistrationGroupDto {
   @ApiProperty({ description: "报名卡 ID" }) id!: string;
   @ApiProperty({ description: "赛事 ID" }) eventId!: string;
   @ApiProperty({ description: "名称" }) name!: string;
@@ -315,7 +315,7 @@ export const EntityDtos = [
   SysDictItemDto,
   SysLogDto,
   EventDto,
-  EventRegistrationCardDto,
+  RegistrationGroupDto,
   RegistrationCardDto,
   EventInviteCodeDto,
   EventShuttleBusDto,

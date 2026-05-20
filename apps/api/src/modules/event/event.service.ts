@@ -8,7 +8,7 @@ import {
   CreateShuttleBusDto,
   UpdateEventDto,
 } from "./dto/create-event.dto";
-import { QueryEventDto } from "./dto/query-event.dto";
+import { QueryEventDto, QueryOrderDto, QueryParticipantDto } from "./dto/query-event.dto";
 import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
 import { computeEventStatus } from "./event-status";
 
@@ -70,7 +70,7 @@ export class EventService {
     const event = await this.prisma.event.findUnique({
       where: { id },
       include: {
-        registrationCards: { orderBy: { sort: "asc" } },
+        registrationGroups: { orderBy: { sort: "asc" } },
       },
     });
     if (!event) throw new NotFoundException("赛事不存在");
@@ -81,14 +81,14 @@ export class EventService {
     return this.prisma.event.create({
       data: {
         ...this.buildEventData(dto),
-        registrationCards: {
+        registrationGroups: {
           create: dto.registrationGroups.map((group, index) =>
             this.buildRegistrationCardData(group, index),
           ),
         },
       } as Prisma.EventCreateInput,
       include: {
-        registrationCards: { orderBy: { sort: "asc" } },
+        registrationGroups: { orderBy: { sort: "asc" } },
       },
     });
   }
@@ -104,7 +104,7 @@ export class EventService {
       });
 
       if (registrationGroups) {
-        const lockedGroups = await tx.eventRegistrationCard.findMany({
+        const lockedGroups = await tx.registrationGroup.findMany({
           where: {
             eventId: id,
             OR: [{ soldCount: { gt: 0 } }, { orders: { some: {} } }],
@@ -116,8 +116,8 @@ export class EventService {
           throw new BadRequestException("已有报名记录的报名级别不可整体替换");
         }
 
-        await tx.eventRegistrationCard.deleteMany({ where: { eventId: id } });
-        await tx.eventRegistrationCard.createMany({
+        await tx.registrationGroup.deleteMany({ where: { eventId: id } });
+        await tx.registrationGroup.createMany({
           data: registrationGroups.map((group, index) => ({
             eventId: id,
             ...this.buildRegistrationCardData(group, index),
@@ -128,7 +128,7 @@ export class EventService {
       return tx.event.findUnique({
         where: { id },
         include: {
-          registrationCards: { orderBy: { sort: "asc" } },
+          registrationGroups: { orderBy: { sort: "asc" } },
         },
       });
     });
@@ -161,6 +161,138 @@ export class EventService {
       where: { id },
       data: { adminConfirmed: true },
     });
+  }
+
+  // ==================== 抽签 ====================
+
+  async draw(id: string) {
+    const event = await this.findOne(id);
+    const now = new Date();
+
+    if (event.registrationEndDate && now < event.registrationEndDate) {
+      throw new BadRequestException("报名尚未结束，无法抽签");
+    }
+    if (now >= event.startDate) {
+      throw new BadRequestException("赛事已开始，无法抽签");
+    }
+    if (event.currentParticipants <= event.maxParticipants) {
+      throw new BadRequestException("报名人数未超过赛事限制人数，无需抽签");
+    }
+    if (event.groupDrawCompleted) {
+      throw new BadRequestException("已完成抽签，不可重复操作");
+    }
+
+    const paidOrders = await this.prisma.order.findMany({
+      where: { eventId: id, status: "paid", isDrawn: false },
+      include: {
+        registrationGroup: {
+          select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+        },
+        user: { select: { id: true, name: true, phone: true } },
+      },
+    });
+
+    // Fisher-Yates 洗牌
+    for (let i = paidOrders.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [paidOrders[i], paidOrders[j]] = [paidOrders[j], paidOrders[i]];
+    }
+
+    const drawn = paidOrders.slice(0, event.maxParticipants);
+
+    return {
+      totalPaid: paidOrders.length,
+      maxParticipants: event.maxParticipants,
+      drawnCount: drawn.length,
+      drawn,
+    };
+  }
+
+  async confirmDraw(id: string, orderIds: string[]) {
+    const event = await this.findOne(id);
+    const now = new Date();
+
+    if (event.registrationEndDate && now < event.registrationEndDate) {
+      throw new BadRequestException("报名尚未结束，无法确认抽签");
+    }
+    if (now >= event.startDate) {
+      throw new BadRequestException("赛事已开始，无法确认抽签");
+    }
+    if (event.groupDrawCompleted) {
+      throw new BadRequestException("已完成抽签，不可重复操作");
+    }
+    if (orderIds.length === 0) {
+      throw new BadRequestException("请选择中签订单");
+    }
+    if (orderIds.length > event.maxParticipants) {
+      throw new BadRequestException(`中签人数不能超过最大参赛人数 ${event.maxParticipants}`);
+    }
+
+    // 校验所有订单属于该赛事且为已支付状态
+    const validOrders = await this.prisma.order.findMany({
+      where: { id: { in: orderIds }, eventId: id, status: "paid" },
+      select: { id: true },
+    });
+    if (validOrders.length !== orderIds.length) {
+      throw new BadRequestException("存在无效的订单 ID");
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.order.updateMany({
+        where: { id: { in: orderIds } },
+        data: { isDrawn: true },
+      });
+      await tx.event.update({
+        where: { id },
+        data: { groupDrawCompleted: true },
+      });
+    });
+
+    return { success: true, drawnCount: orderIds.length };
+  }
+
+  async findDrawResults(id: string) {
+    const event = await this.findOne(id);
+    const drawn = await this.prisma.order.findMany({
+      where: { eventId: id, isDrawn: true },
+      include: {
+        registrationGroup: {
+          select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+        },
+        user: { select: { id: true, name: true, phone: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return {
+      groupDrawCompleted: event.groupDrawCompleted,
+      maxParticipants: event.maxParticipants,
+      drawnCount: drawn.length,
+      drawn,
+    };
+  }
+
+  // ==================== 订单 ====================
+
+  async findOrders(eventId: string, query: QueryOrderDto) {
+    const { page, pageSize, orderNo } = query;
+    const where: Record<string, unknown> = { eventId };
+    if (orderNo) where.orderNo = { contains: orderNo, mode: "insensitive" };
+    const [items, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          registrationGroup: {
+            select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+          },
+          user: { select: { id: true, name: true, phone: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+    return { items, total, page, pageSize };
   }
 
   // ==================== 邀请码 ====================
@@ -237,6 +369,37 @@ export class EventService {
     return this.prisma.eventResult.createMany({
       data: results.map((r) => ({ ...r, eventId })),
     });
+  }
+
+  // ==================== 参赛人 ====================
+
+  async findParticipants(eventId: string, query: QueryParticipantDto) {
+    const { page, pageSize, status, keyword } = query;
+    const where: Record<string, unknown> = { eventId };
+    if (status) where.status = status;
+    if (keyword) {
+      where.OR = [
+        { orderNo: { contains: keyword, mode: "insensitive" } },
+        { user: { name: { contains: keyword, mode: "insensitive" } } },
+        { user: { phone: { contains: keyword, mode: "insensitive" } } },
+      ];
+    }
+    const [items, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          registrationGroup: {
+            select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+          },
+          user: { select: { id: true, name: true, phone: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+    return { items, total, page, pageSize };
   }
 
   private injectEventStatus(event: PrismaEvent) {

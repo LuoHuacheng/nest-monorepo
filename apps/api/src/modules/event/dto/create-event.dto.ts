@@ -224,3 +224,11 @@ export class CreateShuttleBusDto {
   @IsInt()
   capacity!: number;
 }
+
+export class ConfirmDrawDto {
+  @ApiProperty({ description: "中签订单 ID 列表", type: [String] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  orderIds!: string[];
+}

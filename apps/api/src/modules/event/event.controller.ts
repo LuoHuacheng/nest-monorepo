@@ -1,13 +1,21 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiResponse,
+  getSchemaPath,
+} from "@nestjs/swagger";
 import { EventService } from "./event.service";
 import {
+  ConfirmDrawDto,
   CreateEventDto,
   CreateInviteCodeDto,
   CreateShuttleBusDto,
   UpdateEventDto,
 } from "./dto/create-event.dto";
-import { QueryEventDto } from "./dto/query-event.dto";
+import { QueryEventDto, QueryOrderDto, QueryParticipantDto } from "./dto/query-event.dto";
 import { UpdatePublishStatusDto } from "./dto/update-publish-status.dto";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
@@ -17,6 +25,7 @@ import {
   EventInviteCodeDto,
   EventShuttleBusDto,
   EventResultDto,
+  OrderDto,
   apiOkResponse,
   paginatedApiOkResponse,
 } from "../../common/dto/response-dto";
@@ -81,6 +90,115 @@ export class EventController {
   @ApiResponse({ ...apiOkResponse(EventDto), description: "更新后的赛事" })
   confirmRegistrationEnd(@Param("id") id: string) {
     return this.eventService.confirmRegistrationEnd(id);
+  }
+
+  // ==================== 抽签 ====================
+
+  @Post(":id/draw")
+  @Permissions("event:update")
+  @ApiOperation({ summary: "赛事抽签" })
+  @ApiResponse({
+    schema: {
+      properties: {
+        code: { type: "number", example: 200 },
+        message: { type: "string", example: "success" },
+        data: {
+          type: "object",
+          properties: {
+            totalPaid: { type: "number", description: "已支付订单总数" },
+            maxParticipants: { type: "number", description: "最大参赛人数" },
+            drawnCount: { type: "number", description: "抽中人数" },
+            drawn: {
+              type: "array",
+              items: { $ref: getSchemaPath(OrderDto) },
+              description: "抽中的订单列表",
+            },
+          },
+        },
+      },
+    },
+    description: "抽签结果",
+  })
+  draw(@Param("id") id: string) {
+    return this.eventService.draw(id);
+  }
+
+  @Post(":id/draw/confirm")
+  @Permissions("event:update")
+  @ApiOperation({ summary: "确认抽签结果" })
+  @ApiResponse({
+    schema: {
+      properties: {
+        code: { type: "number", example: 200 },
+        message: { type: "string", example: "success" },
+        data: {
+          type: "object",
+          properties: {
+            success: { type: "boolean", example: true },
+            drawnCount: { type: "number", description: "确认中签人数" },
+          },
+        },
+      },
+    },
+    description: "确认抽签结果",
+  })
+  confirmDraw(@Param("id") id: string, @Body() dto: ConfirmDrawDto) {
+    return this.eventService.confirmDraw(id, dto.orderIds);
+  }
+
+  @Get(":id/draw/results")
+  @Permissions("event:list")
+  @ApiOperation({ summary: "查看抽签结果" })
+  @ApiResponse({
+    schema: {
+      properties: {
+        code: { type: "number", example: 200 },
+        message: { type: "string", example: "success" },
+        data: {
+          type: "object",
+          properties: {
+            groupDrawCompleted: { type: "boolean", description: "是否已完成抽签" },
+            maxParticipants: { type: "number", description: "最大参赛人数" },
+            drawnCount: { type: "number", description: "中签人数" },
+            drawn: {
+              type: "array",
+              items: { $ref: getSchemaPath(OrderDto) },
+              description: "中签订单列表",
+            },
+          },
+        },
+      },
+    },
+    description: "抽签结果",
+  })
+  findDrawResults(@Param("id") id: string) {
+    return this.eventService.findDrawResults(id);
+  }
+
+  // ==================== 参赛人 ====================
+
+  @Get(":eventId/participants")
+  @Permissions("event:list")
+  @ApiOperation({ summary: "赛事参赛人列表" })
+  @ApiResponse({
+    ...paginatedApiOkResponse(OrderDto),
+    description: "分页参赛人列表（含报名级别信息）",
+  })
+  findParticipants(@Param("eventId") eventId: string, @Query() query: QueryParticipantDto) {
+    return this.eventService.findParticipants(eventId, query);
+  }
+
+  // ==================== 订单 ====================
+
+  @Get(":eventId/orders")
+  @Permissions("event:list")
+  @ApiOperation({ summary: "赛事订单列表" })
+  @ApiResponse({
+    ...paginatedApiOkResponse(OrderDto),
+    description: "分页订单列表",
+  })
+  findOrders(@Param("eventId") eventId: string, @Query() query: QueryOrderDto) {
+    return this.eventService.findOrders(eventId, query);
   }
 
   // ==================== 邀请码 ====================

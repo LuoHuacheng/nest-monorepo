@@ -3,6 +3,28 @@ import { Transform } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { PaginationDto } from "../../../common/dto/pagination.dto";
 
+export class QueryParticipantDto extends PaginationDto {
+  @ApiPropertyOptional({
+    description: "订单状态",
+    enum: ["pending", "paid", "refunded", "cancelled"],
+  })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ description: "搜索关键词（订单号/姓名/手机号）" })
+  @IsOptional()
+  @IsString()
+  keyword?: string;
+}
+
+export class QueryOrderDto extends PaginationDto {
+  @ApiPropertyOptional({ description: "订单号" })
+  @IsOptional()
+  @IsString()
+  orderNo?: string;
+}
+
 export class QueryEventDto extends PaginationDto {
   @ApiPropertyOptional({ description: "搜索关键词（赛事名称/地点）" })
   @IsOptional()
