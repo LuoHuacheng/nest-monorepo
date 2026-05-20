@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/crates/oxc_formatter/src/schemas/formatter.json",
+  "indentStyle": "space",
+  "indentWidth": 2,
+  "lineWidth": 100,
+  "quoteStyle": "single",
+  "jsxQuoteStyle": "double",
+  "trailingCommas": "all",
+  "semicolons": "always",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "singleAttributePerLine": false,
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/build/**", "pnpm-lock.yaml"]
+}

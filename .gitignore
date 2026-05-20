@@ -1,0 +1,28 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.local
+*.tsbuildinfo
+
+# Backend
+backend/generated/prisma/
+backend/uploads/
+
+# Client
+client/deploy_versions/
+client/.temp/
+client/.rn_temp/
+client/.swc
+
+# Admin
+admin/.nitro
+admin/.tanstack
+admin/.wrangler
+admin/.output
+admin/.vinxi
+admin/__unconfig*
+admin/todos.json

@@ -1,0 +1,49 @@
+{
+  "name": "match",
+  "private": true,
+  "scripts": {
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:backend": "pnpm --filter backend start:dev",
+    "dev:client": "pnpm --filter client dev:weapp",
+    "build:admin": "pnpm --filter admin build",
+    "build:backend": "pnpm --filter backend build",
+    "build:client": "pnpm --filter client build:weapp",
+    "lint": "pnpm -r lint",
+    "lint:check": "pnpm -r lint:check",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "prisma:generate": "pnpm --filter backend prisma:generate",
+    "prisma:migrate": "pnpm --filter backend prisma:migrate",
+    "openapi-ts": "pnpm --filter admin openapi-ts",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "lefthook": "^2.1.6",
+    "oxfmt": "^0.50.0",
+    "oxlint": "^1.65.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/engines",
+      "@scarf/scarf",
+      "bcrypt",
+      "esbuild",
+      "lightningcss",
+      "lefthook",
+      "prisma",
+      "unrs-resolver",
+      "@weapp-tailwindcss/merge",
+      "weapp-tailwindcss"
+    ],
+    "overrides": {
+      "@types/sass": "1.43.1"
+    }
+  },
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=22"
+  }
+}
