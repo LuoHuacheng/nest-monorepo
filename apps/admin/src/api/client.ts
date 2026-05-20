@@ -1,4 +1,4 @@
-import { client } from "@match/api-client/client.gen";
+import { client } from "@match/api-client/generated/client.gen";
 import { useAuthStore } from "@/stores/auth";
 
 // 配置 baseUrl

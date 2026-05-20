@@ -4,14 +4,40 @@
     "correctness": "error",
     "suspicious": "warn"
   },
-  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/build/**", "pnpm-lock.yaml"],
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/build/**", ".output", "*.config.*", "*.gen.*", "pnpm-lock.yaml"],
   "rules": {
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+    "typescript/no-import-type-side-effects": "error",
     "typescript/no-explicit-any": "warn",
     "typescript/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "react/jsx-key": "error",
+    "react/no-children-prop": "error",
+    "react/no-danger": "warn",
+
     "eqeqeq": ["error", "always", { "null": "ignore" }],
     "no-var": "error",
     "prefer-const": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-debugger": "error"
+    "no-debugger": "error",
+    "prefer-template": "warn",
+    "no-alert": "error",
+
+    "import/no-duplicates": "error",
+    "import/no-self-import": "error",
+    "import/no-cycle": "warn",
+
+    "no-else-return": "warn",
+    "no-lonely-if": "warn",
+    "no-nested-ternary": "warn",
+    "prefer-destructuring": ["warn", { "array": false, "object": true }],
+    "unicorn/prefer-module": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "unicorn/prefer-array-flat-map": "warn",
+    "unicorn/no-array-for-each": "warn",
+    "unicorn/prefer-spread": "warn"
   }
 }

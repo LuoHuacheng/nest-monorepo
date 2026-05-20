@@ -1,5 +1,6 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
-import { Response } from "express";
+import type { ExceptionFilter, ArgumentsHost } from "@nestjs/common";
+import { Catch, HttpException, HttpStatus } from "@nestjs/common";
+import type { Response } from "express";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,10 +15,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse();
-      message = typeof res === "string" ? res : (res as any).message || message;
+      message = typeof res === "string" ? res : (res as { message?: string }).message || message;
       if (Array.isArray(message)) message = message.join("; ");
     } else if (exception instanceof Error) {
-      message = exception.message;
+      ({ message } = exception);
     }
 
     // 401/403 返回 HTTP 200，由前端根据 body.code 处理，避免触发浏览器/拦截器的错误流程

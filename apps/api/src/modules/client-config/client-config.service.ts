@@ -12,7 +12,7 @@ export class ClientConfigService {
   }
 
   async batchUpdate(configs: { key: string; value: string; description?: string }[]) {
-    const results: any[] = [];
+    const results: Record<string, unknown>[] = [];
     for (const config of configs) {
       const result = await this.prisma.clientConfig.upsert({
         where: { key: config.key },

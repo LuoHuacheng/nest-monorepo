@@ -7,7 +7,7 @@ import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto"
 export class NotificationService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: PaginationDto): Promise<PaginatedResult<any>> {
+  async findAll(query: PaginationDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const { page, pageSize } = query;
     const [items, total] = await Promise.all([
       this.prisma.notification.findMany({

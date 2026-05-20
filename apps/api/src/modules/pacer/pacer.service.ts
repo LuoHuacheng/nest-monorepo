@@ -6,7 +6,7 @@ import {
   AssignPacerDto,
   QueryPacerDto,
 } from "./dto/create-pacer.dto";
-import { PaginatedResult } from "../../common/dto/pagination.dto";
+import type { PaginatedResult } from "../../common/dto/pagination.dto";
 
 @Injectable()
 export class PacerService {
@@ -27,9 +27,9 @@ export class PacerService {
     });
   }
 
-  async findAll(query: QueryPacerDto): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryPacerDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const { page, pageSize, keyword, status } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (keyword) {
       where.OR = [
         { pacerNo: { contains: keyword, mode: "insensitive" } },
@@ -109,7 +109,7 @@ export class PacerService {
   async updateTest(id: string, dto: Partial<CreatePacerTestDto>) {
     const test = await this.prisma.pacerTest.findUnique({ where: { id } });
     if (!test) throw new NotFoundException("实测记录不存在");
-    const data: any = { ...dto };
+    const data: Record<string, unknown> = { ...dto };
     if (dto.testDate) data.testDate = new Date(dto.testDate);
     return this.prisma.pacerTest.update({ where: { id }, data });
   }

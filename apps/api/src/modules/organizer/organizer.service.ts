@@ -1,17 +1,18 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { Prisma } from "../../../generated/prisma/client";
 import { CreateOrganizerDto, UpdateOrganizerDto } from "./dto/create-organizer.dto";
-import { PaginatedResult } from "../../common/dto/pagination.dto";
+import type { PaginatedResult } from "../../common/dto/pagination.dto";
 import { QueryOrganizerDto } from "./dto/query-organizer.dto";
 
 @Injectable()
 export class OrganizerService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: QueryOrganizerDto): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryOrganizerDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const { page, pageSize, keyword } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (keyword) {
       where.OR = [
         { loginAccount: { contains: keyword, mode: "insensitive" } },
@@ -41,14 +42,17 @@ export class OrganizerService {
 
   async create(dto: CreateOrganizerDto) {
     const data = await this.buildOrganizerData(dto);
-    const item = await this.prisma.organizer.create({ data });
+    const item = await this.prisma.organizer.create({ data: data as Prisma.OrganizerCreateInput });
     return this.stripPassword(item);
   }
 
   async update(id: string, dto: UpdateOrganizerDto) {
     await this.findOne(id);
     const data = await this.buildOrganizerData(dto);
-    const item = await this.prisma.organizer.update({ where: { id }, data });
+    const item = await this.prisma.organizer.update({
+      where: { id },
+      data: data as Prisma.OrganizerUpdateInput,
+    });
     return this.stripPassword(item);
   }
 
@@ -71,7 +75,7 @@ export class OrganizerService {
   }
 
   private async buildOrganizerData(dto: CreateOrganizerDto | UpdateOrganizerDto) {
-    const data: any = { ...dto };
+    const data: Record<string, unknown> = { ...dto };
     if (dto.eventDate) data.eventDate = new Date(dto.eventDate);
     if (dto.password) data.password = await bcrypt.hash(dto.password, 10);
     return data;

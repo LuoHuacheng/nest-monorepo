@@ -23,6 +23,15 @@ export const Route = createRootRoute({
     links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootDocument,
+  notFoundComponent: () => (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4">
+      <h1 className="text-4xl font-bold">404</h1>
+      <p className="text-muted-foreground">页面不存在</p>
+      <a href="/" className="text-primary underline">
+        返回首页
+      </a>
+    </div>
+  ),
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {

@@ -6,11 +6,11 @@
 
 ## 技术选型
 
-| 决策 | 选择 | 理由 |
-| ------ | ------ | ------ |
+| 决策     | 选择                  | 理由                                                  |
+| -------- | --------------------- | ----------------------------------------------------- |
 | 类型生成 | `@hey-api/openapi-ts` | 从 Swagger 同时生成类型 + API 函数，可配置 Axios 实例 |
-| 数据请求 | TanStack Query | 已安装，处理缓存/loading/错误/分页 |
-| API 组织 | 按模块划分 | 每模块一个文件，含 query keys + hooks |
+| 数据请求 | TanStack Query        | 已安装，处理缓存/loading/错误/分页                    |
+| API 组织 | 按模块划分            | 每模块一个文件，含 query keys + hooks                 |
 
 ## 架构设计
 
@@ -81,33 +81,33 @@ src/api/
 
 ```typescript
 // 以 events.ts 为例
-import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
-import { eventService } from '@/api/generated'
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { eventService } from "@/api/generated";
 
 // Query Keys
 export const eventKeys = {
-  all: ['events'] as const,
-  list: (params: QueryEventDto) => [...eventKeys.all, 'list', params] as const,
+  all: ["events"] as const,
+  list: (params: QueryEventDto) => [...eventKeys.all, "list", params] as const,
   detail: (id: string) => [...eventKeys.all, detail, id] as const,
-}
+};
 
 // Query Options（可复用）
 export function eventListOptions(params: QueryEventDto) {
   return queryOptions({
     queryKey: eventKeys.list(params),
     queryFn: () => eventService.list(params),
-  })
+  });
 }
 
 // Hooks
 export function useEventList(params: QueryEventDto) {
-  return useQuery(eventListOptions(params))
+  return useQuery(eventListOptions(params));
 }
 
 export function useCreateEvent() {
   return useMutation({
     mutationFn: (data: CreateEventDto) => eventService.create(data),
-  })
+  });
 }
 ```
 
@@ -148,17 +148,17 @@ export function useCreateEvent() {
 
 ```typescript
 // src/api/query-client.ts
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,    // 5 分钟
+      staleTime: 5 * 60 * 1000, // 5 分钟
       retry: 1,
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 ```
 
 在根组件中包裹 `QueryClientProvider`。
@@ -197,37 +197,37 @@ const events = data?.items ?? []
 
 ## 模块-页面映射
 
-| 后端模块 | 前端页面 | 主要操作 |
-|  ------ ---- |  ------ ---- |  ------ ---- |
-| auth | login.tsx | 登录、登出 |
-| events | events/list.tsx | CRUD + 发布状态 |
-| events/invite-codes | events/invite-codes.tsx | CRUD |
-| events/shuttle-buses | events/shuttle-buses.tsx | CRUD |
-| events/results | events/results.tsx | 列表 + 导入 |
-| orders | orders/events.tsx, orders/online.tsx | 列表 + 退款 |
-| registration-cards | events/registration-cards.tsx | CRUD |
-| organizers | organizers.tsx | CRUD + 状态 |
-| athletic-centers | athletic-centers.tsx | CRUD + 状态 |
-| pacers | pacers/list.tsx | CRUD + 审核 |
-| pacers/tests | pacers/tests.tsx | 列表 + 编辑 |
-| pacers/events | pacers/events.tsx | 列表 + 分配 + 弃权 |
-| users | users.tsx | CRUD + 状态 + 重置密码 |
-| roles | roles.tsx | CRUD + 权限分配 |
-| notifications | settings/notifications.tsx | 列表 + 创建 |
-| client-configs | settings/client-config.tsx | 列表 + 批量更新 |
+| 后端模块             | 前端页面                             | 主要操作               |
+| -------------------- | ------------------------------------ | ---------------------- |
+| auth                 | login.tsx                            | 登录、登出             |
+| events               | events/list.tsx                      | CRUD + 发布状态        |
+| events/invite-codes  | events/invite-codes.tsx              | CRUD                   |
+| events/shuttle-buses | events/shuttle-buses.tsx             | CRUD                   |
+| events/results       | events/results.tsx                   | 列表 + 导入            |
+| orders               | orders/events.tsx, orders/online.tsx | 列表 + 退款            |
+| registration-cards   | events/registration-cards.tsx        | CRUD                   |
+| organizers           | organizers.tsx                       | CRUD + 状态            |
+| athletic-centers     | athletic-centers.tsx                 | CRUD + 状态            |
+| pacers               | pacers/list.tsx                      | CRUD + 审核            |
+| pacers/tests         | pacers/tests.tsx                     | 列表 + 编辑            |
+| pacers/events        | pacers/events.tsx                    | 列表 + 分配 + 弃权     |
+| users                | users.tsx                            | CRUD + 状态 + 重置密码 |
+| roles                | roles.tsx                            | CRUD + 权限分配        |
+| notifications        | settings/notifications.tsx           | 列表 + 创建            |
+| client-configs       | settings/client-config.tsx           | 列表 + 批量更新        |
 
 ## 需要修改的现有文件
 
-| 文件 | 改动 |
-| ------ | ------ |
-| `src/lib/api.ts` | 响应拦截器解包 `{ code, data, message }`，新增 token 刷新逻辑 |
-| `src/stores/auth.ts` | 新增 refreshToken、permissions 字段 |
-| `src/types/auth.ts` | 对齐后端 profile 响应结构 |
-| `src/types/common.ts` | `PaginatedResponse.list` → `items` |
-| `src/router.tsx` | 添加 QueryClientProvider |
-| `src/routes/login.tsx` | 替换 mock 为真实 API |
-| `src/routes/_authenticated/*.tsx` | 全部 17 个页面替换 mock 为 hooks |
-| `src/mocks/` | 整个目录可删除或保留作参考 |
+| 文件                              | 改动                                                          |
+| --------------------------------- | ------------------------------------------------------------- |
+| `src/lib/api.ts`                  | 响应拦截器解包 `{ code, data, message }`，新增 token 刷新逻辑 |
+| `src/stores/auth.ts`              | 新增 refreshToken、permissions 字段                           |
+| `src/types/auth.ts`               | 对齐后端 profile 响应结构                                     |
+| `src/types/common.ts`             | `PaginatedResponse.list` → `items`                            |
+| `src/router.tsx`                  | 添加 QueryClientProvider                                      |
+| `src/routes/login.tsx`            | 替换 mock 为真实 API                                          |
+| `src/routes/_authenticated/*.tsx` | 全部 17 个页面替换 mock 为 hooks                              |
+| `src/mocks/`                      | 整个目录可删除或保留作参考                                    |
 
 ## 文件上传
 

@@ -1,5 +1,6 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
-import { Observable } from "rxjs";
+import type { NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
+import type { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { LogService } from "../../modules/log/log.service";
 import { Reflector } from "@nestjs/core";
@@ -12,7 +13,7 @@ export class LoggingInterceptor implements NestInterceptor {
     private readonly reflector: Reflector,
   ) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),

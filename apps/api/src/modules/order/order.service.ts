@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { PrismaService } from "../../prisma/prisma.service";
 import { QueryOrderDto } from "./dto/query-order.dto";
 import { CreateOrderDto } from "./dto/create-order.dto";
-import { PaginatedResult } from "../../common/dto/pagination.dto";
+import type { PaginatedResult } from "../../common/dto/pagination.dto";
 
 @Injectable()
 export class OrderService {
@@ -71,7 +71,8 @@ export class OrderService {
 
   private generateOrderNo(): string {
     const now = new Date();
-    const timestamp = now.getFullYear().toString() +
+    const timestamp =
+      now.getFullYear().toString() +
       String(now.getMonth() + 1).padStart(2, "0") +
       String(now.getDate()).padStart(2, "0") +
       String(now.getHours()).padStart(2, "0") +
@@ -81,9 +82,9 @@ export class OrderService {
     return `ORD${timestamp}${random}`;
   }
 
-  async findAll(query: QueryOrderDto): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryOrderDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const { page, pageSize, type, status, keyword } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (type) where.type = type;
     if (status) where.status = status;
     if (keyword) {

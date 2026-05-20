@@ -9,7 +9,7 @@ export class LogService {
 
   async findAll(query: QueryLogDto) {
     const { page, pageSize, module, userId } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (module) where.module = module;
     if (userId) where.userId = userId;
 

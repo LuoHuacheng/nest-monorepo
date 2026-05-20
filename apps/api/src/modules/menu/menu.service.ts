@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { SysMenu } from "../../../generated/prisma/client";
 import { CreateMenuDto } from "./dto/create-menu.dto";
 
 @Injectable()
@@ -43,7 +44,7 @@ export class MenuService {
     return this.prisma.sysMenu.delete({ where: { id } });
   }
 
-  private buildTree(items: any[], parentId: string | null): any[] {
+  private buildTree(items: SysMenu[], parentId: string | null): SysMenu[] {
     return items
       .filter((item) => item.parentId === parentId)
       .map((item) => ({

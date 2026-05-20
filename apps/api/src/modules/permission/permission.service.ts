@@ -1,5 +1,6 @@
 import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { SysPermission } from "../../../generated/prisma/client";
 import { CreatePermissionDto } from "./dto/create-permission.dto";
 
 @Injectable()
@@ -31,7 +32,7 @@ export class PermissionService {
     return this.prisma.sysPermission.delete({ where: { id } });
   }
 
-  private buildTree(items: any[], parentId: string | null): any[] {
+  private buildTree(items: SysPermission[], parentId: string | null): SysPermission[] {
     return items
       .filter((item) => item.parentId === parentId)
       .map((item) => ({

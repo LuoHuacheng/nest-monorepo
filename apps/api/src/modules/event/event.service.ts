@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { Event as PrismaEvent, Prisma } from "../../../generated/prisma/client";
 import {
   CreateEventDto,
   CreateEventRegistrationGroupDto,
@@ -17,7 +18,7 @@ export class EventService {
 
   // ==================== 赛事 ====================
 
-  async findAll(query: QueryEventDto): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryEventDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const {
       page,
       pageSize,
@@ -30,7 +31,7 @@ export class EventService {
       dateStart,
       dateEnd,
     } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (keyword) {
       where.OR = [
@@ -85,7 +86,7 @@ export class EventService {
             this.buildRegistrationCardData(group, index),
           ),
         },
-      },
+      } as Prisma.EventCreateInput,
       include: {
         registrationCards: { orderBy: { sort: "asc" } },
       },
@@ -203,7 +204,7 @@ export class EventService {
   }
 
   async updateShuttleBus(id: string, dto: Partial<CreateShuttleBusDto>) {
-    const data: any = { ...dto };
+    const data: Record<string, unknown> = { ...dto };
     if (dto.departureTime) data.departureTime = new Date(dto.departureTime);
     return this.prisma.eventShuttleBus.update({ where: { id }, data });
   }
@@ -238,7 +239,7 @@ export class EventService {
     });
   }
 
-  private injectEventStatus(event: any) {
+  private injectEventStatus(event: PrismaEvent) {
     const eventStatus = computeEventStatus({
       startDate: event.startDate,
       endDate: event.endDate,
@@ -250,8 +251,8 @@ export class EventService {
     return { ...event, eventStatus };
   }
 
-  private buildEventData(dto: CreateEventDto | UpdateEventDto, current?: any) {
-    const data: any = {};
+  private buildEventData(dto: CreateEventDto | UpdateEventDto, current?: PrismaEvent) {
+    const data: Record<string, unknown> = {};
     const scalarFields = [
       "name",
       "category",

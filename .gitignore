@@ -12,12 +12,6 @@ coverage/
 apps/api/generated/prisma/
 apps/api/uploads/
 
-# Miniapp (client)
-apps/miniapp/deploy_versions/
-apps/miniapp/.temp/
-apps/miniapp/.rn_temp/
-apps/miniapp/.swc
-
 # Admin
 apps/admin/.nitro
 apps/admin/.tanstack

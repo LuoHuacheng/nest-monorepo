@@ -14,74 +14,74 @@
 
 ### 新建文件
 
-| 文件 | 职责 |
-| ------ | ------ |
-| `src/api/client.ts` | 配置生成客户端：baseUrl、auth、响应解包、401 处理 |
-| `src/api/query-client.ts` | QueryClient 实例 |
-| `src/api/modules/auth.ts` | 认证模块 hooks：useLogin, useLogout, useProfile |
-| `src/api/modules/events.ts` | 赛事模块 hooks + query keys |
-| `src/api/modules/orders.ts` | 订单模块 hooks |
-| `src/api/modules/organizers.ts` | 组委会模块 hooks |
-| `src/api/modules/pacers.ts` | 配速员模块 hooks |
-| `src/api/modules/users.ts` | 用户模块 hooks |
-| `src/api/modules/roles.ts` | 角色模块 hooks |
-| `src/api/modules/registration-cards.ts` | 报名卡模块 hooks |
-| `src/api/modules/athletic-centers.ts` | 田管中心模块 hooks |
-| `src/api/modules/notifications.ts` | 消息通知模块 hooks |
-| `src/api/modules/client-configs.ts` | 客户端配置模块 hooks |
-| `src/api/modules/permissions.ts` | 权限模块 hooks |
-| `src/api/modules/menus.ts` | 菜单模块 hooks |
-| `src/api/modules/dicts.ts` | 字典模块 hooks |
-| `src/api/modules/logs.ts` | 日志模块 hooks |
-| `src/api/modules/files.ts` | 文件上传模块 hooks |
-| `src/api/modules/dashboard.ts` | 仪表盘模块 hooks |
-| `src/api/index.ts` | 统一导出 |
+| 文件                                    | 职责                                              |
+| --------------------------------------- | ------------------------------------------------- |
+| `src/api/client.ts`                     | 配置生成客户端：baseUrl、auth、响应解包、401 处理 |
+| `src/api/query-client.ts`               | QueryClient 实例                                  |
+| `src/api/modules/auth.ts`               | 认证模块 hooks：useLogin, useLogout, useProfile   |
+| `src/api/modules/events.ts`             | 赛事模块 hooks + query keys                       |
+| `src/api/modules/orders.ts`             | 订单模块 hooks                                    |
+| `src/api/modules/organizers.ts`         | 组委会模块 hooks                                  |
+| `src/api/modules/pacers.ts`             | 配速员模块 hooks                                  |
+| `src/api/modules/users.ts`              | 用户模块 hooks                                    |
+| `src/api/modules/roles.ts`              | 角色模块 hooks                                    |
+| `src/api/modules/registration-cards.ts` | 报名卡模块 hooks                                  |
+| `src/api/modules/athletic-centers.ts`   | 田管中心模块 hooks                                |
+| `src/api/modules/notifications.ts`      | 消息通知模块 hooks                                |
+| `src/api/modules/client-configs.ts`     | 客户端配置模块 hooks                              |
+| `src/api/modules/permissions.ts`        | 权限模块 hooks                                    |
+| `src/api/modules/menus.ts`              | 菜单模块 hooks                                    |
+| `src/api/modules/dicts.ts`              | 字典模块 hooks                                    |
+| `src/api/modules/logs.ts`               | 日志模块 hooks                                    |
+| `src/api/modules/files.ts`              | 文件上传模块 hooks                                |
+| `src/api/modules/dashboard.ts`          | 仪表盘模块 hooks                                  |
+| `src/api/index.ts`                      | 统一导出                                          |
 
 ### 修改文件
 
-| 文件 | 改动 |
-| ------ | ------ |
-| `src/stores/auth.ts` | 新增 refreshToken、permissions 字段 |
-| `src/types/auth.ts` | 对齐后端 profile 响应结构 |
-| `src/types/common.ts` | `PaginatedResponse.list` → `items` |
-| `src/routes/__root.tsx` | 添加 QueryClientProvider |
-| `src/routes/login.tsx` | 替换 mock 为真实 API |
-| `src/routes/_authenticated.tsx` | 加载时获取 profile |
-| `src/routes/_authenticated/index.tsx` | 替换 dashboard mock |
-| `src/routes/_authenticated/events/list.tsx` | 替换 events mock |
-| `src/routes/_authenticated/events/invite-codes.tsx` | 替换 invite codes mock |
-| `src/routes/_authenticated/events/shuttle-buses.tsx` | 替换 shuttle buses mock |
-| `src/routes/_authenticated/events/results.tsx` | 替换 results mock |
-| `src/routes/_authenticated/events/registration-cards.tsx` | 替换 registration cards mock |
-| `src/routes/_authenticated/orders/events.tsx` | 替换 orders mock |
-| `src/routes/_authenticated/orders/online.tsx` | 替换 online orders mock |
-| `src/routes/_authenticated/organizers.tsx` | 替换 organizers mock |
-| `src/routes/_authenticated/athletic-centers.tsx` | 替换 athletic centers mock |
-| `src/routes/_authenticated/pacers/list.tsx` | 替换 pacers mock |
-| `src/routes/_authenticated/pacers/tests.tsx` | 替换 pacer tests mock |
-| `src/routes/_authenticated/pacers/events.tsx` | 替换 pacer events mock |
-| `src/routes/_authenticated/users.tsx` | 替换 users mock |
-| `src/routes/_authenticated/roles.tsx` | 替换 roles mock |
-| `src/routes/_authenticated/settings/notifications.tsx` | 替换 notifications mock |
-| `src/routes/_authenticated/settings/client-config.tsx` | 替换 client config mock |
+| 文件                                                      | 改动                                |
+| --------------------------------------------------------- | ----------------------------------- |
+| `src/stores/auth.ts`                                      | 新增 refreshToken、permissions 字段 |
+| `src/types/auth.ts`                                       | 对齐后端 profile 响应结构           |
+| `src/types/common.ts`                                     | `PaginatedResponse.list` → `items`  |
+| `src/routes/__root.tsx`                                   | 添加 QueryClientProvider            |
+| `src/routes/login.tsx`                                    | 替换 mock 为真实 API                |
+| `src/routes/_authenticated.tsx`                           | 加载时获取 profile                  |
+| `src/routes/_authenticated/index.tsx`                     | 替换 dashboard mock                 |
+| `src/routes/_authenticated/events/list.tsx`               | 替换 events mock                    |
+| `src/routes/_authenticated/events/invite-codes.tsx`       | 替换 invite codes mock              |
+| `src/routes/_authenticated/events/shuttle-buses.tsx`      | 替换 shuttle buses mock             |
+| `src/routes/_authenticated/events/results.tsx`            | 替换 results mock                   |
+| `src/routes/_authenticated/events/registration-cards.tsx` | 替换 registration cards mock        |
+| `src/routes/_authenticated/orders/events.tsx`             | 替换 orders mock                    |
+| `src/routes/_authenticated/orders/online.tsx`             | 替换 online orders mock             |
+| `src/routes/_authenticated/organizers.tsx`                | 替换 organizers mock                |
+| `src/routes/_authenticated/athletic-centers.tsx`          | 替换 athletic centers mock          |
+| `src/routes/_authenticated/pacers/list.tsx`               | 替换 pacers mock                    |
+| `src/routes/_authenticated/pacers/tests.tsx`              | 替换 pacer tests mock               |
+| `src/routes/_authenticated/pacers/events.tsx`             | 替换 pacer events mock              |
+| `src/routes/_authenticated/users.tsx`                     | 替换 users mock                     |
+| `src/routes/_authenticated/roles.tsx`                     | 替换 roles mock                     |
+| `src/routes/_authenticated/settings/notifications.tsx`    | 替换 notifications mock             |
+| `src/routes/_authenticated/settings/client-config.tsx`    | 替换 client config mock             |
 
 ### 删除文件
 
-| 文件 | 原因 |
-| ------ | ------ |
-| `src/mocks/data/dashboard.ts` | 被 API hooks 替代 |
-| `src/mocks/data/events.ts` | 被 API hooks 替代 |
-| `src/mocks/data/orders.ts` | 被 API hooks 替代 |
+| 文件                           | 原因              |
+| ------------------------------ | ----------------- |
+| `src/mocks/data/dashboard.ts`  | 被 API hooks 替代 |
+| `src/mocks/data/events.ts`     | 被 API hooks 替代 |
+| `src/mocks/data/orders.ts`     | 被 API hooks 替代 |
 | `src/mocks/data/organizers.ts` | 被 API hooks 替代 |
-| `src/mocks/data/pacers.ts` | 被 API hooks 替代 |
-| `src/mocks/handlers/auth.ts` | 被真实 API 替代 |
-| `src/mocks/faker.ts` | 不再需要 |
-| `src/lib/api.ts` | 被生成客户端替代 |
-| `src/types/event.ts` | 被生成类型替代 |
-| `src/types/order.ts` | 被生成类型替代 |
-| `src/types/organizer.ts` | 被生成类型替代 |
-| `src/types/pacer.ts` | 被生成类型替代 |
-| `src/types/auth.ts` | 被生成类型替代 |
+| `src/mocks/data/pacers.ts`     | 被 API hooks 替代 |
+| `src/mocks/handlers/auth.ts`   | 被真实 API 替代   |
+| `src/mocks/faker.ts`           | 不再需要          |
+| `src/lib/api.ts`               | 被生成客户端替代  |
+| `src/types/event.ts`           | 被生成类型替代    |
+| `src/types/order.ts`           | 被生成类型替代    |
+| `src/types/organizer.ts`       | 被生成类型替代    |
+| `src/types/pacer.ts`           | 被生成类型替代    |
+| `src/types/auth.ts`            | 被生成类型替代    |
 
 ---
 
@@ -98,58 +98,58 @@
 
 ```typescript
 // src/api/client.ts
-import { client } from '@/api/generated/client.gen'
-import { useAuthStore } from '@/stores/auth'
+import { client } from "@/api/generated/client.gen";
+import { useAuthStore } from "@/stores/auth";
 
 // 配置 baseUrl
 client.setConfig({
-  baseUrl: 'http://localhost:4001',
-  responseStyle: 'data',
-})
+  baseUrl: "http://localhost:4001",
+  responseStyle: "data",
+});
 
 // 请求拦截：注入 auth token
 client.interceptors.request.use(async (request) => {
-  const { token } = useAuthStore.getState()
+  const { token } = useAuthStore.getState();
   if (token) {
-    request.headers.set('Authorization', `Bearer ${token}`)
+    request.headers.set("Authorization", `Bearer ${token}`);
   }
-  return request
-})
+  return request;
+});
 
 // 响应拦截：处理 401
 client.interceptors.response.use(
   async (response) => {
     // 解包 { code, data, message } 响应
     if (response.ok) {
-      const cloned = response.clone()
+      const cloned = response.clone();
       try {
-        const json = await cloned.json()
-        if (json && typeof json === 'object' && 'code' in json && 'data' in json) {
+        const json = await cloned.json();
+        if (json && typeof json === "object" && "code" in json && "data" in json) {
           // 后端统一响应格式，解包 data 字段
           const unwrapped = new Response(JSON.stringify(json.data), {
             status: response.status,
             statusText: response.statusText,
             headers: response.headers,
-          })
-          return unwrapped
+          });
+          return unwrapped;
         }
       } catch {
         // 非 JSON 响应，直接返回
       }
     }
-    return response
+    return response;
   },
   async (error) => {
     // error 拦截器处理 401
     if (error instanceof Response && error.status === 401) {
-      useAuthStore.getState().logout()
-      window.location.href = '/login'
+      useAuthStore.getState().logout();
+      window.location.href = "/login";
     }
-    throw error
+    throw error;
   },
-)
+);
 
-export { client }
+export { client };
 ```
 
 - [ ] **Step 2: 验证客户端配置**
@@ -178,7 +178,7 @@ git commit -m "feat: configure generated API client with auth and response unwra
 
 ```typescript
 // src/api/query-client.ts
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -188,7 +188,7 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 ```
 
 - [ ] **Step 2: 在根组件添加 QueryClientProvider**
@@ -236,30 +236,30 @@ git commit -m "feat: add QueryClient and QueryClientProvider"
 
 ```typescript
 // src/stores/auth.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
-  id: string
-  username: string
-  name: string
-  avatar?: string
-  phone?: string
-  email?: string
-  status: number
-  roles?: Array<{ id: string; name: string; code: string }>
-  permissions?: string[]
+  id: string;
+  username: string;
+  name: string;
+  avatar?: string;
+  phone?: string;
+  email?: string;
+  status: number;
+  roles?: Array<{ id: string; name: string; code: string }>;
+  permissions?: string[];
 }
 
 interface AuthState {
-  token: string | null
-  refreshToken: string | null
-  user: User | null
-  isAuthenticated: boolean
-  login: (token: string, refreshToken: string, user: User) => void
-  logout: () => void
-  updateUser: (user: Partial<User>) => void
-  setToken: (token: string) => void
+  token: string | null;
+  refreshToken: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (token: string, refreshToken: string, user: User) => void;
+  logout: () => void;
+  updateUser: (user: Partial<User>) => void;
+  setToken: (token: string) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -271,76 +271,75 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       login: (token, refreshToken, user) =>
         set({ token, refreshToken, user, isAuthenticated: true }),
-      logout: () =>
-        set({ token: null, refreshToken: null, user: null, isAuthenticated: false }),
+      logout: () => set({ token: null, refreshToken: null, user: null, isAuthenticated: false }),
       updateUser: (userData) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,
         })),
       setToken: (token) => set({ token }),
     }),
-    { name: 'auth-storage' },
+    { name: "auth-storage" },
   ),
-)
+);
 ```
 
 - [ ] **Step 2: 创建认证 API 模块**
 
 ```typescript
 // src/api/modules/auth.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 认证 } from '@/api/generated'
-import { useAuthStore } from '@/stores/auth'
-import { useNavigate } from '@tanstack/react-router'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 认证 } from "@/api/generated";
+import { useAuthStore } from "@/stores/auth";
+import { useNavigate } from "@tanstack/react-router";
 
 export const authKeys = {
-  all: ['auth'] as const,
-  profile: () => [...authKeys.all, 'profile'] as const,
-}
+  all: ["auth"] as const,
+  profile: () => [...authKeys.all, "profile"] as const,
+};
 
 export function useProfile() {
   return useQuery({
     queryKey: authKeys.profile(),
     queryFn: async () => {
-      const { data } = await 认证.authControllerGetProfile()
-      return data
+      const { data } = await 认证.authControllerGetProfile();
+      return data;
     },
     enabled: useAuthStore.getState().isAuthenticated,
-  })
+  });
 }
 
 export function useLogin() {
-  const navigate = useNavigate()
-  const login = useAuthStore((s) => s.login)
+  const navigate = useNavigate();
+  const login = useAuthStore((s) => s.login);
 
   return useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
       const { data } = await 认证.authControllerLogin({
         body: credentials,
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: (data: any) => {
-      login(data.accessToken, data.refreshToken, data.user)
-      navigate({ to: '/' })
+      login(data.accessToken, data.refreshToken, data.user);
+      navigate({ to: "/" });
     },
-  })
+  });
 }
 
 export function useLogout() {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async () => {
-      await 认证.authControllerLogout()
+      await 认证.authControllerLogout();
     },
     onSettled: () => {
-      useAuthStore.getState().logout()
-      queryClient.clear()
-      navigate({ to: '/login' })
+      useAuthStore.getState().logout();
+      queryClient.clear();
+      navigate({ to: "/login" });
     },
-  })
+  });
 }
 ```
 
@@ -374,7 +373,7 @@ export function useLogout() {
       },
 ```
 
-- [ ] **Step 4: 改造 _authenticated.tsx**
+- [ ] **Step 4: 改造 \_authenticated.tsx**
 
 在 `beforeLoad` 中获取最新 profile 信息：
 
@@ -448,7 +447,7 @@ export interface PaginationParams {
 }
 
 export interface PaginatedResponse<T> {
-  items: T[];  // 原 list → items，与后端对齐
+  items: T[]; // 原 list → items，与后端对齐
   total: number;
   page: number;
   pageSize: number;
@@ -500,98 +499,98 @@ git commit -m "refactor: align pagination types and remove manual type definitio
 
 ```typescript
 // src/api/modules/events.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 赛事管理 } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 赛事管理 } from "@/api/generated";
 import type {
   CreateEventDto,
   UpdateEventDto,
   QueryEventDto,
   CreateInviteCodeDto,
   CreateShuttleBusDto,
-} from '@/api/generated'
+} from "@/api/generated";
 
 export const eventKeys = {
-  all: ['events'] as const,
-  list: (params?: Record<string, unknown>) => [...eventKeys.all, 'list', params] as const,
-  detail: (id: string) => [...eventKeys.all, 'detail', id] as const,
-  inviteCodes: (eventId: string) => [...eventKeys.all, eventId, 'invite-codes'] as const,
-  shuttleBuses: (eventId: string) => [...eventKeys.all, eventId, 'shuttle-buses'] as const,
-  results: (eventId: string) => [...eventKeys.all, eventId, 'results'] as const,
-}
+  all: ["events"] as const,
+  list: (params?: Record<string, unknown>) => [...eventKeys.all, "list", params] as const,
+  detail: (id: string) => [...eventKeys.all, "detail", id] as const,
+  inviteCodes: (eventId: string) => [...eventKeys.all, eventId, "invite-codes"] as const,
+  shuttleBuses: (eventId: string) => [...eventKeys.all, eventId, "shuttle-buses"] as const,
+  results: (eventId: string) => [...eventKeys.all, eventId, "results"] as const,
+};
 
 export function useEventList(params?: QueryEventDto) {
   return useQuery({
     queryKey: eventKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 赛事管理.eventControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 赛事管理.eventControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useEventDetail(id: string) {
   return useQuery({
     queryKey: eventKeys.detail(id),
     queryFn: async () => {
-      const { data } = await 赛事管理.eventControllerFindOne({ path: { id } })
-      return data
+      const { data } = await 赛事管理.eventControllerFindOne({ path: { id } });
+      return data;
     },
     enabled: !!id,
-  })
+  });
 }
 
 export function useCreateEvent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateEventDto) => {
-      const { data } = await 赛事管理.eventControllerCreate({ body })
-      return data
+      const { data } = await 赛事管理.eventControllerCreate({ body });
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all })
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
     },
-  })
+  });
 }
 
 export function useUpdateEvent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, body }: { id: string; body: UpdateEventDto }) => {
-      const { data } = await 赛事管理.eventControllerUpdate({ path: { id }, body })
-      return data
+      const { data } = await 赛事管理.eventControllerUpdate({ path: { id }, body });
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all })
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
     },
-  })
+  });
 }
 
 export function useDeleteEvent() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 赛事管理.eventControllerRemove({ path: { id } })
+      await 赛事管理.eventControllerRemove({ path: { id } });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all })
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
     },
-  })
+  });
 }
 
 export function useUpdatePublishStatus() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, publishStatus }: { id: string; publishStatus: string }) => {
       const { data } = await 赛事管理.eventControllerUpdatePublishStatus({
         path: { id },
         body: { publishStatus },
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all })
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
     },
-  })
+  });
 }
 
 // 邀请码
@@ -599,39 +598,39 @@ export function useInviteCodes(eventId: string) {
   return useQuery({
     queryKey: eventKeys.inviteCodes(eventId),
     queryFn: async () => {
-      const { data } = await 赛事管理.eventControllerFindInviteCodes({ path: { eventId } })
-      return data
+      const { data } = await 赛事管理.eventControllerFindInviteCodes({ path: { eventId } });
+      return data;
     },
     enabled: !!eventId,
-  })
+  });
 }
 
 export function useCreateInviteCode() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ eventId, body }: { eventId: string; body: CreateInviteCodeDto }) => {
       const { data } = await 赛事管理.eventControllerCreateInviteCode({
         path: { eventId },
         body,
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: (_data, { eventId }) => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.inviteCodes(eventId) })
+      queryClient.invalidateQueries({ queryKey: eventKeys.inviteCodes(eventId) });
     },
-  })
+  });
 }
 
 export function useDeleteInviteCode() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 赛事管理.eventControllerRemoveInviteCode({ path: { id } })
+      await 赛事管理.eventControllerRemoveInviteCode({ path: { id } });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.all })
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
     },
-  })
+  });
 }
 
 // 摆渡车
@@ -639,27 +638,27 @@ export function useShuttleBuses(eventId: string) {
   return useQuery({
     queryKey: eventKeys.shuttleBuses(eventId),
     queryFn: async () => {
-      const { data } = await 赛事管理.eventControllerFindShuttleBuses({ path: { eventId } })
-      return data
+      const { data } = await 赛事管理.eventControllerFindShuttleBuses({ path: { eventId } });
+      return data;
     },
     enabled: !!eventId,
-  })
+  });
 }
 
 export function useCreateShuttleBus() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ eventId, body }: { eventId: string; body: CreateShuttleBusDto }) => {
       const { data } = await 赛事管理.eventControllerCreateShuttleBus({
         path: { eventId },
         body,
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: (_data, { eventId }) => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.shuttleBuses(eventId) })
+      queryClient.invalidateQueries({ queryKey: eventKeys.shuttleBuses(eventId) });
     },
-  })
+  });
 }
 
 // 成绩
@@ -670,11 +669,11 @@ export function useEventResults(eventId: string, params?: Record<string, unknown
       const { data } = await 赛事管理.eventControllerFindResults({
         path: { eventId },
         query: params,
-      })
-      return data
+      });
+      return data;
     },
     enabled: !!eventId,
-  })
+  });
 }
 ```
 
@@ -732,37 +731,37 @@ git commit -m "feat: integrate events module with real API"
 
 ```typescript
 // src/api/modules/orders.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 订单管理 } from '@/api/generated'
-import type { QueryOrderDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 订单管理 } from "@/api/generated";
+import type { QueryOrderDto } from "@/api/generated";
 
 export const orderKeys = {
-  all: ['orders'] as const,
-  list: (params?: Record<string, unknown>) => [...orderKeys.all, 'list', params] as const,
-  detail: (id: string) => [...orderKeys.all, 'detail', id] as const,
-}
+  all: ["orders"] as const,
+  list: (params?: Record<string, unknown>) => [...orderKeys.all, "list", params] as const,
+  detail: (id: string) => [...orderKeys.all, "detail", id] as const,
+};
 
 export function useOrderList(params?: QueryOrderDto) {
   return useQuery({
     queryKey: orderKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 订单管理.orderControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 订单管理.orderControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useRefundOrder() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 订单管理.orderControllerRefund({ path: { id } })
-      return data
+      const { data } = await 订单管理.orderControllerRefund({ path: { id } });
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: orderKeys.all })
+      queryClient.invalidateQueries({ queryKey: orderKeys.all });
     },
-  })
+  });
 }
 ```
 
@@ -790,76 +789,79 @@ git commit -m "feat: integrate orders module with real API"
 
 ```typescript
 // src/api/modules/organizers.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 组委会 } from '@/api/generated'
-import type { CreateOrganizerDto, UpdateOrganizerDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 组委会 } from "@/api/generated";
+import type { CreateOrganizerDto, UpdateOrganizerDto } from "@/api/generated";
 
 export const organizerKeys = {
-  all: ['organizers'] as const,
-  list: (params?: Record<string, unknown>) => [...organizerKeys.all, 'list', params] as const,
-  detail: (id: string) => [...organizerKeys.all, 'detail', id] as const,
-}
+  all: ["organizers"] as const,
+  list: (params?: Record<string, unknown>) => [...organizerKeys.all, "list", params] as const,
+  detail: (id: string) => [...organizerKeys.all, "detail", id] as const,
+};
 
 export function useOrganizerList(params?: { page?: number; pageSize?: number; keyword?: string }) {
   return useQuery({
     queryKey: organizerKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 组委会.organizerControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 组委会.organizerControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useCreateOrganizer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateOrganizerDto) => {
-      const { data } = await 组委会.organizerControllerCreate({ body })
-      return data
+      const { data } = await 组委会.organizerControllerCreate({ body });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: organizerKeys.all }),
-  })
+  });
 }
 
 export function useUpdateOrganizer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, body }: { id: string; body: UpdateOrganizerDto }) => {
-      const { data } = await 组委会.organizerControllerUpdate({ path: { id }, body })
-      return data
+      const { data } = await 组委会.organizerControllerUpdate({ path: { id }, body });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: organizerKeys.all }),
-  })
+  });
 }
 
 export function useDeleteOrganizer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 组委会.organizerControllerRemove({ path: { id } })
+      await 组委会.organizerControllerRemove({ path: { id } });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: organizerKeys.all }),
-  })
+  });
 }
 
 export function useUpdateOrganizerStatus() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: number }) => {
-      const { data } = await 组委会.organizerControllerUpdateStatus({ path: { id }, body: { status } })
-      return data
+      const { data } = await 组委会.organizerControllerUpdateStatus({
+        path: { id },
+        body: { status },
+      });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: organizerKeys.all }),
-  })
+  });
 }
 
 export function useResetOrganizerPassword() {
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 组委会.organizerControllerResetPassword({ path: { id } })
-      return data
+      const { data } = await 组委会.organizerControllerResetPassword({ path: { id } });
+      return data;
     },
-  })
+  });
 }
 ```
 
@@ -892,111 +894,111 @@ git commit -m "feat: integrate organizers module with real API"
 
 ```typescript
 // src/api/modules/pacers.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 配速员管理 } from '@/api/generated'
-import type { CreatePacerDto, QueryPacerDto, AssignPacerDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 配速员管理 } from "@/api/generated";
+import type { CreatePacerDto, QueryPacerDto, AssignPacerDto } from "@/api/generated";
 
 export const pacerKeys = {
-  all: ['pacers'] as const,
-  list: (params?: Record<string, unknown>) => [...pacerKeys.all, 'list', params] as const,
-  detail: (id: string) => [...pacerKeys.all, 'detail', id] as const,
-  tests: () => [...pacerKeys.all, 'tests'] as const,
-  events: () => [...pacerKeys.all, 'events'] as const,
-}
+  all: ["pacers"] as const,
+  list: (params?: Record<string, unknown>) => [...pacerKeys.all, "list", params] as const,
+  detail: (id: string) => [...pacerKeys.all, "detail", id] as const,
+  tests: () => [...pacerKeys.all, "tests"] as const,
+  events: () => [...pacerKeys.all, "events"] as const,
+};
 
 export function usePacerList(params?: QueryPacerDto) {
   return useQuery({
     queryKey: pacerKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 配速员管理.pacerControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 配速员管理.pacerControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useApprovePacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 配速员管理.pacerControllerApprove({ path: { id } })
-      return data
+      const { data } = await 配速员管理.pacerControllerApprove({ path: { id } });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 
 export function useSuspendPacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 配速员管理.pacerControllerSuspend({ path: { id } })
-      return data
+      const { data } = await 配速员管理.pacerControllerSuspend({ path: { id } });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 
 export function useRevokePacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 配速员管理.pacerControllerRevoke({ path: { id } })
-      return data
+      const { data } = await 配速员管理.pacerControllerRevoke({ path: { id } });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 
 export function useDeletePacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 配速员管理.pacerControllerRemove({ path: { id } })
+      await 配速员管理.pacerControllerRemove({ path: { id } });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 
 export function usePacerTests() {
   return useQuery({
     queryKey: pacerKeys.tests(),
     queryFn: async () => {
-      const { data } = await 配速员管理.pacerControllerFindTests()
-      return data
+      const { data } = await 配速员管理.pacerControllerFindTests();
+      return data;
     },
-  })
+  });
 }
 
 export function usePacerEvents() {
   return useQuery({
     queryKey: pacerKeys.events(),
     queryFn: async () => {
-      const { data } = await 配速员管理.pacerControllerFindEvents()
-      return data
+      const { data } = await 配速员管理.pacerControllerFindEvents();
+      return data;
     },
-  })
+  });
 }
 
 export function useAssignPacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (body: AssignPacerDto) => {
-      const { data } = await 配速员管理.pacerControllerAssign({ body })
-      return data
+      const { data } = await 配速员管理.pacerControllerAssign({ body });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 
 export function useWithdrawPacer() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 配速员管理.pacerControllerWithdraw({ path: { id } })
-      return data
+      const { data } = await 配速员管理.pacerControllerWithdraw({ path: { id } });
+      return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pacerKeys.all }),
-  })
+  });
 }
 ```
 
@@ -1029,76 +1031,84 @@ git commit -m "feat: integrate pacers module with real API"
 
 ```typescript
 // src/api/modules/users.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 用户管理 } from '@/api/generated'
-import type { CreateUserDto, UpdateUserDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 用户管理 } from "@/api/generated";
+import type { CreateUserDto, UpdateUserDto } from "@/api/generated";
 
 export const userKeys = {
-  all: ['users'] as const,
-  list: (params?: Record<string, unknown>) => [...userKeys.all, 'list', params] as const,
-  detail: (id: string) => [...userKeys.all, 'detail', id] as const,
-}
+  all: ["users"] as const,
+  list: (params?: Record<string, unknown>) => [...userKeys.all, "list", params] as const,
+  detail: (id: string) => [...userKeys.all, "detail", id] as const,
+};
 
-export function useUserList(params?: { page?: number; pageSize?: number; keyword?: string; status?: number }) {
+export function useUserList(params?: {
+  page?: number;
+  pageSize?: number;
+  keyword?: string;
+  status?: number;
+}) {
   return useQuery({
     queryKey: userKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 用户管理.userControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 用户管理.userControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useCreateUser() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateUserDto) => {
-      const { data } = await 用户管理.userControllerCreate({ body })
-      return data
+      const { data } = await 用户管理.userControllerCreate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
-  })
+  });
 }
 
 export function useUpdateUser() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, body }: { id: string; body: UpdateUserDto }) => {
-      const { data } = await 用户管理.userControllerUpdate({ path: { id }, body })
-      return data
+      const { data } = await 用户管理.userControllerUpdate({ path: { id }, body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
-  })
+  });
 }
 
 export function useDeleteUser() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 用户管理.userControllerRemove({ path: { id } })
+      await 用户管理.userControllerRemove({ path: { id } });
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
-  })
+  });
 }
 
 export function useUpdateUserStatus() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: number }) => {
-      const { data } = await 用户管理.userControllerUpdateStatus({ path: { id }, query: { status } })
-      return data
+      const { data } = await 用户管理.userControllerUpdateStatus({
+        path: { id },
+        query: { status },
+      });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
-  })
+  });
 }
 
 export function useResetUserPassword() {
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await 用户管理.userControllerResetPassword({ path: { id } })
-      return data
+      const { data } = await 用户管理.userControllerResetPassword({ path: { id } });
+      return data;
     },
-  })
+  });
 }
 ```
 
@@ -1106,59 +1116,59 @@ export function useResetUserPassword() {
 
 ```typescript
 // src/api/modules/roles.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 角色管理 } from '@/api/generated'
-import type { CreateRoleDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 角色管理 } from "@/api/generated";
+import type { CreateRoleDto } from "@/api/generated";
 
 export const roleKeys = {
-  all: ['roles'] as const,
-  list: () => [...roleKeys.all, 'list'] as const,
-  detail: (id: string) => [...roleKeys.all, 'detail', id] as const,
-}
+  all: ["roles"] as const,
+  list: () => [...roleKeys.all, "list"] as const,
+  detail: (id: string) => [...roleKeys.all, "detail", id] as const,
+};
 
 export function useRoleList() {
   return useQuery({
     queryKey: roleKeys.list(),
     queryFn: async () => {
-      const { data } = await 角色管理.roleControllerFindAll()
-      return data
+      const { data } = await 角色管理.roleControllerFindAll();
+      return data;
     },
-  })
+  });
 }
 
 export function useCreateRole() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateRoleDto) => {
-      const { data } = await 角色管理.roleControllerCreate({ body })
-      return data
+      const { data } = await 角色管理.roleControllerCreate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: roleKeys.all }),
-  })
+  });
 }
 
 export function useDeleteRole() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 角色管理.roleControllerRemove({ path: { id } })
+      await 角色管理.roleControllerRemove({ path: { id } });
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: roleKeys.all }),
-  })
+  });
 }
 
 export function useAssignPermissions() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, permissionIds }: { id: string; permissionIds: string[] }) => {
       const { data } = await 角色管理.roleControllerAssignPermissions({
         path: { id },
         body: { permissionIds },
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: roleKeys.all }),
-  })
+  });
 }
 ```
 
@@ -1196,58 +1206,62 @@ git commit -m "feat: integrate users and roles modules with real API"
 
 ```typescript
 // src/api/modules/athletic-centers.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 田管中心 } from '@/api/generated'
-import type { CreateAthleticCenterDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 田管中心 } from "@/api/generated";
+import type { CreateAthleticCenterDto } from "@/api/generated";
 
 export const athleticCenterKeys = {
-  all: ['athletic-centers'] as const,
-  list: (params?: Record<string, unknown>) => [...athleticCenterKeys.all, 'list', params] as const,
-}
+  all: ["athletic-centers"] as const,
+  list: (params?: Record<string, unknown>) => [...athleticCenterKeys.all, "list", params] as const,
+};
 
-export function useAthleticCenterList(params?: { page?: number; pageSize?: number; keyword?: string }) {
+export function useAthleticCenterList(params?: {
+  page?: number;
+  pageSize?: number;
+  keyword?: string;
+}) {
   return useQuery({
     queryKey: athleticCenterKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 田管中心.athleticCenterControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 田管中心.athleticCenterControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useCreateAthleticCenter() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateAthleticCenterDto) => {
-      const { data } = await 田管中心.athleticCenterControllerCreate({ body })
-      return data
+      const { data } = await 田管中心.athleticCenterControllerCreate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: athleticCenterKeys.all }),
-  })
+  });
 }
 
 export function useDeleteAthleticCenter() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 田管中心.athleticCenterControllerRemove({ path: { id } })
+      await 田管中心.athleticCenterControllerRemove({ path: { id } });
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: athleticCenterKeys.all }),
-  })
+  });
 }
 
 export function useUpdateAthleticCenterStatus() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: number }) => {
       const { data } = await 田管中心.athleticCenterControllerUpdateStatus({
         path: { id },
         body: { status },
-      })
-      return data
+      });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: athleticCenterKeys.all }),
-  })
+  });
 }
 ```
 
@@ -1256,112 +1270,119 @@ export function useUpdateAthleticCenterStatus() {
 报名卡 (`registration-cards.ts`):
 
 ```typescript
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 报名卡管理 } from '@/api/generated'
-import type { CreateRegistrationCardDto, UpdateRegistrationCardDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 报名卡管理 } from "@/api/generated";
+import type { CreateRegistrationCardDto, UpdateRegistrationCardDto } from "@/api/generated";
 
 export const registrationCardKeys = {
-  all: ['registration-cards'] as const,
-  list: (params?: Record<string, unknown>) => [...registrationCardKeys.all, 'list', params] as const,
-  detail: (id: string) => [...registrationCardKeys.all, 'detail', id] as const,
-}
+  all: ["registration-cards"] as const,
+  list: (params?: Record<string, unknown>) =>
+    [...registrationCardKeys.all, "list", params] as const,
+  detail: (id: string) => [...registrationCardKeys.all, "detail", id] as const,
+};
 
-export function useRegistrationCardList(params?: { page?: number; pageSize?: number; keyword?: string; phone?: string; idNumber?: string }) {
+export function useRegistrationCardList(params?: {
+  page?: number;
+  pageSize?: number;
+  keyword?: string;
+  phone?: string;
+  idNumber?: string;
+}) {
   return useQuery({
     queryKey: registrationCardKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 报名卡管理.registrationCardControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 报名卡管理.registrationCardControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useCreateRegistrationCard() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateRegistrationCardDto) => {
-      const { data } = await 报名卡管理.registrationCardControllerCreate({ body })
-      return data
+      const { data } = await 报名卡管理.registrationCardControllerCreate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: registrationCardKeys.all }),
-  })
+  });
 }
 
 export function useDeleteRegistrationCard() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await 报名卡管理.registrationCardControllerRemove({ path: { id } })
+      await 报名卡管理.registrationCardControllerRemove({ path: { id } });
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: registrationCardKeys.all }),
-  })
+  });
 }
 ```
 
 通知 (`notifications.ts`):
 
 ```typescript
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 消息通知 } from '@/api/generated'
-import type { CreateNotificationDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 消息通知 } from "@/api/generated";
+import type { CreateNotificationDto } from "@/api/generated";
 
 export const notificationKeys = {
-  all: ['notifications'] as const,
-  list: (params?: Record<string, unknown>) => [...notificationKeys.all, 'list', params] as const,
-}
+  all: ["notifications"] as const,
+  list: (params?: Record<string, unknown>) => [...notificationKeys.all, "list", params] as const,
+};
 
 export function useNotificationList(params?: { page?: number; pageSize?: number }) {
   return useQuery({
     queryKey: notificationKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 消息通知.notificationControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 消息通知.notificationControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 
 export function useCreateNotification() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: CreateNotificationDto) => {
-      const { data } = await 消息通知.notificationControllerCreate({ body })
-      return data
+      const { data } = await 消息通知.notificationControllerCreate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: notificationKeys.all }),
-  })
+  });
 }
 ```
 
 客户端配置 (`client-configs.ts`):
 
 ```typescript
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { 客户端配置 } from '@/api/generated'
-import type { BatchUpdateClientConfigDto } from '@/api/generated'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { 客户端配置 } from "@/api/generated";
+import type { BatchUpdateClientConfigDto } from "@/api/generated";
 
 export const clientConfigKeys = {
-  all: ['client-configs'] as const,
-}
+  all: ["client-configs"] as const,
+};
 
 export function useClientConfigList() {
   return useQuery({
     queryKey: clientConfigKeys.all,
     queryFn: async () => {
-      const { data } = await 客户端配置.clientConfigControllerFindAll()
-      return data
+      const { data } = await 客户端配置.clientConfigControllerFindAll();
+      return data;
     },
-  })
+  });
 }
 
 export function useBatchUpdateClientConfig() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: BatchUpdateClientConfigDto) => {
-      const { data } = await 客户端配置.clientConfigControllerBatchUpdate({ body })
-      return data
+      const { data } = await 客户端配置.clientConfigControllerBatchUpdate({ body });
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: clientConfigKeys.all }),
-  })
+  });
 }
 ```
 
@@ -1399,100 +1420,105 @@ git commit -m "feat: integrate remaining business modules with real API"
 权限 (`permissions.ts`):
 
 ```typescript
-import { useQuery } from '@tanstack/react-query'
-import { 权限管理 } from '@/api/generated'
+import { useQuery } from "@tanstack/react-query";
+import { 权限管理 } from "@/api/generated";
 
 export const permissionKeys = {
-  all: ['permissions'] as const,
-  tree: () => [...permissionKeys.all, 'tree'] as const,
-}
+  all: ["permissions"] as const,
+  tree: () => [...permissionKeys.all, "tree"] as const,
+};
 
 export function usePermissionTree() {
   return useQuery({
     queryKey: permissionKeys.tree(),
     queryFn: async () => {
-      const { data } = await 权限管理.permissionControllerFindTree()
-      return data
+      const { data } = await 权限管理.permissionControllerFindTree();
+      return data;
     },
-  })
+  });
 }
 ```
 
 菜单 (`menus.ts`):
 
 ```typescript
-import { useQuery } from '@tanstack/react-query'
-import { 菜单管理 } from '@/api/generated'
+import { useQuery } from "@tanstack/react-query";
+import { 菜单管理 } from "@/api/generated";
 
 export const menuKeys = {
-  all: ['menus'] as const,
-  tree: () => [...menuKeys.all, 'tree'] as const,
-  userTree: () => [...menuKeys.all, 'userTree'] as const,
-}
+  all: ["menus"] as const,
+  tree: () => [...menuKeys.all, "tree"] as const,
+  userTree: () => [...menuKeys.all, "userTree"] as const,
+};
 
 export function useMenuTree() {
   return useQuery({
     queryKey: menuKeys.tree(),
     queryFn: async () => {
-      const { data } = await 菜单管理.menuControllerFindTree()
-      return data
+      const { data } = await 菜单管理.menuControllerFindTree();
+      return data;
     },
-  })
+  });
 }
 
 export function useUserMenuTree() {
   return useQuery({
     queryKey: menuKeys.userTree(),
     queryFn: async () => {
-      const { data } = await 菜单管理.menuControllerFindUserTree()
-      return data
+      const { data } = await 菜单管理.menuControllerFindUserTree();
+      return data;
     },
-  })
+  });
 }
 ```
 
 字典 (`dicts.ts`):
 
 ```typescript
-import { useQuery } from '@tanstack/react-query'
-import { 字典管理 } from '@/api/generated'
+import { useQuery } from "@tanstack/react-query";
+import { 字典管理 } from "@/api/generated";
 
 export const dictKeys = {
-  all: ['dicts'] as const,
-  byCode: (code: string) => [...dictKeys.all, 'code', code] as const,
-}
+  all: ["dicts"] as const,
+  byCode: (code: string) => [...dictKeys.all, "code", code] as const,
+};
 
 export function useDictByCode(code: string) {
   return useQuery({
     queryKey: dictKeys.byCode(code),
     queryFn: async () => {
-      const { data } = await 字典管理.dictControllerFindByCode({ path: { code } })
-      return data
+      const { data } = await 字典管理.dictControllerFindByCode({ path: { code } });
+      return data;
     },
     enabled: !!code,
-  })
+  });
 }
 ```
 
 日志 (`logs.ts`):
 
 ```typescript
-import { useQuery } from '@tanstack/react-query'
-import { 操作日志 } from '@/api/generated'
+import { useQuery } from "@tanstack/react-query";
+import { 操作日志 } from "@/api/generated";
 
 export const logKeys = {
-  all: ['logs'] as const,
-  list: (params?: Record<string, unknown>) => [...logKeys.all, 'list', params] as const,
-}
+  all: ["logs"] as const,
+  list: (params?: Record<string, unknown>) => [...logKeys.all, "list", params] as const,
+};
 
-export function useLogList(params?: { page?: number; pageSize?: number; module?: string; userId?: string }) {
+export function useLogList(params?: {
+  page?: number;
+  pageSize?: number;
+  module?: string;
+  userId?: string;
+}) {
   return useQuery({
     queryKey: logKeys.list(params as Record<string, unknown>),
     queryFn: async () => {
-      const { data } = await 操作日志.logControllerFindAll({ query: params })
-      return data as { items: unknown[]; total: number; page: number; pageSize: number }
+      const { data } = await 操作日志.logControllerFindAll({ query: params });
+      return data as { items: unknown[]; total: number; page: number; pageSize: number };
     },
-  })
+  });
 }
 ```
 
@@ -1519,20 +1545,20 @@ git commit -m "feat: add system management API modules (permissions, menus, dict
 
 ```typescript
 // src/api/modules/files.ts
-import { useMutation } from '@tanstack/react-query'
-import { 文件上传 } from '@/api/generated'
+import { useMutation } from "@tanstack/react-query";
+import { 文件上传 } from "@/api/generated";
 
 export function useUploadFile() {
   return useMutation({
     mutationFn: async (file: File) => {
-      const formData = new FormData()
-      formData.append('file', file)
+      const formData = new FormData();
+      formData.append("file", file);
       const { data } = await 文件上传.uploadControllerUpload({
         body: formData as unknown as { file: unknown },
-      })
-      return data
+      });
+      return data;
     },
-  })
+  });
 }
 ```
 
@@ -1542,20 +1568,20 @@ export function useUploadFile() {
 
 ```typescript
 // src/api/modules/dashboard.ts
-import { useQuery } from '@tanstack/react-query'
-import { useOrderList } from './orders'
-import { useEventList } from './events'
+import { useQuery } from "@tanstack/react-query";
+import { useOrderList } from "./orders";
+import { useEventList } from "./events";
 
 // 仪表盘使用各模块的 list 接口获取汇总数据
 export function useDashboardData() {
-  const orders = useOrderList({ page: 1, pageSize: 5 })
-  const events = useEventList({ page: 1, pageSize: 5 })
+  const orders = useOrderList({ page: 1, pageSize: 5 });
+  const events = useEventList({ page: 1, pageSize: 5 });
 
   return {
     recentOrders: orders.data?.items ?? [],
     recentEvents: events.data?.items ?? [],
     isLoading: orders.isLoading || events.isLoading,
-  }
+  };
 }
 ```
 
@@ -1589,27 +1615,27 @@ git commit -m "feat: integrate dashboard and file upload modules"
 
 ```typescript
 // src/api/index.ts
-export { client } from './client'
-export { queryClient } from './query-client'
+export { client } from "./client";
+export { queryClient } from "./query-client";
 
 // Modules
-export * from './modules/auth'
-export * from './modules/events'
-export * from './modules/orders'
-export * from './modules/organizers'
-export * from './modules/pacers'
-export * from './modules/users'
-export * from './modules/roles'
-export * from './modules/registration-cards'
-export * from './modules/athletic-centers'
-export * from './modules/notifications'
-export * from './modules/client-configs'
-export * from './modules/permissions'
-export * from './modules/menus'
-export * from './modules/dicts'
-export * from './modules/logs'
-export * from './modules/files'
-export * from './modules/dashboard'
+export * from "./modules/auth";
+export * from "./modules/events";
+export * from "./modules/orders";
+export * from "./modules/organizers";
+export * from "./modules/pacers";
+export * from "./modules/users";
+export * from "./modules/roles";
+export * from "./modules/registration-cards";
+export * from "./modules/athletic-centers";
+export * from "./modules/notifications";
+export * from "./modules/client-configs";
+export * from "./modules/permissions";
+export * from "./modules/menus";
+export * from "./modules/dicts";
+export * from "./modules/logs";
+export * from "./modules/files";
+export * from "./modules/dashboard";
 ```
 
 - [ ] **Step 2: 删除 mock 数据**

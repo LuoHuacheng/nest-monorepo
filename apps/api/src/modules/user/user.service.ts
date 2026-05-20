@@ -4,15 +4,15 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { QueryUserDto } from "./dto/query-user.dto";
-import { PaginatedResult } from "../../common/dto/pagination.dto";
+import type { PaginatedResult } from "../../common/dto/pagination.dto";
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: QueryUserDto): Promise<PaginatedResult<any>> {
+  async findAll(query: QueryUserDto): Promise<PaginatedResult<Record<string, unknown>>> {
     const { page, pageSize, keyword, status } = query;
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (keyword) {
       where.OR = [

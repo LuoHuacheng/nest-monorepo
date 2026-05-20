@@ -50,7 +50,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: user.id,
       username: user.username,
       name: user.name,
-      permissions: Array.from(permissions),
+      permissions: [...permissions],
     };
   }
 }
