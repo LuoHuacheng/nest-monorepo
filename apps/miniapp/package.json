@@ -31,6 +31,7 @@
 		"postinstall": "weapp-tw patch"
 	},
 	"dependencies": {
+		"@match/api-client": "workspace:*",
 		"@babel/runtime": "^7.24.4",
 		"@nutui/nutui-react-taro": "3.0.18",
 		"@tarojs/components": "4.1.11",
