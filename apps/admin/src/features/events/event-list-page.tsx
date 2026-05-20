@@ -1,6 +1,15 @@
+import { useNavigate } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
-import { useDeleteEvent, useEventList, useUpdatePublishStatus } from "@/api/modules/events";
+import {
+  useDeleteEvent,
+  useDrawEvent,
+  useEventDrawResults,
+  useEventList,
+  useEventOrders,
+  useEventParticipants,
+  useUpdatePublishStatus,
+} from "@/api/modules/events";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
@@ -90,6 +99,7 @@ function getNextPublishStatus(action: PublishAction): PublishStatus {
 }
 
 export function EventsPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -98,9 +108,22 @@ export function EventsPage() {
     action: PublishAction;
   } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [participantsEvent, setParticipantsEvent] = useState<Record<string, unknown> | null>(null);
-  const [ordersEvent, setOrdersEvent] = useState<Record<string, unknown> | null>(null);
-  const [drawEvent, setDrawEvent] = useState<Record<string, unknown> | null>(null);
+  const [participantsEventId, setParticipantsEventId] = useState<string | null>(null);
+  const [ordersEventId, setOrdersEventId] = useState<string | null>(null);
+  const [drawEventId, setDrawEventId] = useState<string | null>(null);
+  const [participantsPage, setParticipantsPage] = useState(1);
+  const [ordersPage, setOrdersPage] = useState(1);
+
+  const { data: participantsData } = useEventParticipants(participantsEventId ?? "", {
+    page: participantsPage,
+    pageSize: 10,
+  });
+  const { data: ordersData } = useEventOrders(ordersEventId ?? "", {
+    page: ordersPage,
+    pageSize: 10,
+  });
+  const { data: drawResults } = useEventDrawResults(drawEventId ?? "");
+  const drawMutation = useDrawEvent();
 
   const [filterEventStatus, setFilterEventStatus] = useState(ALL);
   const [filterPublishStatus, setFilterPublishStatus] = useState(ALL);
@@ -209,7 +232,13 @@ export function EventsPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>编辑</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({ to: "/events/edit/$id", params: { id: record.id as string } })
+                }
+              >
+                编辑
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               {record.publishStatus === "draft" && (
                 <DropdownMenuItem
@@ -232,13 +261,27 @@ export function EventsPage() {
                   重新上架
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => setParticipantsEvent(record)}>
+              <DropdownMenuItem
+                onClick={() => {
+                  setParticipantsEventId(record.id as string);
+                  setParticipantsPage(1);
+                }}
+              >
                 查看报名人员
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setOrdersEvent(record)}>查看订单</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setOrdersEventId(record.id as string);
+                  setOrdersPage(1);
+                }}
+              >
+                查看订单
+              </DropdownMenuItem>
               {(record.currentParticipants as number) > 0 &&
                 record.publishStatus === "published" && (
-                  <DropdownMenuItem onClick={() => setDrawEvent(record)}>赛事抽签</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDrawEventId(record.id as string)}>
+                    赛事抽签
+                  </DropdownMenuItem>
                 )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -258,7 +301,7 @@ export function EventsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">赛事列表</h1>
-        <Button>新增赛事</Button>
+        <Button onClick={() => navigate({ to: "/events/create" })}>新增赛事</Button>
       </div>
 
       <FilterBar
@@ -428,36 +471,142 @@ export function EventsPage() {
         variant="destructive"
       />
 
-      <Dialog open={participantsEvent !== null} onOpenChange={() => setParticipantsEvent(null)}>
-        <DialogContent>
+      <Dialog open={participantsEventId !== null} onOpenChange={() => setParticipantsEventId(null)}>
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>报名人员 - {participantsEvent?.name as string}</DialogTitle>
+            <DialogTitle>报名人员</DialogTitle>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm">
-            当前报名人数：{(participantsEvent?.currentParticipants as number) ?? 0} 人
-          </p>
-          <p className="text-muted-foreground text-sm">（报名人员列表待接口对接后展示）</p>
+          <div className="text-sm text-muted-foreground">共 {participantsData?.total ?? 0} 人</div>
+          <DataTable
+            columns={[
+              { key: "orderNo", title: "订单号" },
+              { key: "userId", title: "用户ID" },
+              {
+                key: "status",
+                title: "状态",
+                render: (val: unknown) => {
+                  const statusMap: Record<
+                    string,
+                    { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+                  > = {
+                    pending: { label: "待支付", variant: "secondary" },
+                    paid: { label: "已支付", variant: "default" },
+                    refunded: { label: "已退款", variant: "outline" },
+                    cancelled: { label: "已取消", variant: "destructive" },
+                  };
+                  const s = statusMap[val as string];
+                  return s ? <Badge variant={s.variant}>{s.label}</Badge> : String(val ?? "-");
+                },
+              },
+              {
+                key: "amount",
+                title: "金额",
+                render: (val: unknown) => `¥${((val as number) / 100).toFixed(2)}`,
+              },
+              { key: "createdAt", title: "创建时间" },
+            ]}
+            data={(participantsData?.items ?? []) as Record<string, unknown>[]}
+            page={participantsPage}
+            pageSize={10}
+            total={participantsData?.total ?? 0}
+            onPageChange={setParticipantsPage}
+          />
         </DialogContent>
       </Dialog>
 
-      <Dialog open={ordersEvent !== null} onOpenChange={() => setOrdersEvent(null)}>
-        <DialogContent>
+      <Dialog open={ordersEventId !== null} onOpenChange={() => setOrdersEventId(null)}>
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>赛事订单 - {ordersEvent?.name as string}</DialogTitle>
+            <DialogTitle>赛事订单</DialogTitle>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm">（订单列表待接口对接后展示）</p>
+          <div className="text-sm text-muted-foreground">共 {ordersData?.total ?? 0} 条</div>
+          <DataTable
+            columns={[
+              { key: "orderNo", title: "订单号" },
+              { key: "type", title: "类型" },
+              { key: "userId", title: "用户ID" },
+              {
+                key: "status",
+                title: "状态",
+                render: (val: unknown) => {
+                  const statusMap: Record<
+                    string,
+                    { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+                  > = {
+                    pending: { label: "待支付", variant: "secondary" },
+                    paid: { label: "已支付", variant: "default" },
+                    refunded: { label: "已退款", variant: "outline" },
+                    cancelled: { label: "已取消", variant: "destructive" },
+                  };
+                  const s = statusMap[val as string];
+                  return s ? <Badge variant={s.variant}>{s.label}</Badge> : String(val ?? "-");
+                },
+              },
+              {
+                key: "amount",
+                title: "金额",
+                render: (val: unknown) => `¥${((val as number) / 100).toFixed(2)}`,
+              },
+              { key: "createdAt", title: "创建时间" },
+            ]}
+            data={(ordersData?.items ?? []) as Record<string, unknown>[]}
+            page={ordersPage}
+            pageSize={10}
+            total={ordersData?.total ?? 0}
+            onPageChange={setOrdersPage}
+          />
         </DialogContent>
       </Dialog>
 
-      <Dialog open={drawEvent !== null} onOpenChange={() => setDrawEvent(null)}>
-        <DialogContent>
+      <Dialog open={drawEventId !== null} onOpenChange={() => setDrawEventId(null)}>
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>赛事抽签 - {drawEvent?.name as string}</DialogTitle>
+            <DialogTitle>赛事抽签</DialogTitle>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm">
-            当前报名人数：{(drawEvent?.currentParticipants as number) ?? 0} 人
-          </p>
-          <p className="text-muted-foreground text-sm">（抽签功能待接口对接后实现）</p>
+          {drawResults?.data?.groupDrawCompleted ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">最大参赛人数：</span>
+                  <span className="font-medium">{drawResults.data.maxParticipants ?? 0}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">已中签人数：</span>
+                  <span className="font-medium">{drawResults.data.drawnCount ?? 0}</span>
+                </div>
+              </div>
+              {drawResults.data.drawn && drawResults.data.drawn.length > 0 && (
+                <DataTable
+                  columns={[
+                    { key: "orderNo", title: "订单号" },
+                    { key: "userId", title: "用户ID" },
+                    {
+                      key: "amount",
+                      title: "金额",
+                      render: (val: unknown) => `¥${((val as number) / 100).toFixed(2)}`,
+                    },
+                    { key: "paidAt", title: "支付时间" },
+                  ]}
+                  data={drawResults.data.drawn as Record<string, unknown>[]}
+                  page={1}
+                  pageSize={drawResults.data.drawn.length}
+                  total={drawResults.data.drawn.length}
+                />
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-muted-foreground text-sm">尚未进行抽签，点击下方按钮开始抽签。</p>
+              <Button
+                onClick={() => {
+                  if (drawEventId) drawMutation.mutate(drawEventId);
+                }}
+                disabled={drawMutation.isPending}
+              >
+                {drawMutation.isPending ? "抽签中..." : "开始抽签"}
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

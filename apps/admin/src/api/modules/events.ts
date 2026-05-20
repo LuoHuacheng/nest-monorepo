@@ -5,6 +5,8 @@ import {
   type CreateInviteCodeDto,
   type CreateShuttleBusDto,
   type EventControllerFindAllData,
+  type EventControllerFindOrdersData,
+  type EventControllerFindParticipantsData,
   type EventControllerFindResultsData,
   type UpdateEventDto,
   type UpdatePublishStatusDto,
@@ -13,6 +15,8 @@ import type { PaginatedResponse, QueryOf, WithId } from "@/api/types";
 
 export type EventListQuery = QueryOf<EventControllerFindAllData>;
 export type EventResultsQuery = QueryOf<EventControllerFindResultsData>;
+export type EventParticipantsQuery = QueryOf<EventControllerFindParticipantsData>;
+export type EventOrdersQuery = QueryOf<EventControllerFindOrdersData>;
 
 export const eventKeys = {
   all: ["events"] as const,
@@ -22,6 +26,11 @@ export const eventKeys = {
   shuttleBuses: (eventId: string) => [...eventKeys.all, eventId, "shuttle-buses"] as const,
   results: (eventId: string, params?: EventResultsQuery) =>
     [...eventKeys.all, eventId, "results", params] as const,
+  participants: (eventId: string, params?: EventParticipantsQuery) =>
+    [...eventKeys.all, eventId, "participants", params] as const,
+  orders: (eventId: string, params?: EventOrdersQuery) =>
+    [...eventKeys.all, eventId, "orders", params] as const,
+  drawResults: (eventId: string) => [...eventKeys.all, eventId, "draw-results"] as const,
 };
 
 export function useEventList(params?: EventListQuery) {
@@ -209,6 +218,78 @@ export function useImportEventResults() {
       const { data } = await Events.eventControllerImportResults({
         path: { eventId },
         body,
+      });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+// ==================== 参赛人 ====================
+
+export function useEventParticipants(eventId: string, params?: EventParticipantsQuery) {
+  return useQuery({
+    queryKey: eventKeys.participants(eventId, params),
+    queryFn: async () => {
+      const { data } = await Events.eventControllerFindParticipants({
+        path: { eventId },
+        query: params,
+      });
+      return data as PaginatedResponse;
+    },
+    enabled: !!eventId,
+  });
+}
+
+// ==================== 订单 ====================
+
+export function useEventOrders(eventId: string, params?: EventOrdersQuery) {
+  return useQuery({
+    queryKey: eventKeys.orders(eventId, params),
+    queryFn: async () => {
+      const { data } = await Events.eventControllerFindOrders({
+        path: { eventId },
+        query: params,
+      });
+      return data as PaginatedResponse;
+    },
+    enabled: !!eventId,
+  });
+}
+
+// ==================== 抽签 ====================
+
+export function useEventDrawResults(eventId: string) {
+  return useQuery({
+    queryKey: eventKeys.drawResults(eventId),
+    queryFn: async () => {
+      const { data } = await Events.eventControllerFindDrawResults({
+        path: { id: eventId },
+      });
+      return data;
+    },
+    enabled: !!eventId,
+  });
+}
+
+export function useDrawEvent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await Events.eventControllerDraw({ path: { id } });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useConfirmDraw() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, orderIds }: { id: string; orderIds: string[] }) => {
+      const { data } = await Events.eventControllerConfirmDraw({
+        path: { id },
+        body: { orderIds },
       });
       return data;
     },

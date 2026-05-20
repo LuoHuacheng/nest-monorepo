@@ -28,6 +28,8 @@ import { Route as AuthenticatedEventsResultsRouteImport } from './routes/_authen
 import { Route as AuthenticatedEventsRegistrationCardsRouteImport } from './routes/_authenticated/events/registration-cards'
 import { Route as AuthenticatedEventsListRouteImport } from './routes/_authenticated/events/list'
 import { Route as AuthenticatedEventsInviteCodesRouteImport } from './routes/_authenticated/events/invite-codes'
+import { Route as AuthenticatedEventsCreateRouteImport } from './routes/_authenticated/events/create'
+import { Route as AuthenticatedEventsEditIdRouteImport } from './routes/_authenticated/events/edit.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -134,6 +136,18 @@ const AuthenticatedEventsInviteCodesRoute =
     path: '/events/invite-codes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedEventsCreateRoute =
+  AuthenticatedEventsCreateRouteImport.update({
+    id: '/events/create',
+    path: '/events/create',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEventsEditIdRoute =
+  AuthenticatedEventsEditIdRouteImport.update({
+    id: '/events/edit/$id',
+    path: '/events/edit/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -142,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/organizers': typeof AuthenticatedOrganizersRoute
   '/roles': typeof AuthenticatedRolesRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/events/create': typeof AuthenticatedEventsCreateRoute
   '/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
   '/events/list': typeof AuthenticatedEventsListRoute
   '/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
@@ -154,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/pacers/tests': typeof AuthenticatedPacersTestsRoute
   '/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -162,6 +178,7 @@ export interface FileRoutesByTo {
   '/roles': typeof AuthenticatedRolesRoute
   '/users': typeof AuthenticatedUsersRoute
   '/': typeof AuthenticatedIndexRoute
+  '/events/create': typeof AuthenticatedEventsCreateRoute
   '/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
   '/events/list': typeof AuthenticatedEventsListRoute
   '/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
@@ -174,6 +191,7 @@ export interface FileRoutesByTo {
   '/pacers/tests': typeof AuthenticatedPacersTestsRoute
   '/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -184,6 +202,7 @@ export interface FileRoutesById {
   '/_authenticated/roles': typeof AuthenticatedRolesRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/events/create': typeof AuthenticatedEventsCreateRoute
   '/_authenticated/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
   '/_authenticated/events/list': typeof AuthenticatedEventsListRoute
   '/_authenticated/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
@@ -196,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/pacers/tests': typeof AuthenticatedPacersTestsRoute
   '/_authenticated/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -206,6 +226,7 @@ export interface FileRouteTypes {
     | '/organizers'
     | '/roles'
     | '/users'
+    | '/events/create'
     | '/events/invite-codes'
     | '/events/list'
     | '/events/registration-cards'
@@ -218,6 +239,7 @@ export interface FileRouteTypes {
     | '/pacers/tests'
     | '/settings/client-config'
     | '/settings/notifications'
+    | '/events/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -226,6 +248,7 @@ export interface FileRouteTypes {
     | '/roles'
     | '/users'
     | '/'
+    | '/events/create'
     | '/events/invite-codes'
     | '/events/list'
     | '/events/registration-cards'
@@ -238,6 +261,7 @@ export interface FileRouteTypes {
     | '/pacers/tests'
     | '/settings/client-config'
     | '/settings/notifications'
+    | '/events/edit/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -247,6 +271,7 @@ export interface FileRouteTypes {
     | '/_authenticated/roles'
     | '/_authenticated/users'
     | '/_authenticated/'
+    | '/_authenticated/events/create'
     | '/_authenticated/events/invite-codes'
     | '/_authenticated/events/list'
     | '/_authenticated/events/registration-cards'
@@ -259,6 +284,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pacers/tests'
     | '/_authenticated/settings/client-config'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/events/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -401,6 +427,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEventsInviteCodesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/events/create': {
+      id: '/_authenticated/events/create'
+      path: '/events/create'
+      fullPath: '/events/create'
+      preLoaderRoute: typeof AuthenticatedEventsCreateRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/events/edit/$id': {
+      id: '/_authenticated/events/edit/$id'
+      path: '/events/edit/$id'
+      fullPath: '/events/edit/$id'
+      preLoaderRoute: typeof AuthenticatedEventsEditIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -410,6 +450,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedEventsCreateRoute: typeof AuthenticatedEventsCreateRoute
   AuthenticatedEventsInviteCodesRoute: typeof AuthenticatedEventsInviteCodesRoute
   AuthenticatedEventsListRoute: typeof AuthenticatedEventsListRoute
   AuthenticatedEventsRegistrationCardsRoute: typeof AuthenticatedEventsRegistrationCardsRoute
@@ -422,6 +463,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPacersTestsRoute: typeof AuthenticatedPacersTestsRoute
   AuthenticatedSettingsClientConfigRoute: typeof AuthenticatedSettingsClientConfigRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedEventsEditIdRoute: typeof AuthenticatedEventsEditIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -430,6 +472,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedRolesRoute: AuthenticatedRolesRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedEventsCreateRoute: AuthenticatedEventsCreateRoute,
   AuthenticatedEventsInviteCodesRoute: AuthenticatedEventsInviteCodesRoute,
   AuthenticatedEventsListRoute: AuthenticatedEventsListRoute,
   AuthenticatedEventsRegistrationCardsRoute:
@@ -445,6 +488,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedSettingsClientConfigRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
+  AuthenticatedEventsEditIdRoute: AuthenticatedEventsEditIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
