@@ -24,6 +24,7 @@ model SysUser {
 
   userRoles SysUserRole[]
   logs      SysLog[]
+  orders    Order[]
 
   @@map("sys_user")
 }
@@ -169,8 +170,8 @@ model Event {
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
 
-  registrationCards EventRegistrationCard[]
-  inviteCodes       EventInviteCode[]
+  registrationGroups RegistrationGroup[]
+  inviteCodes        EventInviteCode[]
   shuttleBuses      EventShuttleBus[]
   results           EventResult[]
   orders            Order[]
@@ -178,7 +179,7 @@ model Event {
   @@map("event")
 }
 
-model EventRegistrationCard {
+model RegistrationGroup {
   id              String   @id @default(cuid())
   eventId         String   @map("event_id")
   name            String
@@ -198,7 +199,7 @@ model EventRegistrationCard {
   event  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   orders Order[]
 
-  @@map("event_registration_card")
+  @@map("registration_group")
 }
 
 model RegistrationCard {
@@ -277,13 +278,15 @@ model Order {
   registrationCardId String?   @map("registration_card_id")
   amount             Decimal   @db.Decimal(10, 2)
   status             String    @default("pending") // pending / paid / refunded / cancelled
+  isDrawn            Boolean   @default(false) @map("is_drawn")
   paidAt             DateTime? @map("paid_at")
   refundedAt         DateTime? @map("refunded_at")
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime  @updatedAt @map("updated_at")
 
   event            Event?                 @relation(fields: [eventId], references: [id], onDelete: SetNull)
-  registrationCard EventRegistrationCard? @relation(fields: [registrationCardId], references: [id], onDelete: SetNull)
+  registrationGroup RegistrationGroup? @relation(fields: [registrationCardId], references: [id], onDelete: SetNull)
+  user             SysUser?               @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("order")
 }
