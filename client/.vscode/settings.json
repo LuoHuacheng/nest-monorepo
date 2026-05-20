@@ -1,0 +1,50 @@
+{
+	"[css]": {
+		"editor.defaultFormatter": "vscode.css-language-features"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[svg]": {
+		"editor.defaultFormatter": "jock.svg"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode",
+		"editor.formatOnSave": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode",
+		"editor.formatOnSave": true
+	},
+	"cSpell.ignorePaths": [
+		".vscode/**",
+		"src/assets/**",
+		"**/node_modules",
+		"**/dist",
+		"**/build",
+		"**/.git",
+		"**/.swc",
+		"**/pnpm-lock.yaml"
+	],
+	"cSpell.words": [],
+	"editor.codeActionsOnSave": {
+		"source.addMissingImports": "always",
+		"source.fixAll.oxc": "always",
+		"source.organizeImports": "always",
+		"source.removeUnusedImports": "always",
+		"source.sortImports": "always"
+	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"editor.formatOnSave": true,
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"tailwindCSS.classFunctions": ["cva", "cx"],
+	"tailwindCSS.experimental.configFile": "src/app.css"
+}

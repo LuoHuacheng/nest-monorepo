@@ -1,0 +1,15 @@
+{
+	"appid": "touristappid",
+	"compileType": "miniprogram",
+	"description": "taro-react",
+	"miniprogramRoot": "./dist",
+	"projectname": "taro-react",
+	"setting": {
+		"compileHotReLoad": false,
+		"enhance": false,
+		"es6": false,
+		"minified": false,
+		"postcss": false,
+		"urlCheck": true
+	}
+}
