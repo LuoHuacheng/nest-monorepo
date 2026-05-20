@@ -63,4 +63,12 @@ export class AthleticCenterController {
   updateStatus(@Param("id") id: string, @Body("status") status: number) {
     return this.athleticCenterService.updateStatus(id, status);
   }
+
+  @Post(":id/reset-password")
+  @Permissions("athletic-center:update")
+  @ApiOperation({ summary: "重置密码" })
+  @ApiResponse({ ...apiOkResponse(AthleticCenterDto), description: "更新后的田管中心" })
+  resetPassword(@Param("id") id: string, @Body("password") password: string) {
+    return this.athleticCenterService.resetPassword(id, password);
+  }
 }

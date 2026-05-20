@@ -21,4 +21,19 @@ export class CreateAthleticCenterDto {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @ApiProperty({ description: "登录账号" })
+  @IsString()
+  @IsNotEmpty()
+  loginAccount!: string;
+
+  @ApiProperty({ description: "密码" })
+  @IsString()
+  @IsNotEmpty()
+  password!: string;
+
+  @ApiPropertyOptional({ description: "备注" })
+  @IsOptional()
+  @IsString()
+  remark?: string;
 }

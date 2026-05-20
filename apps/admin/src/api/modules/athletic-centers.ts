@@ -74,6 +74,17 @@ export function useDeleteAthleticCenter() {
   });
 }
 
+export function useResetAthleticCenterPassword() {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await AthleticCenters.athleticCenterControllerResetPassword({
+        path: { id },
+      });
+      return data;
+    },
+  });
+}
+
 export function useUpdateAthleticCenterStatus() {
   const qc = useQueryClient();
   return useMutation({
