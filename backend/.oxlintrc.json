@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "no-explicit-any": "off",
+    "typescript/no-explicit-any": "off",
+    "no-unused-vars": "warn",
+    "typescript/no-unused-vars": "warn"
+  }
+}

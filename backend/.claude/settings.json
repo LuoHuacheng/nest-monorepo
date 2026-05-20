@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm test)",
+      "Bash(pnpm build)",
+      "Bash(pnpm prisma validate)",
+      "Bash(pnpm prisma generate)",
+      "Bash(dart format .)",
+      "Bash(flutter analyze)",
+      "Bash(flutter test)",
+      "Bash(git status)",
+      "Bash(git diff *)"
+    ],
+    "ask": [
+      "Bash(pnpm install *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm prisma migrate *)",
+      "Bash(docker compose *)",
+      "Bash(flutter pub add *)",
+      "Bash(flutter pub upgrade *)",
+      "Bash(flutter build *)",
+      "Bash(flutter run *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./certs/**)",
+      "Read(./*.pem)",
+      "Read(./*.key)",
+      "Read(./android/key.properties)",
+      "Read(./ios/**/*.p8)",
+      "Read(./ios/**/*.mobileprovision)",
+      "Read(./ios/**/*.cer)",
+      "Read(./ios/**/*.p12)",
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(pnpm prisma migrate reset*)",
+      "Bash(npx prisma migrate reset*)",
+      "Bash(flutter clean)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/quality-check.sh",
+            "args": [],
+            "async": true,
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-check.sh",
+            "args": [],
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
