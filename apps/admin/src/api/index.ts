@@ -1,6 +1,3 @@
-export { client } from "./client";
-export { queryClient } from "./query-client";
-
 // Auth
 export * from "./modules/auth";
 

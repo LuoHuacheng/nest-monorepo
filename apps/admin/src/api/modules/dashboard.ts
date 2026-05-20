@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Orders, Events } from "@/api/generated";
+import { Orders, Events } from "@match/api-client";
 
 export const dashboardKeys = {
   all: ["dashboard"] as const,

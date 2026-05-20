@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ClientConfigs } from "@/api/generated";
+import { ClientConfigs } from "@match/api-client";
 
 export const clientConfigKeys = {
   all: ["client-configs"] as const,

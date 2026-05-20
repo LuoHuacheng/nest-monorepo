@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pacers } from "@/api/generated";
+import { Pacers } from "@match/api-client";
 
 export const pacerKeys = {
   all: ["pacers"] as const,

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Permissions } from "@/api/generated";
+import { Permissions } from "@match/api-client";
 
 export const permissionKeys = {
   all: ["permissions"] as const,

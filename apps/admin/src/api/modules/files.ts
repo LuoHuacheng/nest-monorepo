@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { Upload } from "@/api/generated";
+import { Upload } from "@match/api-client";
 
 export function useUploadFile() {
   return useMutation({

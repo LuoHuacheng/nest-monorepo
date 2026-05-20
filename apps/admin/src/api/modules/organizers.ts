@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Organizers } from "@/api/generated";
+import { Organizers } from "@match/api-client";
 
 export const organizerKeys = {
   all: ["organizers"] as const,

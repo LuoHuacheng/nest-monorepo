@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Logs } from "@/api/generated";
+import { Logs } from "@match/api-client";
 
 export const logKeys = {
   all: ["logs"] as const,

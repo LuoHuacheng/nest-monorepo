@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Events } from "@/api/generated";
+import { Events } from "@match/api-client";
 
 export const eventKeys = {
   all: ["events"] as const,

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Menus } from "@/api/generated";
+import { Menus } from "@match/api-client";
 
 export const menuKeys = {
   all: ["menus"] as const,

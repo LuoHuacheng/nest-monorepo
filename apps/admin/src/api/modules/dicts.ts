@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Dicts } from "@/api/generated";
+import { Dicts } from "@match/api-client";
 
 export const dictKeys = {
   all: ["dicts"] as const,

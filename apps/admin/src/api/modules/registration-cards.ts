@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { RegistrationCards } from "@/api/generated";
+import { RegistrationCards } from "@match/api-client";
 
 export const registrationCardKeys = {
   all: ["registration-cards"] as const,

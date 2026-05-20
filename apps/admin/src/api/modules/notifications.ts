@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Notifications } from "@/api/generated";
+import { Notifications } from "@match/api-client";
 
 export const notificationKeys = {
   all: ["notifications"] as const,

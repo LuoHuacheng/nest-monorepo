@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Orders } from "@/api/generated";
+import { Orders } from "@match/api-client";
 
 export const orderKeys = {
   all: ["orders"] as const,

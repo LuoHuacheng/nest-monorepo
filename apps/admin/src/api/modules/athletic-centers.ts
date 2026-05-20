@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AthleticCenters } from "@/api/generated";
+import { AthleticCenters } from "@match/api-client";
 
 export const athleticCenterKeys = {
   all: ["athletic-centers"] as const,
