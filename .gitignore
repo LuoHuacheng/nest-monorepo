@@ -7,6 +7,7 @@ coverage/
 .DS_Store
 *.local
 *.tsbuildinfo
+.turbo
 
 # API (backend)
 apps/api/generated/prisma/
@@ -23,3 +24,4 @@ apps/admin/todos.json
 
 # Packages
 packages/*/dist/
+packages/*/.turbo/

@@ -8,7 +8,7 @@ client.setConfig({
 });
 
 // 请求拦截：注入 auth token
-client.interceptors.request.use(async (request) => {
+client.interceptors.request.use((request) => {
   const { token } = useAuthStore.getState();
   if (token) {
     request.headers.set("Authorization", `Bearer ${token}`);
@@ -48,7 +48,7 @@ client.interceptors.response.use(async (response, request) => {
 });
 
 // 错误拦截：处理网络层错误
-client.interceptors.error.use(async (error, response) => {
+client.interceptors.error.use((error, response) => {
   if (response?.status === 401) {
     useAuthStore.getState().logout();
     window.location.href = "/login";

@@ -1,28 +1,48 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Organizers } from "@match/api-client";
+import {
+  Organizers,
+  type CreateOrganizerDto,
+  type OrganizerControllerFindAllData,
+  type UpdateOrganizerDto,
+} from "@match/api-client";
+import type { PaginatedResponse, QueryOf, WithId } from "@/api/types";
+
+export type OrganizerListQuery = QueryOf<OrganizerControllerFindAllData>;
 
 export const organizerKeys = {
   all: ["organizers"] as const,
-  list: (params?: Record<string, unknown>) => [...organizerKeys.all, "list", params] as const,
+  list: (params?: OrganizerListQuery) => [...organizerKeys.all, "list", params] as const,
+  detail: (id: string) => [...organizerKeys.all, "detail", id] as const,
 };
 
-export function useOrganizerList(params?: Record<string, unknown>) {
+export function useOrganizerList(params?: OrganizerListQuery) {
   return useQuery({
     queryKey: organizerKeys.list(params),
     queryFn: async () => {
       const { data } = await Organizers.organizerControllerFindAll(
-        params ? ({ query: params } as any) : undefined,
+        params ? { query: params } : undefined,
       );
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      return data as PaginatedResponse;
     },
+  });
+}
+
+export function useOrganizerDetail(id: string) {
+  return useQuery({
+    queryKey: organizerKeys.detail(id),
+    queryFn: async () => {
+      const { data } = await Organizers.organizerControllerFindOne({ path: { id } });
+      return data;
+    },
+    enabled: !!id,
   });
 }
 
 export function useCreateOrganizer() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await Organizers.organizerControllerCreate({ body } as any);
+    mutationFn: async (body: CreateOrganizerDto) => {
+      const { data } = await Organizers.organizerControllerCreate({ body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: organizerKeys.all }),
@@ -32,8 +52,8 @@ export function useCreateOrganizer() {
 export function useUpdateOrganizer() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: Record<string, unknown> }) => {
-      const { data } = await Organizers.organizerControllerUpdate({ path: { id }, body } as any);
+    mutationFn: async ({ id, body }: WithId<UpdateOrganizerDto>) => {
+      const { data } = await Organizers.organizerControllerUpdate({ path: { id }, body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: organizerKeys.all }),
@@ -57,7 +77,9 @@ export function useUpdateOrganizerStatus() {
       const { data } = await Organizers.organizerControllerUpdateStatus({
         path: { id },
         body: { status },
-      } as any);
+      } as Parameters<typeof Organizers.organizerControllerUpdateStatus>[0] & {
+        body: { status: number };
+      });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: organizerKeys.all }),

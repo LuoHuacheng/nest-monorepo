@@ -1,19 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import { Logs } from "@match/api-client";
+import { Logs, type LogControllerFindAllData } from "@match/api-client";
+import type { PaginatedResponse, QueryOf } from "@/api/types";
+
+export type LogListQuery = QueryOf<LogControllerFindAllData>;
 
 export const logKeys = {
   all: ["logs"] as const,
-  list: (params?: Record<string, unknown>) => [...logKeys.all, "list", params] as const,
+  list: (params?: LogListQuery) => [...logKeys.all, "list", params] as const,
 };
 
-export function useLogList(params?: Record<string, unknown>) {
+export function useLogList(params?: LogListQuery) {
   return useQuery({
     queryKey: logKeys.list(params),
     queryFn: async () => {
-      const { data } = await Logs.logControllerFindAll(
-        params ? ({ query: params } as any) : undefined,
-      );
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      const { data } = await Logs.logControllerFindAll(params ? { query: params } : undefined);
+      return data as PaginatedResponse;
     },
   });
 }

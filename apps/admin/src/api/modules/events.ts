@@ -1,22 +1,69 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Events } from "@match/api-client";
+import {
+  Events,
+  type CreateEventDto,
+  type CreateInviteCodeDto,
+  type CreateShuttleBusDto,
+  type EventControllerFindAllData,
+  type EventControllerFindResultsData,
+  type UpdateEventDto,
+  type UpdatePublishStatusDto,
+} from "@match/api-client";
+import type { PaginatedResponse, QueryOf, WithId } from "@/api/types";
+
+export type EventListQuery = QueryOf<EventControllerFindAllData>;
+export type EventResultsQuery = QueryOf<EventControllerFindResultsData>;
 
 export const eventKeys = {
   all: ["events"] as const,
-  list: (params?: Record<string, unknown>) => [...eventKeys.all, "list", params] as const,
+  list: (params?: EventListQuery) => [...eventKeys.all, "list", params] as const,
   detail: (id: string) => [...eventKeys.all, "detail", id] as const,
   inviteCodes: (eventId: string) => [...eventKeys.all, eventId, "invite-codes"] as const,
   shuttleBuses: (eventId: string) => [...eventKeys.all, eventId, "shuttle-buses"] as const,
-  results: (eventId: string) => [...eventKeys.all, eventId, "results"] as const,
+  results: (eventId: string, params?: EventResultsQuery) =>
+    [...eventKeys.all, eventId, "results", params] as const,
 };
 
-export function useEventList(params?: Record<string, unknown>) {
+export function useEventList(params?: EventListQuery) {
   return useQuery({
     queryKey: eventKeys.list(params),
     queryFn: async () => {
       const { data } = await Events.eventControllerFindAll({ query: params });
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      return data as PaginatedResponse;
     },
+  });
+}
+
+export function useEventDetail(id: string) {
+  return useQuery({
+    queryKey: eventKeys.detail(id),
+    queryFn: async () => {
+      const { data } = await Events.eventControllerFindOne({ path: { id } });
+      return data;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useCreateEvent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: CreateEventDto) => {
+      const { data } = await Events.eventControllerCreate({ body });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useUpdateEvent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, body }: WithId<UpdateEventDto>) => {
+      const { data } = await Events.eventControllerUpdate({ path: { id }, body });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
   });
 }
 
@@ -33,17 +80,22 @@ export function useDeleteEvent() {
 export function useUpdatePublishStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      id,
-      publishStatus,
-    }: {
-      id: string;
-      publishStatus: "draft" | "published" | "offline";
-    }) => {
+    mutationFn: async ({ id, publishStatus }: { id: string } & UpdatePublishStatusDto) => {
       const { data } = await Events.eventControllerUpdatePublishStatus({
         path: { id },
         body: { publishStatus },
       });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useConfirmRegistrationEnd() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await Events.eventControllerConfirmRegistrationEnd({ path: { id } });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
@@ -58,6 +110,20 @@ export function useInviteCodes(eventId: string) {
       return data;
     },
     enabled: !!eventId,
+  });
+}
+
+export function useCreateInviteCode() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ eventId, body }: { eventId: string; body: CreateInviteCodeDto }) => {
+      const { data } = await Events.eventControllerCreateInviteCode({
+        path: { eventId },
+        body,
+      });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
   });
 }
 
@@ -82,16 +148,70 @@ export function useShuttleBuses(eventId: string) {
   });
 }
 
-export function useEventResults(eventId: string, params?: Record<string, unknown>) {
+export function useCreateShuttleBus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ eventId, body }: { eventId: string; body: CreateShuttleBusDto }) => {
+      const { data } = await Events.eventControllerCreateShuttleBus({
+        path: { eventId },
+        body,
+      });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useUpdateShuttleBus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, body }: WithId<Partial<CreateShuttleBusDto>>) => {
+      const { data } = await Events.eventControllerUpdateShuttleBus({
+        path: { id },
+        body,
+      } as Parameters<typeof Events.eventControllerUpdateShuttleBus>[0] & {
+        body: Partial<CreateShuttleBusDto>;
+      });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useDeleteShuttleBus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await Events.eventControllerRemoveShuttleBus({ path: { id } });
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
+  });
+}
+
+export function useEventResults(eventId: string, params?: EventResultsQuery) {
   return useQuery({
-    queryKey: eventKeys.results(eventId),
+    queryKey: eventKeys.results(eventId, params),
     queryFn: async () => {
       const { data } = await Events.eventControllerFindResults({
         path: { eventId },
         query: params,
       });
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      return data as PaginatedResponse;
     },
     enabled: !!eventId,
+  });
+}
+
+export function useImportEventResults() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ eventId, body }: { eventId: string; body: string[] }) => {
+      const { data } = await Events.eventControllerImportResults({
+        path: { eventId },
+        body,
+      });
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: eventKeys.all }),
   });
 }

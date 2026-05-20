@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Permissions } from "@match/api-client";
+import { Permissions, type CreatePermissionDto } from "@match/api-client";
+import type { WithId } from "@/api/types";
 
 export const permissionKeys = {
   all: ["permissions"] as const,
@@ -19,8 +20,8 @@ export function usePermissionTree() {
 export function useCreatePermission() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await Permissions.permissionControllerCreate({ body } as any);
+    mutationFn: async (body: CreatePermissionDto) => {
+      const { data } = await Permissions.permissionControllerCreate({ body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: permissionKeys.all }),
@@ -30,8 +31,13 @@ export function useCreatePermission() {
 export function useUpdatePermission() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: Record<string, unknown> }) => {
-      const { data } = await Permissions.permissionControllerUpdate({ path: { id }, body } as any);
+    mutationFn: async ({ id, body }: WithId<Partial<CreatePermissionDto>>) => {
+      const { data } = await Permissions.permissionControllerUpdate({
+        path: { id },
+        body,
+      } as Parameters<typeof Permissions.permissionControllerUpdate>[0] & {
+        body: Partial<CreatePermissionDto>;
+      });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: permissionKeys.all }),

@@ -1,20 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pacers } from "@match/api-client";
+import {
+  Pacers,
+  type AssignPacerDto,
+  type CreatePacerDto,
+  type PacerControllerFindAllData,
+  type PacerControllerFindEventsData,
+  type PacerControllerFindTestsData,
+} from "@match/api-client";
+import type { PaginatedResponse, QueryOf, WithId } from "@/api/types";
+
+export type PacerListQuery = QueryOf<PacerControllerFindAllData>;
+export type PacerTestsQuery = QueryOf<PacerControllerFindTestsData>;
+export type PacerEventsQuery = QueryOf<PacerControllerFindEventsData>;
 
 export const pacerKeys = {
   all: ["pacers"] as const,
-  list: (params?: Record<string, unknown>) => [...pacerKeys.all, "list", params] as const,
+  list: (params?: PacerListQuery) => [...pacerKeys.all, "list", params] as const,
   detail: (id: string) => [...pacerKeys.all, "detail", id] as const,
-  tests: ["pacer-tests"] as const,
-  events: ["pacer-events"] as const,
+  tests: (params?: PacerTestsQuery) => ["pacer-tests", params] as const,
+  events: (params?: PacerEventsQuery) => ["pacer-events", params] as const,
+  eventDetail: (id: string) => ["pacer-events", "detail", id] as const,
 };
 
-export function usePacerList(params?: Record<string, unknown>) {
+export function usePacerList(params?: PacerListQuery) {
   return useQuery({
     queryKey: pacerKeys.list(params),
     queryFn: async () => {
-      const { data } = await Pacers.pacerControllerFindAll({ query: params } as any);
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      const { data } = await Pacers.pacerControllerFindAll({ query: params });
+      return data as PaginatedResponse;
     },
   });
 }
@@ -33,8 +46,8 @@ export function usePacerDetail(id: string) {
 export function useCreatePacer() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await Pacers.pacerControllerCreate({ body } as any);
+    mutationFn: async (body: CreatePacerDto) => {
+      const { data } = await Pacers.pacerControllerCreate({ body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: pacerKeys.all }),
@@ -84,12 +97,12 @@ export function useRevokePacer() {
   });
 }
 
-export function usePacerTests() {
+export function usePacerTests(params?: PacerTestsQuery) {
   return useQuery({
-    queryKey: pacerKeys.tests,
+    queryKey: pacerKeys.tests(params),
     queryFn: async () => {
-      const { data } = await Pacers.pacerControllerFindTests();
-      return data;
+      const { data } = await Pacers.pacerControllerFindTests({ query: params });
+      return data as PaginatedResponse;
     },
   });
 }
@@ -97,32 +110,48 @@ export function usePacerTests() {
 export function useUpdatePacerTest() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: Record<string, unknown> }) => {
-      const { data } = await Pacers.pacerControllerUpdateTest({ path: { id }, body } as any);
+    mutationFn: async ({ id, body }: WithId<Record<string, unknown>>) => {
+      const { data } = await Pacers.pacerControllerUpdateTest({
+        path: { id },
+        body,
+      } as Parameters<typeof Pacers.pacerControllerUpdateTest>[0] & {
+        body: Record<string, unknown>;
+      });
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: pacerKeys.tests }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["pacer-tests"] }),
   });
 }
 
-export function usePacerEvents() {
+export function usePacerEvents(params?: PacerEventsQuery) {
   return useQuery({
-    queryKey: pacerKeys.events,
+    queryKey: pacerKeys.events(params),
     queryFn: async () => {
-      const { data } = await Pacers.pacerControllerFindEvents();
+      const { data } = await Pacers.pacerControllerFindEvents({ query: params });
+      return data as PaginatedResponse;
+    },
+  });
+}
+
+export function usePacerEventDetail(id: string) {
+  return useQuery({
+    queryKey: pacerKeys.eventDetail(id),
+    queryFn: async () => {
+      const { data } = await Pacers.pacerControllerFindEventDetail({ path: { id } });
       return data;
     },
+    enabled: !!id,
   });
 }
 
 export function useAssignPacer() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await Pacers.pacerControllerAssign({ body } as any);
+    mutationFn: async (body: AssignPacerDto) => {
+      const { data } = await Pacers.pacerControllerAssign({ body });
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: pacerKeys.events }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["pacer-events"] }),
   });
 }
 
@@ -133,6 +162,6 @@ export function useWithdrawPacer() {
       const { data } = await Pacers.pacerControllerWithdraw({ path: { id } });
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: pacerKeys.events }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["pacer-events"] }),
   });
 }

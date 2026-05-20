@@ -1,21 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { RegistrationCards } from "@match/api-client";
+import {
+  RegistrationCards,
+  type CreateRegistrationCardDto,
+  type RegistrationCardControllerFindAllData,
+  type UpdateRegistrationCardDto,
+} from "@match/api-client";
+import type { PaginatedResponse, QueryOf, WithId } from "@/api/types";
+
+export type RegistrationCardListQuery = QueryOf<RegistrationCardControllerFindAllData>;
 
 export const registrationCardKeys = {
   all: ["registration-cards"] as const,
-  list: (params?: Record<string, unknown>) =>
+  list: (params?: RegistrationCardListQuery) =>
     [...registrationCardKeys.all, "list", params] as const,
   detail: (id: string) => [...registrationCardKeys.all, "detail", id] as const,
 };
 
-export function useRegistrationCardList(params?: Record<string, unknown>) {
+export function useRegistrationCardList(params?: RegistrationCardListQuery) {
   return useQuery({
     queryKey: registrationCardKeys.list(params),
     queryFn: async () => {
       const { data } = await RegistrationCards.registrationCardControllerFindAll(
-        params ? ({ query: params } as any) : undefined,
+        params ? { query: params } : undefined,
       );
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      return data as PaginatedResponse;
     },
   });
 }
@@ -34,8 +42,8 @@ export function useRegistrationCardDetail(id: string) {
 export function useCreateRegistrationCard() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await RegistrationCards.registrationCardControllerCreate({ body } as any);
+    mutationFn: async (body: CreateRegistrationCardDto) => {
+      const { data } = await RegistrationCards.registrationCardControllerCreate({ body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: registrationCardKeys.all }),
@@ -45,11 +53,11 @@ export function useCreateRegistrationCard() {
 export function useUpdateRegistrationCard() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: Record<string, unknown> }) => {
+    mutationFn: async ({ id, body }: WithId<UpdateRegistrationCardDto>) => {
       const { data } = await RegistrationCards.registrationCardControllerUpdate({
         path: { id },
         body,
-      } as any);
+      });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: registrationCardKeys.all }),

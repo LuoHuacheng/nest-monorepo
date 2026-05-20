@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Auth } from "@match/api-client";
+import { Auth, type LoginDto } from "@match/api-client";
 import { useAuthStore, type User } from "@/stores/auth";
 
 export const authKeys = {
@@ -24,7 +24,7 @@ export function useLogin() {
   const login = useAuthStore((s) => s.login);
 
   return useMutation({
-    mutationFn: async (credentials: { username: string; password: string }) => {
+    mutationFn: async (credentials: LoginDto) => {
       const result = await Auth.authControllerLogin({ body: credentials });
       return result.data as {
         accessToken: string;
@@ -35,6 +35,15 @@ export function useLogin() {
     onSuccess: (data) => {
       login(data.accessToken, data.refreshToken, data.user);
       navigate({ to: "/" });
+    },
+  });
+}
+
+export function useRefreshToken() {
+  return useMutation({
+    mutationFn: async () => {
+      const result = await Auth.authControllerRefresh();
+      return result.data;
     },
   });
 }

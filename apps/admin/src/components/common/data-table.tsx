@@ -27,6 +27,14 @@ interface DataTableProps {
   onPageChange?: (page: number) => void;
 }
 
+function getFixedClass(col: Column): string {
+  if (!col.fixed) return "";
+  if (col.fixed === "left") {
+    return "sticky left-0 z-10 bg-background shadow-[1px_0_0_var(--color-border)]";
+  }
+  return "sticky right-0 z-10 bg-background shadow-[-1px_0_0_var(--color-border)]";
+}
+
 export function DataTable({
   columns,
   data,
@@ -49,19 +57,12 @@ export function DataTable({
       leftOffset += col.width ?? 150;
     }
   }
+  // oxlint-disable-next-line unicorn/no-array-reverse
   for (const col of [...columns].reverse()) {
     if (col.fixed === "right") {
       rightOffsets[col.key] = rightOffset;
       rightOffset += col.width ?? 80;
     }
-  }
-
-  function getFixedClass(col: Column): string {
-    if (!col.fixed) return "";
-    if (col.fixed === "left") {
-      return "sticky left-0 z-10 bg-background shadow-[1px_0_0_var(--color-border)]";
-    }
-    return "sticky right-0 z-10 bg-background shadow-[-1px_0_0_var(--color-border)]";
   }
 
   function getFixedStyle(col: Column): React.CSSProperties | undefined {

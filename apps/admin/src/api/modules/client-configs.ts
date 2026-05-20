@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ClientConfigs } from "@match/api-client";
+import { ClientConfigs, type BatchUpdateClientConfigDto } from "@match/api-client";
 
 export const clientConfigKeys = {
   all: ["client-configs"] as const,
@@ -19,8 +19,8 @@ export function useClientConfigList() {
 export function useBatchUpdateClientConfig() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const { data } = await ClientConfigs.clientConfigControllerBatchUpdate({ body } as any);
+    mutationFn: async (body: BatchUpdateClientConfigDto) => {
+      const { data } = await ClientConfigs.clientConfigControllerBatchUpdate({ body });
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: clientConfigKeys.all }),

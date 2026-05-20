@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Orders, Events } from "@match/api-client";
+import type { PaginatedResponse } from "@/api/types";
 
 export const dashboardKeys = {
   all: ["dashboard"] as const,
@@ -13,8 +14,8 @@ export function useDashboardRecentOrders() {
     queryFn: async () => {
       const { data } = await Orders.orderControllerFindAll({
         query: { page: 1, pageSize: 5 },
-      } as any);
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      });
+      return data as PaginatedResponse;
     },
   });
 }
@@ -25,8 +26,8 @@ export function useDashboardRecentEvents() {
     queryFn: async () => {
       const { data } = await Events.eventControllerFindAll({
         query: { page: 1, pageSize: 5 },
-      } as any);
-      return data as { items: unknown[]; total: number; page: number; pageSize: number };
+      });
+      return data as PaginatedResponse;
     },
   });
 }

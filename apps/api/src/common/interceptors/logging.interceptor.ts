@@ -35,8 +35,6 @@ export class LoggingInterceptor implements NestInterceptor {
     // 从路径中提取模块名 (e.g., /api/users -> user)
     const module = path.split("/")[2] || "";
 
-    const now = Date.now();
-
     return next.handle().pipe(
       tap({
         next: () => {
