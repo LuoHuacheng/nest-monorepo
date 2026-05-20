@@ -1,2 +1,4 @@
-src/generated/
+src/generated/*.gen.ts
+src/generated/client/
+src/generated/core/
 dist/
