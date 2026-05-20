@@ -1,12 +1,12 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
-import { Response, Request } from "express";
+import { Response } from "express";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    // const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = "Internal server error";
@@ -20,7 +20,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = exception.message;
     }
 
-    response.status(status).json({
+    // 401/403 返回 HTTP 200，由前端根据 body.code 处理，避免触发浏览器/拦截器的错误流程
+    const httpStatus = status === 401 || status === 403 ? 200 : status;
+
+    response.status(httpStatus).json({
       code: status,
       data: null,
       message,
