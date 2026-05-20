@@ -27,8 +27,8 @@ function LoginPage() {
       setError("");
       try {
         await loginMutation.mutateAsync(value);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "登录失败");
+      } catch (e: unknown) {
+        setError((e as Error)?.message ?? "登录失败");
       }
     },
     validators: {
