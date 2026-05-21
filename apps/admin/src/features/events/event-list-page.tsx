@@ -6,10 +6,10 @@ import {
   useDrawEvent,
   useEventDrawResults,
   useEventList,
-  useEventOrders,
   useEventParticipants,
   useUpdatePublishStatus,
 } from "@/api/modules/events";
+import { useOrderList } from "@/api/modules/orders";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
@@ -118,7 +118,8 @@ export function EventsPage() {
     page: participantsPage,
     pageSize: 10,
   });
-  const { data: ordersData } = useEventOrders(ordersEventId ?? "", {
+  const { data: ordersData } = useOrderList({
+    eventId: ordersEventId ?? "",
     page: ordersPage,
     pageSize: 10,
   });
@@ -192,11 +193,7 @@ export function EventsPage() {
     { key: "province", title: "省份" },
     { key: "city", title: "城市" },
     { key: "address", title: "详细地址" },
-    {
-      key: "tags",
-      title: "标签",
-      render: (val: unknown) => ((val as string[]).length ? (val as string[]).join(" / ") : "-"),
-    },
+    { key: "tags", title: "标签" },
     {
       key: "attributes",
       title: "赛事属性",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useEventResults } from "@/api/modules/events";
+import { useResults } from "@/api/modules/results";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
 import { SearchForm } from "@/components/common/search-form";
@@ -31,7 +31,7 @@ export function ResultsPage() {
   const pageSize = 10;
   const [eventId] = useState("");
 
-  const { data, isLoading } = useEventResults(eventId, { page, pageSize });
+  const { data, isLoading } = useResults({ eventId: eventId || undefined, page, pageSize });
   const items = (data as { items?: unknown[] })?.items ?? [];
   const total = (data as { total?: number })?.total ?? 0;
   const filtered = (items as Record<string, unknown>[]).filter(

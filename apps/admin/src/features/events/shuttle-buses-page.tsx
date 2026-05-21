@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useShuttleBuses } from "@/api/modules/events";
+import { useShuttleBuses } from "@/api/modules/shuttle-buses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
