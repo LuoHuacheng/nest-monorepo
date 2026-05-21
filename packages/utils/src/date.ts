@@ -1,6 +1,5 @@
 import {
   addDays,
-  differenceInMinutes,
   endOfDay,
   endOfMonth,
   endOfWeek,
@@ -32,10 +31,7 @@ export interface DateRange {
   end: Date;
 }
 
-export function formatDateInTimeZone(
-  date: DateInput,
-  timeZone: string = "Asia/Shanghai",
-): string {
+export function formatDateInTimeZone(date: DateInput, timeZone: string = "Asia/Shanghai"): string {
   const dateObj = normalizeDate(date);
   if (!isValidDate(dateObj)) return "--";
   return formatInTimeZone(dateObj, timeZone, "yyyy-MM-dd HH:mm:ss");
@@ -57,10 +53,7 @@ export function isValidDate(date: DateInput): boolean {
   }
 }
 
-export function formatDate(
-  date: DateInput,
-  formatStr: string = "yyyy-MM-dd HH:mm:ss",
-): string {
+export function formatDate(date: DateInput, formatStr: string = "yyyy-MM-dd HH:mm:ss"): string {
   const dateObj = normalizeDate(date);
   if (!isValidDate(dateObj)) return "--";
   return format(dateObj, formatStr);
@@ -147,9 +140,7 @@ export function getYesterdayRange(): DateRange {
   return { end: endOfDay(yesterday), start: startOfDay(yesterday) };
 }
 
-export function getThisWeekRange(
-  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 1,
-): DateRange {
+export function getThisWeekRange(weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 1): DateRange {
   const now = new Date();
   return {
     end: endOfWeek(now, { weekStartsOn }),
@@ -181,10 +172,7 @@ export function getNextDaysRange(days: number): DateRange {
   };
 }
 
-export function getDateRange(
-  startDate: DateInput,
-  endDate: DateInput,
-): DateRange {
+export function getDateRange(startDate: DateInput, endDate: DateInput): DateRange {
   return { end: normalizeDate(endDate), start: normalizeDate(startDate) };
 }
 
@@ -196,31 +184,20 @@ export function formatDateRange(
   return `${formatDate(startDate, formatStr)} ~ ${formatDate(endDate, formatStr)}`;
 }
 
-export function formatDateRangeShort(
-  startDate: DateInput,
-  endDate: DateInput,
-): string {
+export function formatDateRangeShort(startDate: DateInput, endDate: DateInput): string {
   return `${formatDate(startDate, "MM/dd")} - ${formatDate(endDate, "MM/dd")}`;
 }
 
-export function getDaysDifference(
-  date1: DateInput,
-  date2: DateInput,
-): number {
+export function getDaysDifference(date1: DateInput, date2: DateInput): number {
   const d1 = normalizeDate(date1);
   const d2 = normalizeDate(date2);
   return Math.ceil(Math.abs(d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export function isDateInRange(
-  date: DateInput,
-  startDate: DateInput,
-  endDate: DateInput,
-): boolean {
+export function isDateInRange(date: DateInput, startDate: DateInput, endDate: DateInput): boolean {
   const checkDate = normalizeDate(date).getTime();
   return (
-    checkDate >= normalizeDate(startDate).getTime() &&
-    checkDate <= normalizeDate(endDate).getTime()
+    checkDate >= normalizeDate(startDate).getTime() && checkDate <= normalizeDate(endDate).getTime()
   );
 }
 
@@ -246,12 +223,7 @@ export function generateMonthArray(options: {
   includeCurrent?: boolean;
   locale?: Locale;
 }) {
-  const {
-    count = 6,
-    formatStr = "yyyy-MM",
-    includeCurrent = true,
-    locale = zhCN,
-  } = options;
+  const { count = 6, formatStr = "yyyy-MM", includeCurrent = true, locale = zhCN } = options;
   const months: Record<string, unknown>[] = [];
   const today = new Date();
   const startFrom = includeCurrent ? 0 : 1;
@@ -264,5 +236,5 @@ export function generateMonthArray(options: {
       value: format(monthDate, "yyyy-MM"),
     });
   }
-  return months.reverse();
+  return months.toReversed();
 }

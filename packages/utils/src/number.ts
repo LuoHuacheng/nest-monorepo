@@ -233,7 +233,8 @@ export const cnAmountFormats = {
         integerStr.substring(4, 8),
         integerStr.substring(8, 12),
       ];
-      groups.forEach((group, groupIndex) => {
+      for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
+        const group = groups[groupIndex];
         let groupResult = "";
         let zeroFlag = false;
         for (let i = 0; i < group.length; i++) {
@@ -250,7 +251,7 @@ export const cnAmountFormats = {
           }
         }
         if (groupResult) result += groupResult + bigUnits[2 - groupIndex];
-      });
+      }
       result = result.replace(/零+$/, "");
     } else {
       result = "零";
