@@ -14,6 +14,7 @@ import {
   CreateInviteCodeDto,
   CreateShuttleBusDto,
   UpdateEventDto,
+  UpdateInviteCodeDto,
 } from "./dto/create-event.dto";
 import { QueryEventDto, QueryOrderDto, QueryParticipantDto } from "./dto/query-event.dto";
 import { UpdatePublishStatusDto } from "./dto/update-publish-status.dto";
@@ -217,6 +218,14 @@ export class EventController {
   @ApiResponse({ ...apiOkResponse(EventInviteCodeDto), description: "创建的邀请码" })
   createInviteCode(@Param("eventId") eventId: string, @Body() dto: CreateInviteCodeDto) {
     return this.eventService.createInviteCode(eventId, dto);
+  }
+
+  @Patch("invite-codes/:id")
+  @Permissions("event:update")
+  @ApiOperation({ summary: "更新邀请码" })
+  @ApiResponse({ ...apiOkResponse(EventInviteCodeDto), description: "更新后的邀请码" })
+  updateInviteCode(@Param("id") id: string, @Body() dto: UpdateInviteCodeDto) {
+    return this.eventService.updateInviteCode(id, dto);
   }
 
   @Delete("invite-codes/:id")

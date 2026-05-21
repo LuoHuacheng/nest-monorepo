@@ -7,6 +7,7 @@ import {
   CreateInviteCodeDto,
   CreateShuttleBusDto,
   UpdateEventDto,
+  UpdateInviteCodeDto,
 } from "./dto/create-event.dto";
 import { QueryEventDto, QueryOrderDto, QueryParticipantDto } from "./dto/query-event.dto";
 import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
@@ -306,13 +307,49 @@ export class EventService {
 
   async createInviteCode(eventId: string, dto: CreateInviteCodeDto) {
     await this.findOne(eventId);
+
+    if (dto.registrationGroupId) {
+      const group = await this.prisma.registrationGroup.findUnique({
+        where: { id: dto.registrationGroupId },
+      });
+      if (!group || group.eventId !== eventId) {
+        throw new BadRequestException("赛事组别不存在或不属于该赛事");
+      }
+    }
+
+    const existing = await this.prisma.eventInviteCode.findUnique({
+      where: { code: dto.code },
+    });
+    if (existing) {
+      throw new BadRequestException("邀请码已存在");
+    }
+
     return this.prisma.eventInviteCode.create({
       data: {
-        ...dto,
+        code: dto.code,
+        desc: dto.desc,
+        discount: dto.discount,
+        maxUses: dto.maxUses,
         eventId,
+        registrationGroupId: dto.registrationGroupId || null,
         expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
       },
     });
+  }
+
+  async updateInviteCode(id: string, dto: UpdateInviteCodeDto) {
+    const existing = await this.prisma.eventInviteCode.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException("邀请码不存在");
+
+    const data: Record<string, unknown> = {};
+    if (dto.desc !== undefined) data.desc = dto.desc;
+    if (dto.discount !== undefined) data.discount = dto.discount;
+    if (dto.maxUses !== undefined) data.maxUses = dto.maxUses;
+    if (dto.status !== undefined) data.status = dto.status;
+    if (dto.expiresAt !== undefined)
+      data.expiresAt = dto.expiresAt ? new Date(dto.expiresAt) : null;
+
+    return this.prisma.eventInviteCode.update({ where: { id }, data });
   }
 
   async removeInviteCode(id: string) {

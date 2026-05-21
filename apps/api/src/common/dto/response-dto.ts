@@ -153,7 +153,10 @@ export class RegistrationCardDto {
 export class EventInviteCodeDto {
   @ApiProperty({ description: "邀请码 ID" }) id!: string;
   @ApiProperty({ description: "赛事 ID" }) eventId!: string;
+  @ApiPropertyOptional({ description: "赛事组别 ID" }) registrationGroupId?: string;
+  @ApiProperty({ description: "邀请码描述" }) desc?: string;
   @ApiProperty({ description: "邀请码" }) code!: string;
+  @ApiProperty({ description: "折扣百分比，100 为原价，0 为免费" }) discount!: number;
   @ApiProperty({ description: "最大使用次数" }) maxUses!: number;
   @ApiProperty({ description: "已使用次数" }) usedCount!: number;
   @ApiProperty({ description: "状态" }) status!: number;
