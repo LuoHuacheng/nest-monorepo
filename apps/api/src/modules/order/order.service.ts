@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { QueryOrderDto } from "./dto/query-order.dto";
+import { QueryOrderDto, QueryParticipantDto } from "./dto/query-order.dto";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import type { PaginatedResult } from "../../common/dto/pagination.dto";
+import type { Prisma } from "../../../generated/prisma/client";
 
 @Injectable()
 export class OrderService {
@@ -83,12 +84,17 @@ export class OrderService {
   }
 
   async findAll(query: QueryOrderDto): Promise<PaginatedResult<Record<string, unknown>>> {
-    const { page, pageSize, type, status, keyword } = query;
-    const where: Record<string, unknown> = {};
+    const { page, pageSize, eventId, type, status, keyword } = query;
+    const where: Prisma.OrderWhereInput = {};
+    if (eventId && eventId.trim() !== "") where.eventId = eventId;
     if (type) where.type = type;
     if (status) where.status = status;
     if (keyword) {
-      where.OR = [{ orderNo: { contains: keyword, mode: "insensitive" } }];
+      where.OR = [
+        { orderNo: { contains: keyword, mode: "insensitive" } },
+        { user: { name: { contains: keyword, mode: "insensitive" } } },
+        { user: { phone: { contains: keyword, mode: "insensitive" } } },
+      ];
     }
 
     const [items, total] = await Promise.all([
@@ -98,7 +104,43 @@ export class OrderService {
         take: pageSize,
         include: {
           event: { select: { id: true, name: true } },
-          registrationGroup: { select: { id: true, name: true } },
+          registrationGroup: {
+            select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+          },
+          user: { select: { id: true, name: true, phone: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+    return { items, total, page, pageSize };
+  }
+
+  async findParticipants(
+    query: QueryParticipantDto,
+  ): Promise<PaginatedResult<Record<string, unknown>>> {
+    const { page, pageSize, eventId, status, keyword } = query;
+    const where: Prisma.OrderWhereInput = {};
+    if (eventId && eventId.trim() !== "") where.eventId = eventId;
+    if (status) where.status = status;
+    if (keyword) {
+      where.OR = [
+        { orderNo: { contains: keyword, mode: "insensitive" } },
+        { user: { name: { contains: keyword, mode: "insensitive" } } },
+        { user: { phone: { contains: keyword, mode: "insensitive" } } },
+      ];
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          registrationGroup: {
+            select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
+          },
+          user: { select: { id: true, name: true, phone: true } },
         },
         orderBy: { createdAt: "desc" },
       }),

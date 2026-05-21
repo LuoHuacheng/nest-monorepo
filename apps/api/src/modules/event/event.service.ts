@@ -4,13 +4,10 @@ import type { Event as PrismaEvent, Prisma } from "../../../generated/prisma/cli
 import {
   CreateEventDto,
   CreateEventRegistrationGroupDto,
-  CreateInviteCodeDto,
-  CreateShuttleBusDto,
   UpdateEventDto,
-  UpdateInviteCodeDto,
 } from "./dto/create-event.dto";
-import { QueryEventDto, QueryOrderDto, QueryParticipantDto } from "./dto/query-event.dto";
-import { PaginationDto, PaginatedResult } from "../../common/dto/pagination.dto";
+import { QueryEventDto, QueryEventParticipantDto } from "./dto/query-event.dto";
+import { PaginatedResult } from "../../common/dto/pagination.dto";
 import { computeEventStatus } from "./event-status";
 
 @Injectable()
@@ -272,155 +269,24 @@ export class EventService {
     };
   }
 
-  // ==================== 订单 ====================
-
-  async findOrders(eventId: string, query: QueryOrderDto) {
-    const { page, pageSize, orderNo } = query;
-    const where: Record<string, unknown> = { eventId };
-    if (orderNo) where.orderNo = { contains: orderNo, mode: "insensitive" };
-    const [items, total] = await Promise.all([
-      this.prisma.order.findMany({
-        where,
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        include: {
-          registrationGroup: {
-            select: { id: true, name: true, groupType: true, specName: true, genderLimit: true },
-          },
-          user: { select: { id: true, name: true, phone: true } },
-        },
-        orderBy: { createdAt: "desc" },
-      }),
-      this.prisma.order.count({ where }),
-    ]);
-    return { items, total, page, pageSize };
-  }
-
-  // ==================== 邀请码 ====================
-
-  async findInviteCodes(eventId: string) {
-    return this.prisma.eventInviteCode.findMany({
-      where: { eventId },
-      orderBy: { createdAt: "desc" },
-    });
-  }
-
-  async createInviteCode(eventId: string, dto: CreateInviteCodeDto) {
-    await this.findOne(eventId);
-
-    if (dto.registrationGroupId) {
-      const group = await this.prisma.registrationGroup.findUnique({
-        where: { id: dto.registrationGroupId },
-      });
-      if (!group || group.eventId !== eventId) {
-        throw new BadRequestException("赛事组别不存在或不属于该赛事");
-      }
-    }
-
-    const existing = await this.prisma.eventInviteCode.findUnique({
-      where: { code: dto.code },
-    });
-    if (existing) {
-      throw new BadRequestException("邀请码已存在");
-    }
-
-    return this.prisma.eventInviteCode.create({
-      data: {
-        code: dto.code,
-        desc: dto.desc,
-        discount: dto.discount,
-        maxUses: dto.maxUses,
-        eventId,
-        registrationGroupId: dto.registrationGroupId || null,
-        expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
-      },
-    });
-  }
-
-  async updateInviteCode(id: string, dto: UpdateInviteCodeDto) {
-    const existing = await this.prisma.eventInviteCode.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundException("邀请码不存在");
-
-    const data: Record<string, unknown> = {};
-    if (dto.desc !== undefined) data.desc = dto.desc;
-    if (dto.discount !== undefined) data.discount = dto.discount;
-    if (dto.maxUses !== undefined) data.maxUses = dto.maxUses;
-    if (dto.status !== undefined) data.status = dto.status;
-    if (dto.expiresAt !== undefined)
-      data.expiresAt = dto.expiresAt ? new Date(dto.expiresAt) : null;
-
-    return this.prisma.eventInviteCode.update({ where: { id }, data });
-  }
-
-  async removeInviteCode(id: string) {
-    return this.prisma.eventInviteCode.delete({ where: { id } });
-  }
-
-  // ==================== 摆渡车 ====================
-
-  async findShuttleBuses(eventId: string) {
-    return this.prisma.eventShuttleBus.findMany({
-      where: { eventId },
-      orderBy: { departureTime: "asc" },
-    });
-  }
-
-  async createShuttleBus(eventId: string, dto: CreateShuttleBusDto) {
-    await this.findOne(eventId);
-    return this.prisma.eventShuttleBus.create({
-      data: { ...dto, eventId, departureTime: new Date(dto.departureTime) },
-    });
-  }
-
-  async updateShuttleBus(id: string, dto: Partial<CreateShuttleBusDto>) {
-    const data: Record<string, unknown> = { ...dto };
-    if (dto.departureTime) data.departureTime = new Date(dto.departureTime);
-    return this.prisma.eventShuttleBus.update({ where: { id }, data });
-  }
-
-  async removeShuttleBus(id: string) {
-    return this.prisma.eventShuttleBus.delete({ where: { id } });
-  }
-
-  // ==================== 成绩 ====================
-
-  async findResults(eventId: string, query: PaginationDto) {
-    const { page, pageSize } = query;
-    const [items, total] = await Promise.all([
-      this.prisma.eventResult.findMany({
-        where: { eventId },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        orderBy: { rank: "asc" },
-      }),
-      this.prisma.eventResult.count({ where: { eventId } }),
-    ]);
-    return { items, total, page, pageSize };
-  }
-
-  async importResults(
-    eventId: string,
-    results: { bibNumber: string; finishTime: string; rank?: number }[],
-  ) {
-    await this.findOne(eventId);
-    return this.prisma.eventResult.createMany({
-      data: results.map((r) => ({ ...r, eventId })),
-    });
-  }
-
   // ==================== 参赛人 ====================
 
-  async findParticipants(eventId: string, query: QueryParticipantDto) {
-    const { page, pageSize, status, keyword } = query;
-    const where: Record<string, unknown> = { eventId };
-    if (status) where.status = status;
+  async findParticipants(
+    eventId: string,
+    query: QueryEventParticipantDto,
+  ): Promise<PaginatedResult<Record<string, unknown>>> {
+    const { page, pageSize, keyword } = query;
+
+    await this.findOne(eventId);
+
+    const where: Prisma.OrderWhereInput = { eventId };
     if (keyword) {
       where.OR = [
-        { orderNo: { contains: keyword, mode: "insensitive" } },
         { user: { name: { contains: keyword, mode: "insensitive" } } },
         { user: { phone: { contains: keyword, mode: "insensitive" } } },
       ];
     }
+
     const [items, total] = await Promise.all([
       this.prisma.order.findMany({
         where,
@@ -436,6 +302,7 @@ export class EventService {
       }),
       this.prisma.order.count({ where }),
     ]);
+
     return { items, total, page, pageSize };
   }
 
@@ -448,7 +315,24 @@ export class EventService {
       groupDrawCompleted: event.groupDrawCompleted,
       adminConfirmed: event.adminConfirmed,
     });
-    return { ...event, eventStatus };
+    return {
+      ...event,
+      eventStatus,
+      coverImages: this.parseJsonField(event.coverImages),
+      attributes: this.parseJsonField(event.attributes),
+    };
+  }
+
+  private parseJsonField(value: unknown): Prisma.JsonValue {
+    if (value === null || value === undefined) return value as Prisma.JsonValue;
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value as Prisma.JsonValue;
+      }
+    }
+    return value as Prisma.JsonValue;
   }
 
   private buildEventData(dto: CreateEventDto | UpdateEventDto, current?: PrismaEvent) {

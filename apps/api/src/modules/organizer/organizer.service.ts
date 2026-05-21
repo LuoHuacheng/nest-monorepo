@@ -81,8 +81,23 @@ export class OrganizerService {
     return data;
   }
 
-  private stripPassword<T extends { password?: string | null }>(item: T) {
+  private stripPassword<T extends { password?: string | null; eventItems?: unknown }>(item: T) {
     const { password: _password, ...safeItem } = item;
-    return safeItem;
+    return {
+      ...safeItem,
+      eventItems: this.parseJsonField(safeItem.eventItems),
+    };
+  }
+
+  private parseJsonField(value: unknown): unknown {
+    if (value === null || value === undefined) return value;
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
   }
 }

@@ -195,6 +195,11 @@ export class CreateEventDto {
 export class UpdateEventDto extends PartialType(CreateEventDto) {}
 
 export class CreateInviteCodeDto {
+  @ApiProperty({ description: "赛事ID" })
+  @IsString()
+  @IsNotEmpty()
+  eventId!: string;
+
   @ApiProperty({ description: "邀请码，不填则自动生成" })
   @IsString()
   @IsNotEmpty()
@@ -257,6 +262,11 @@ export class UpdateInviteCodeDto {
 }
 
 export class CreateShuttleBusDto {
+  @ApiProperty({ description: "赛事ID" })
+  @IsString()
+  @IsNotEmpty()
+  eventId!: string;
+
   @ApiProperty({ description: "路线" })
   @IsString()
   @IsNotEmpty()
@@ -269,6 +279,18 @@ export class CreateShuttleBusDto {
   @ApiProperty({ description: "容量" })
   @IsInt()
   capacity!: number;
+}
+
+export class ImportResultsDto {
+  @ApiProperty({ description: "赛事ID" })
+  @IsString()
+  @IsNotEmpty()
+  eventId!: string;
+
+  @ApiProperty({ description: "成绩列表", type: [Object] })
+  @IsArray()
+  @ArrayMinSize(1)
+  results!: { bibNumber: string; finishTime: string; rank?: number }[];
 }
 
 export class ConfirmDrawDto {

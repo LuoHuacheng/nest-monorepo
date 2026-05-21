@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Param, Query, Body } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
-import { QueryOrderDto } from "./dto/query-order.dto";
+import { QueryOrderDto, QueryParticipantDto } from "./dto/query-order.dto";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { Permissions } from "../../common/decorators/permissions.decorator";
 import { apiOkResponse, paginatedApiOkResponse, OrderDto } from "../../common/dto/response-dto";
@@ -29,6 +29,17 @@ export class OrderController {
   })
   findAll(@Query() query: QueryOrderDto) {
     return this.orderService.findAll(query);
+  }
+
+  @Get("participants")
+  @Permissions("order:list")
+  @ApiOperation({ summary: "参赛人列表" })
+  @ApiResponse({
+    ...paginatedApiOkResponse(OrderDto),
+    description: "分页参赛人列表（含报名级别信息）",
+  })
+  findParticipants(@Query() query: QueryParticipantDto) {
+    return this.orderService.findParticipants(query);
   }
 
   @Get(":id")

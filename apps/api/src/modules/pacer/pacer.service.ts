@@ -49,7 +49,7 @@ export class PacerService {
       }),
       this.prisma.pacer.count({ where }),
     ]);
-    return { items, total, page, pageSize };
+    return { items: items.map((item) => this.formatPacer(item)), total, page, pageSize };
   }
 
   async findOne(id: string) {
@@ -58,7 +58,7 @@ export class PacerService {
       include: { tests: true, events: true },
     });
     if (!pacer) throw new NotFoundException("配速员不存在");
-    return pacer;
+    return this.formatPacer(pacer);
   }
 
   async approve(id: string) {
@@ -173,5 +173,27 @@ export class PacerService {
     });
     const currentSequence = latest?.pacerNo ? Number(latest.pacerNo.slice(prefix.length)) : 0;
     return `${prefix}${String(currentSequence + 1).padStart(5, "0")}`;
+  }
+
+  private formatPacer<T extends { paceSegments?: unknown; marathonCertificates?: unknown }>(
+    item: T,
+  ) {
+    return {
+      ...item,
+      paceSegments: this.parseJsonField(item.paceSegments),
+      marathonCertificates: this.parseJsonField(item.marathonCertificates),
+    };
+  }
+
+  private parseJsonField(value: unknown): unknown {
+    if (value === null || value === undefined) return value;
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
   }
 }

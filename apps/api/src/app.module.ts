@@ -11,6 +11,9 @@ import { DictModule } from "./modules/dict/dict.module";
 import { LogModule } from "./modules/log/log.module";
 import { UploadModule } from "./modules/upload/upload.module";
 import { EventModule } from "./modules/event/event.module";
+import { InviteCodeModule } from "./modules/invite-code/invite-code.module";
+import { ShuttleBusModule } from "./modules/shuttle-bus/shuttle-bus.module";
+import { ResultModule } from "./modules/result/result.module";
 import { RegistrationCardModule } from "./modules/registration-card/registration-card.module";
 import { OrderModule } from "./modules/order/order.module";
 import { OrganizerModule } from "./modules/organizer/organizer.module";
@@ -35,6 +38,9 @@ import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
     LogModule,
     UploadModule,
     EventModule,
+    InviteCodeModule,
+    ShuttleBusModule,
+    ResultModule,
     RegistrationCardModule,
     OrderModule,
     OrganizerModule,
