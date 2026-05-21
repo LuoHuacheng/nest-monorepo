@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -354,11 +355,10 @@ export function OrganizerFormDialog({ open, onOpenChange, organizerId }: Organiz
                 {(field) => (
                   <div className="space-y-2">
                     <Label>赛事时间 *</Label>
-                    <Input
-                      type="date"
+                    <DatePicker
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(value) => field.handleChange(value)}
                     />
                     <FormFieldError errors={field.state.meta.errors} />
                   </div>

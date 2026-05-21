@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
@@ -34,7 +35,7 @@ export function RolesPage() {
         <Badge variant={val === 1 ? "default" : "secondary"}>{val === 1 ? "启用" : "禁用"}</Badge>
       ),
     },
-    { key: "createdAt", title: "创建时间" },
+    { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
     {
       key: "actions",
       title: "操作",

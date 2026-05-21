@@ -4,7 +4,15 @@
     "correctness": "error",
     "suspicious": "warn"
   },
-  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/build/**", ".output", "*.config.*", "*.gen.*", "pnpm-lock.yaml"],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    ".output",
+    "*.config.*",
+    "*.gen.*",
+    "pnpm-lock.yaml"
+  ],
   "rules": {
     "typescript/no-non-null-assertion": "warn",
     "typescript/consistent-type-imports": ["error", { "prefer": "type-imports" }],
@@ -25,6 +33,7 @@
     "no-debugger": "error",
     "prefer-template": "warn",
     "no-alert": "error",
+    "no-shadow": "off",
 
     "import/no-duplicates": "error",
     "import/no-self-import": "error",

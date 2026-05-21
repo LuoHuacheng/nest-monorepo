@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import { useResults } from "@/api/modules/results";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/data-table";
@@ -13,7 +14,7 @@ const columns = [
   { key: "finishTime", title: "成绩" },
   { key: "rank", title: "排名" },
   { key: "status", title: "状态" },
-  { key: "createdAt", title: "创建时间" },
+  { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
   {
     key: "actions",
     title: "操作",

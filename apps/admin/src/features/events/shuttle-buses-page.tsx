@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import { useShuttleBuses } from "@/api/modules/shuttle-buses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const columns = [
       return s ? <Badge variant={s.variant}>{s.label}</Badge> : String(val);
     },
   },
-  { key: "createdAt", title: "创建时间" },
+  { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
   {
     key: "actions",
     title: "操作",
@@ -41,7 +42,7 @@ export function ShuttleBusesPage() {
   const [page, setPage] = useState(1);
   const [eventId] = useState("");
 
-  const { data, isLoading } = useShuttleBuses(eventId);
+  const { data, isLoading } = useShuttleBuses({ eventId, page, pageSize: 10 });
   const items = (data as { items?: unknown[] })?.items ?? [];
   const filtered = (items as Record<string, unknown>[]).filter(
     (b) =>

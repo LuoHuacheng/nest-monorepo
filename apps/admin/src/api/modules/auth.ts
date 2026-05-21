@@ -26,7 +26,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (credentials: LoginDto) => {
       const result = await Auth.authControllerLogin({ body: credentials });
-      return result.data as {
+      return result.data as unknown as {
         accessToken: string;
         refreshToken: string;
         user: User;

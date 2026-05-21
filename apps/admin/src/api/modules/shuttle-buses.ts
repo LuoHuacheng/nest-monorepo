@@ -15,6 +15,8 @@ export const shuttleBusKeys = {
 
 export interface ShuttleBusQuery {
   eventId?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export function useShuttleBuses(params?: ShuttleBusQuery) {
@@ -23,6 +25,8 @@ export function useShuttleBuses(params?: ShuttleBusQuery) {
     queryFn: async () => {
       const query: ShuttleBusQuery = {};
       if (params?.eventId) query.eventId = params.eventId;
+      if (params?.page) query.page = params.page;
+      if (params?.pageSize) query.pageSize = params.pageSize;
 
       const { data } = await ShuttleBuses.shuttleBusControllerFindAll({
         query: Object.keys(query).length > 0 ? query : undefined,

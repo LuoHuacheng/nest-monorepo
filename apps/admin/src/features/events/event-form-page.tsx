@@ -5,6 +5,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useCreateEvent, useEventDetail, useUpdateEvent } from "@/api/modules/events";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -436,11 +437,10 @@ export function EventFormPage({ eventId }: EventFormPageProps) {
               {(field) => (
                 <div className="space-y-2">
                   <Label>比赛日期 *</Label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(value) => field.handleChange(value)}
                   />
                   <FormFieldError errors={field.state.meta.errors} />
                 </div>
@@ -451,11 +451,10 @@ export function EventFormPage({ eventId }: EventFormPageProps) {
               {(field) => (
                 <div className="space-y-2">
                   <Label>结束日期 *</Label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(value) => field.handleChange(value)}
                   />
                   <FormFieldError errors={field.state.meta.errors} />
                 </div>
@@ -466,11 +465,10 @@ export function EventFormPage({ eventId }: EventFormPageProps) {
               {(field) => (
                 <div className="space-y-2">
                   <Label>报名开始 *</Label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(value) => field.handleChange(value)}
                   />
                   <FormFieldError errors={field.state.meta.errors} />
                 </div>
@@ -481,11 +479,10 @@ export function EventFormPage({ eventId }: EventFormPageProps) {
               {(field) => (
                 <div className="space-y-2">
                   <Label>报名截止 *</Label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(value) => field.handleChange(value)}
                   />
                   <FormFieldError errors={field.state.meta.errors} />
                 </div>

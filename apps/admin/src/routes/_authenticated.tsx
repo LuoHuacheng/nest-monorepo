@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
-import { useAuthStore, authRehydratePromise, type User } from "@/stores/auth";
-import { Auth } from "@match/api-client";
+import { useAuthStore, authRehydratePromise } from "@/stores/auth";
+// import { Auth } from "@match/api-client";
 import { MainLayout } from "@/components/layout/main-layout";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -16,14 +16,14 @@ export const Route = createFileRoute("/_authenticated")({
       throw redirect({ to: "/login" });
     }
     // Fetch latest user info
-    try {
-      const { data } = await Auth.authControllerGetProfile();
-      if (data) {
-        useAuthStore.getState().updateUser(data as User);
-      }
-    } catch {
-      // profile fetch failure shouldn't block page load
-    }
+    // try {
+    //   const { data } = await Auth.authControllerGetProfile();
+    //   if (data) {
+    //     useAuthStore.getState().updateUser(data as User);
+    //   }
+    // } catch {
+    //   // profile fetch failure shouldn't block page load
+    // }
   },
   component: AuthenticatedLayout,
 });

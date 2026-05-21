@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import {
   useOrganizerList,
   useUpdateOrganizerStatus,
@@ -6,10 +7,10 @@ import {
 } from "@/api/modules/organizers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker, type DateRangeValue } from "@/components/ui/date-range-picker";
 import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -58,8 +59,7 @@ export function OrganizersPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState(ALL);
-  const [filterDateStart, setFilterDateStart] = useState("");
-  const [filterDateEnd, setFilterDateEnd] = useState("");
+  const [filterDateRange, setFilterDateRange] = useState<DateRangeValue>({});
 
   const [resetId, setResetId] = useState<string | null>(null);
   const [statusToggle, setStatusToggle] = useState<{
@@ -75,8 +75,8 @@ export function OrganizersPage() {
     pageSize: 10,
     keyword: search || undefined,
     status: filterStatus !== ALL ? Number(filterStatus) : undefined,
-    startDate: filterDateStart || undefined,
-    endDate: filterDateEnd || undefined,
+    startDate: filterDateRange.from || undefined,
+    endDate: filterDateRange.to || undefined,
   };
 
   const { data, isLoading } = useOrganizerList(queryParams);
@@ -88,8 +88,7 @@ export function OrganizersPage() {
 
   function resetFilters() {
     setFilterStatus(ALL);
-    setFilterDateStart("");
-    setFilterDateEnd("");
+    setFilterDateRange({});
     setSearch("");
     setPage(1);
   }
@@ -132,7 +131,7 @@ export function OrganizersPage() {
         <Badge variant={val === 1 ? "default" : "secondary"}>{val === 1 ? "启用" : "停用"}</Badge>
       ),
     },
-    { key: "createdAt", title: "创建时间" },
+    { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
     {
       key: "actions",
       title: "操作",
@@ -196,24 +195,14 @@ export function OrganizersPage() {
             </SelectContent>
           </Select>
         </FilterItem>
-        <FilterItem label="创建开始日期">
-          <Input
-            type="date"
-            value={filterDateStart}
-            onChange={(e) => {
-              setFilterDateStart(e.target.value);
+        <FilterItem label="创建日期">
+          <DateRangePicker
+            value={filterDateRange}
+            onChange={(range) => {
+              setFilterDateRange(range);
               setPage(1);
             }}
-          />
-        </FilterItem>
-        <FilterItem label="创建结束日期">
-          <Input
-            type="date"
-            value={filterDateEnd}
-            onChange={(e) => {
-              setFilterDateEnd(e.target.value);
-              setPage(1);
-            }}
+            placeholder="选择创建日期范围"
           />
         </FilterItem>
       </FilterBar>

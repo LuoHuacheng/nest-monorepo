@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import { useEventList, useEventDetail } from "@/api/modules/events";
 import {
   useInviteCodes,
@@ -10,6 +11,8 @@ import {
 } from "@/api/modules/invite-codes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
+import { DateRangePicker, type DateRangeValue } from "@/components/ui/date-range-picker";
 import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
@@ -189,11 +192,10 @@ function InviteCodeForm({ eventId, initialData, onSuccess }: InviteCodeFormProps
       </div>
       <div className="space-y-2">
         <Label htmlFor="expiresAt">过期时间</Label>
-        <Input
-          id="expiresAt"
-          type="date"
+        <DatePicker
           value={formData.expiresAt}
-          onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
+          onChange={(value) => setFormData({ ...formData, expiresAt: value })}
+          placeholder="选择过期时间"
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -255,7 +257,7 @@ function ParticipantsDialog({
         return <Badge variant={status.variant}>{status.label}</Badge>;
       },
     },
-    { key: "createdAt", title: "创建时间" },
+    { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
   ];
 
   return (
@@ -284,8 +286,7 @@ export function InviteCodesPage() {
   const [page, setPage] = useState(1);
   const [eventId, setEventId] = useState("");
   const [status, setStatus] = useState("");
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+  const [dateRange, setDateRange] = useState<DateRangeValue>({});
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [participantsDialogOpen, setParticipantsDialogOpen] = useState(false);
@@ -304,8 +305,8 @@ export function InviteCodesPage() {
   const { data, isLoading } = useInviteCodes({
     eventId: eventId || undefined,
     status: status ? Number(status) : undefined,
-    dateStart: dateStart || undefined,
-    dateEnd: dateEnd || undefined,
+    dateStart: dateRange.from || undefined,
+    dateEnd: dateRange.to || undefined,
   });
   const items = (data as { items?: unknown[] })?.items ?? [];
   const filtered = (items as Record<string, unknown>[]).filter((c) => {
@@ -352,10 +353,9 @@ export function InviteCodesPage() {
     {
       key: "expiresAt",
       title: "过期时间",
-      render: (val: unknown) =>
-        (val as string) ? new Date(val as string).toLocaleDateString() : "永久",
+      render: (val: unknown) => ((val as string) ? formatDate(val as string) : "永久"),
     },
-    { key: "createdAt", title: "创建时间" },
+    { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
     {
       key: "actions",
       title: "操作",
@@ -464,8 +464,7 @@ export function InviteCodesPage() {
           setSearch("");
           setEventId("");
           setStatus("");
-          setDateStart("");
-          setDateEnd("");
+          setDateRange({});
           setPage(1);
         }}
         searchPlaceholder="搜索邀请码或描述..."
@@ -507,24 +506,14 @@ export function InviteCodesPage() {
             </SelectContent>
           </Select>
         </FilterItem>
-        <FilterItem label="创建时间起">
-          <Input
-            type="date"
-            value={dateStart}
-            onChange={(e) => {
-              setDateStart(e.target.value);
+        <FilterItem label="创建时间">
+          <DateRangePicker
+            value={dateRange}
+            onChange={(range) => {
+              setDateRange(range);
               setPage(1);
             }}
-          />
-        </FilterItem>
-        <FilterItem label="创建时间止">
-          <Input
-            type="date"
-            value={dateEnd}
-            onChange={(e) => {
-              setDateEnd(e.target.value);
-              setPage(1);
-            }}
+            placeholder="选择创建时间范围"
           />
         </FilterItem>
       </FilterBar>

@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import { formatDate } from "@match/utils";
 import {
   useDeleteEvent,
   useDrawEvent,
@@ -15,6 +16,7 @@ import { DataTable } from "@/components/common/data-table";
 import { FilterBar, FilterItem } from "@/components/common/filter-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker, type DateRangeValue } from "@/components/ui/date-range-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -131,8 +133,7 @@ export function EventsPage() {
   const [filterCategory, setFilterCategory] = useState(ALL);
   const [filterAttribute, setFilterAttribute] = useState(ALL);
   const [filterIsHot, setFilterIsHot] = useState(ALL);
-  const [filterDateStart, setFilterDateStart] = useState("");
-  const [filterDateEnd, setFilterDateEnd] = useState("");
+  const [filterDateRange, setFilterDateRange] = useState<DateRangeValue>({});
 
   const queryParams: Record<string, unknown> = {
     page,
@@ -143,8 +144,8 @@ export function EventsPage() {
     category: filterCategory !== ALL ? filterCategory : undefined,
     attribute: filterAttribute !== ALL ? filterAttribute : undefined,
     isHot: filterIsHot !== ALL ? filterIsHot === "true" : undefined,
-    dateStart: filterDateStart || undefined,
-    dateEnd: filterDateEnd || undefined,
+    dateStart: filterDateRange.from || undefined,
+    dateEnd: filterDateRange.to || undefined,
   };
 
   const { data, isLoading } = useEventList(queryParams);
@@ -161,8 +162,7 @@ export function EventsPage() {
     setFilterCategory(ALL);
     setFilterAttribute(ALL);
     setFilterIsHot(ALL);
-    setFilterDateStart("");
-    setFilterDateEnd("");
+    setFilterDateRange({});
     setSearch("");
     setPage(1);
   }
@@ -186,10 +186,18 @@ export function EventsPage() {
         return s ? <Badge variant={s.variant}>{s.label}</Badge> : String(val);
       },
     },
-    { key: "startDate", title: "比赛时间" },
-    { key: "endDate", title: "结束时间" },
-    { key: "registrationStartDate", title: "报名开始" },
-    { key: "registrationEndDate", title: "报名截止" },
+    { key: "startDate", title: "比赛时间", render: (val: unknown) => formatDate(val as string) },
+    { key: "endDate", title: "结束时间", render: (val: unknown) => formatDate(val as string) },
+    {
+      key: "registrationStartDate",
+      title: "报名开始",
+      render: (val: unknown) => formatDate(val as string),
+    },
+    {
+      key: "registrationEndDate",
+      title: "报名截止",
+      render: (val: unknown) => formatDate(val as string),
+    },
     { key: "province", title: "省份" },
     { key: "city", title: "城市" },
     { key: "address", title: "详细地址" },
@@ -209,12 +217,16 @@ export function EventsPage() {
       title: "热门",
       render: (val: unknown) => (val ? <Badge variant="destructive">热门</Badge> : "-"),
     },
-    { key: "packetPickupTime", title: "领物时间" },
+    {
+      key: "packetPickupTime",
+      title: "领物时间",
+      render: (val: unknown) => formatDate(val as string),
+    },
     { key: "packetPickupLocation", title: "领物地点" },
     { key: "maxParticipants", title: "人数限制" },
     { key: "currentParticipants", title: "当前人数" },
     { key: "organizerId", title: "组委会ID" },
-    { key: "createdAt", title: "创建时间" },
+    { key: "createdAt", title: "创建时间", render: (val: unknown) => formatDate(val as string) },
     {
       key: "actions",
       title: "操作",
@@ -402,27 +414,14 @@ export function EventsPage() {
           </Select>
         </FilterItem>
 
-        <FilterItem label="赛事日期（起）">
-          <Input
-            type="date"
-            className="min-w-40"
-            value={filterDateStart}
-            onChange={(e) => {
-              setFilterDateStart(e.target.value);
+        <FilterItem label="赛事日期">
+          <DateRangePicker
+            value={filterDateRange}
+            onChange={(range) => {
+              setFilterDateRange(range);
               setPage(1);
             }}
-          />
-        </FilterItem>
-
-        <FilterItem label="赛事日期（止）">
-          <Input
-            type="date"
-            className="min-w-40"
-            value={filterDateEnd}
-            onChange={(e) => {
-              setFilterDateEnd(e.target.value);
-              setPage(1);
-            }}
+            placeholder="选择赛事日期范围"
           />
         </FilterItem>
       </FilterBar>
@@ -500,7 +499,11 @@ export function EventsPage() {
                 title: "金额",
                 render: (val: unknown) => `¥${((val as number) / 100).toFixed(2)}`,
               },
-              { key: "createdAt", title: "创建时间" },
+              {
+                key: "createdAt",
+                title: "创建时间",
+                render: (val: unknown) => formatDate(val as string),
+              },
             ]}
             data={(participantsData?.items ?? []) as Record<string, unknown>[]}
             page={participantsPage}
@@ -544,7 +547,11 @@ export function EventsPage() {
                 title: "金额",
                 render: (val: unknown) => `¥${((val as number) / 100).toFixed(2)}`,
               },
-              { key: "createdAt", title: "创建时间" },
+              {
+                key: "createdAt",
+                title: "创建时间",
+                render: (val: unknown) => formatDate(val as string),
+              },
             ]}
             data={(ordersData?.items ?? []) as Record<string, unknown>[]}
             page={ordersPage}

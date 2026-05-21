@@ -12,10 +12,13 @@ export class ShuttleBusService {
 
   async findAll(query: QueryShuttleBusDto) {
     const where: Record<string, unknown> = {};
+    const { page, pageSize } = query;
     if (query.eventId && query.eventId.trim() !== "") where.eventId = query.eventId;
 
     return this.prisma.eventShuttleBus.findMany({
       where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       orderBy: { departureTime: "asc" },
     });
   }
