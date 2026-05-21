@@ -36,7 +36,7 @@ pnpm dev:miniapp  # 小程序 (Taro)
 
 ## 数据库变更
 
-1. 编辑 `prisma/schema.prisma`
+1. 编辑 `apps/api/prisma/schema.prisma`
 2. 运行 `pnpm prisma:migrate` 创建迁移
 3. 迁移自动应用到本地数据库
 4. 提交迁移文件

@@ -4,8 +4,8 @@
 
 - **ORM**: Prisma
 - **数据库**: PostgreSQL
-- **Schema 位置**: `prisma/schema.prisma`
-- **迁移文件**: `prisma/migrations/`
+- **Schema 位置**: `apps/api/prisma/schema.prisma`
+- **迁移文件**: `apps/api/prisma/migrations/`
 
 ## 常用命令
 
@@ -31,13 +31,13 @@ pnpm --filter api exec prisma studio
 
 ## Schema 位置
 
-Prisma schema 放在仓库根目录 (`prisma/`)，以便跨包共享。`api` 应用通过 `prisma.config.ts` 引用：
+Prisma schema 放在 `apps/api/prisma/`，`prisma.config.ts` 引用：
 
 ```ts
 // apps/api/prisma.config.ts
 export default defineConfig({
-  schema: "../../prisma/schema.prisma",
-  migrations: { path: "../../prisma/migrations" },
+  schema: "./prisma/schema.prisma",
+  migrations: { path: "./prisma/migrations" },
 });
 ```
 

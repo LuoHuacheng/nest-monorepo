@@ -1,6 +1,6 @@
 generator client {
   provider     = "prisma-client"
-  output       = "../apps/api/generated/prisma"
+  output       = "../generated/prisma"
   moduleFormat = "commonjs"
 }
 
@@ -151,7 +151,7 @@ model Event {
   city                  String?
   address               String?
   location              String
-  tags                  Json      @default("[]")
+  tags                  String?   @default("")
   packetPickupTime      DateTime? @map("packet_pickup_time")
   packetPickupLocation  String?   @map("packet_pickup_location")
   coverImages           Json      @default("[]") @map("cover_images")
@@ -241,6 +241,7 @@ model EventInviteCode {
 
   event             Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
   registrationGroup RegistrationGroup? @relation(fields: [registrationGroupId], references: [id], onDelete: SetNull)
+  orders            Order[]
 
   @@map("event_invite_code")
 }
@@ -281,6 +282,7 @@ model Order {
   eventId            String?   @map("event_id")
   userId             String?   @map("user_id")
   registrationCardId String?   @map("registration_card_id")
+  inviteCodeId       String?   @map("invite_code_id")
   amount             Decimal   @db.Decimal(10, 2)
   status             String    @default("pending") // pending / paid / refunded / cancelled
   isDrawn            Boolean   @default(false) @map("is_drawn")
@@ -292,6 +294,7 @@ model Order {
   event            Event?                 @relation(fields: [eventId], references: [id], onDelete: SetNull)
   registrationGroup RegistrationGroup? @relation(fields: [registrationCardId], references: [id], onDelete: SetNull)
   user             SysUser?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  inviteCode       EventInviteCode?       @relation(fields: [inviteCodeId], references: [id], onDelete: SetNull)
 
   @@map("order")
 }
