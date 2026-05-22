@@ -20,7 +20,7 @@
 
 **配置** (`openapi-ts.config.ts`):
 
-- 输入：`http://localhost:3000/docs-json`（后端 Swagger JSON）
+- 输入：`http://localhost:4001/docs-json`（后端 Swagger JSON）
 - 输出：`src/api/generated/`
 - HTTP 客户端：使用项目已有的 Axios 实例 (`@hey-api/axios-plugin`)
 - 生成内容：类型定义 + API 服务函数
@@ -36,7 +36,7 @@ src/api/generated/
 
 ### 1.1 代码生成工作流
 
-- 后端必须先启动（`pnpm start:dev`），确保 `http://localhost:3000/docs-json` 可访问
+- 后端必须先启动（`pnpm start:dev`），确保 `http://localhost:4001/docs-json` 可访问
 - 运行 `pnpm openapi-ts` 生成代码
 - 生成产物加入 `.gitignore`，不提交到版本控制
 - 后端 DTO 变更后重新运行生成命令即可同步

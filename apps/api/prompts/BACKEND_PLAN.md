@@ -569,7 +569,7 @@ pnpm prisma:seed
 pnpm start:dev
 
 # 7. 访问 Swagger 文档
-# http://localhost:3000/api/docs
+# http://localhost:4001/docs
 ```
 
 默认管理员账号：`admin` / `admin123`
