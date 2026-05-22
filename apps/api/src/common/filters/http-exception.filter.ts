@@ -1,12 +1,12 @@
 import type { ExceptionFilter, ArgumentsHost } from "@nestjs/common";
 import { Catch, HttpException, HttpStatus } from "@nestjs/common";
-import type { Response } from "express";
+import type { FastifyReply } from "fastify";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse<FastifyReply>();
     // const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -24,7 +24,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 401/403 返回 HTTP 200，由前端根据 body.code 处理，避免触发浏览器/拦截器的错误流程
     const httpStatus = status === 401 || status === 403 ? 200 : status;
 
-    response.status(httpStatus).json({
+    response.status(httpStatus).send({
       code: status,
       data: null,
       message,

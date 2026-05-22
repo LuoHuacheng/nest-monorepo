@@ -11,7 +11,10 @@ export class UploadService {
     private configService: ConfigService,
   ) {}
 
-  async upload(file: Express.Multer.File, uploaderId?: string) {
+  async upload(
+    file: { buffer: Buffer; originalname: string; mimetype: string; size: number },
+    uploaderId?: string,
+  ) {
     const uploadDir = this.configService.get<string>("UPLOAD_DIR", "./uploads");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });

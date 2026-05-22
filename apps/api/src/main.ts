@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
+import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
@@ -8,7 +9,9 @@ import { ApiResponseDto, PaginatedApiResponseDto } from "./common/dto/api-respon
 import { EntityDtos } from "./common/dto/response-dto";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+
+  await app.register(import("@fastify/multipart"));
 
   app.setGlobalPrefix("api");
 
@@ -55,6 +58,6 @@ async function bootstrap() {
   });
   SwaggerModule.setup("docs", app, document);
 
-  await app.listen(process.env.PORT ?? 4001);
+  await app.listen({ port: Number(process.env.PORT) || 4001, host: "0.0.0.0" });
 }
 bootstrap();
