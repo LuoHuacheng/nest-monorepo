@@ -25,3 +25,7 @@ apps/admin/todos.json
 # Packages
 packages/*/dist/
 packages/*/.turbo/
+
+# Deployment
+nginx/ssl/
+.env.production

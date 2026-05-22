@@ -1,190 +1,391 @@
-# 部署
+# Docker + Jenkins 部署方案
 
-## 环境
+## Context
 
-| 环境 | 说明 |
-| ------ | ------ |
-| local | 开发者本地 |
-| staging | 预发布环境 |
-| production | 生产环境 |
+将 monorepo 的 admin（TanStack Start SSR）和 api（NestJS）部署到传统云服务器。使用 Docker 容器化，Jenkins 监控 GitHub 推送自动构建。
 
-## 构建
+## 整体架构
 
-```bash
-# 构建所有包
-pnpm build
-
-# 构建指定应用
-pnpm build:api
-pnpm build:admin
-pnpm build:miniapp
+```txt
+┌─────────────────────────────────────────────────────────┐
+│                    云服务器                               │
+│                                                         │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │
+│  │   Nginx     │    │   Jenkins   │    │  PostgreSQL │  │
+│  │  (HTTPS)    │    │  (CI/CD)    │    │   (数据库)   │  │
+│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘  │
+│         │                  │                  │         │
+│  ┌──────┴──────┐    ┌──────┴──────┐                  │
+│  │   Admin     │    │    API      │                  │
+│  │  (port 4000)│    │ (port 4001) │                  │
+│  └─────────────┘    └─────────────┘                  │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## 部署前检查清单
+## 前置条件
 
-1. `pnpm typecheck` 通过
-2. `pnpm lint:check` 通过
-3. `pnpm test` 通过
-4. 数据库迁移向后兼容
-5. API 变更后重新生成 OpenAPI 客户端（`pnpm generate:api-client`）
-6. 环境变量已配置
+- 云服务器：Ubuntu 22.04+ / CentOS 8+
+- 域名：已解析到服务器 IP
+- GitHub：私有仓库，需配置 Personal Access Token
 
-## 传统云服务器部署（NestJS API）
+## 实现步骤
 
-### 1. 服务器环境准备
+### 1. 创建 Dockerfile（多阶段构建）
 
-```bash
-# 安装 Node.js 22+
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt-get install -y nodejs
+#### apps/api/Dockerfile
 
-# 安装 pnpm
-npm install -g pnpm
+```dockerfile
+# 构建阶段
+FROM node:22-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/ ./packages/
+RUN pnpm install --frozen-lockfile
+COPY apps/api/ ./apps/api/
+RUN cd apps/api && pnpm prisma generate && pnpm build
 
-# 安装 PM2（进程管理）
-npm install -g pm2
+# 运行阶段
+FROM node:22-alpine
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/apps/api/generated ./generated
+COPY --from=builder /app/apps/api/prisma ./prisma
+COPY --from=builder /app/apps/api/package.json ./
+RUN pnpm install --prod --frozen-lockfile
+EXPOSE 4001
+CMD ["node", "dist/main.js"]
 ```
 
-### 2. 部署步骤
+#### apps/admin/Dockerfile
 
-```bash
-# 1. 克隆代码
-git clone <your-repo-url> /var/www/match
-cd /var/www/match
+```dockerfile
+# 构建阶段
+FROM node:22-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/ ./packages/
+RUN pnpm install --frozen-lockfile
+COPY apps/admin/ ./apps/admin/
+RUN pnpm build:admin
 
-# 2. 安装依赖
-pnpm install
-
-# 3. 配置环境变量
-cp apps/api/.env.example apps/api/.env
-# 编辑 .env，配置 DATABASE_URL、JWT_SECRET 等
-
-# 4. 生成 Prisma Client
-pnpm prisma:generate
-
-# 5. 运行数据库迁移
-pnpm prisma:migrate
-
-# 6. 构建项目
-pnpm build:api
-
-# 7. 使用 PM2 启动
-pm2 start apps/api/dist/main.js --name "match-api"
+# 运行阶段
+FROM node:22-alpine
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY --from=builder /app/apps/admin/dist ./dist
+COPY --from=builder /app/apps/admin/package.json ./
+RUN pnpm install --prod --frozen-lockfile
+EXPOSE 4000
+CMD ["node", "dist/server/server.js"]
 ```
 
-### 3. PM2 配置（推荐）
+### 2. 创建 docker-compose.yml
 
-创建 `ecosystem.config.js`：
+```yaml
+version: '3.8'
 
-```javascript
-module.exports = {
-  apps: [{
-    name: 'match-api',
-    script: 'apps/api/dist/main.js',
-    cwd: '/var/www/match',
-    instances: 'max',  // 或固定数量如 4
-    exec_mode: 'cluster',
-    env: {
-      NODE_ENV: 'production',
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: match_db
+      POSTGRES_USER: match_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U match_user -d match_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://match_user:${DB_PASSWORD}@postgres:5432/match_db
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
       PORT: 4001
-    },
-    max_memory_restart: '1G',
-    log_date_format: 'YYYY-MM-DD HH:mm:ss',
-    error_file: '/var/log/match/api-error.log',
-    out_file: '/var/log/match/api-out.log',
-  }]
-};
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "4001:4001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    environment:
+      API_URL: http://api:4001
+    ports:
+      - "4000:4000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - admin
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads:
 ```
 
-启动：`pm2 start ecosystem.config.js`
+### 3. 创建 Nginx 反向代理配置（HTTPS）
 
-### 4. Nginx 反向代理
+#### nginx/nginx.conf
 
 ```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+events {
+    worker_connections 1024;
+}
 
-    # API 代理
-    location /api/ {
-        proxy_pass http://127.0.0.1:4001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-        
-        # 文件上传大小限制
-        client_max_body_size 50M;
+http {
+    upstream admin {
+        server admin:4000;
     }
 
-    # Swagger 文档
-    location /docs {
-        proxy_pass http://127.0.0.1:4001;
+    upstream api {
+        server api:4001;
+    }
+
+    # HTTP -> HTTPS 重定向
+    server {
+        listen 80;
+        server_name your-domain.com;
+        return 301 https://$host$request_uri;
+    }
+
+    # HTTPS 配置
+    server {
+        listen 443 ssl http2;
+        server_name your-domain.com;
+
+        # SSL 证书（Let's Encrypt）
+        ssl_certificate /etc/nginx/ssl/fullchain.pem;
+        ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+
+        # SSL 安全配置
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+        ssl_prefer_server_ciphers off;
+
+        # API 路由
+        location /api/ {
+            proxy_pass http://api/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Admin 前端
+        location / {
+            proxy_pass http://admin;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
     }
 }
 ```
 
-### 5. SSL 证书（推荐）
+### 4. 创建 Jenkinsfile
 
-```bash
-# 安装 Certbot
-sudo apt install certbot python3-certbot-nginx
+```groovy
+pipeline {
+    agent any
 
-# 获取证书
-sudo certbot --nginx -d your-domain.com
+    environment {
+        DOCKER_COMPOSE = 'docker-compose'
+        DB_PASSWORD = credentials('match-db-password')
+        JWT_SECRET = credentials('match-jwt-secret')
+        GITHUB_TOKEN = credentials('github-personal-token')
+    }
+
+    triggers {
+        githubPush()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // 私有仓库使用 Personal Access Token
+                git branch: 'main',
+                    url: "https://${GITHUB_TOKEN}@github.com/your-username/match.git",
+                    credentialsId: 'github-personal-token'
+            }
+        }
+
+        stage('Prisma Migrate') {
+            steps {
+                sh '''
+                    cd apps/api
+                    npx prisma migrate deploy
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '${DOCKER_COMPOSE} build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'pnpm test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '${DOCKER_COMPOSE} up -d'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+            sh '${DOCKER_COMPOSE} logs --tail=100'
+        }
+    }
+}
 ```
 
-### 6. 常用命令
+### 5. 创建环境变量文件
+
+#### .env.production
 
 ```bash
-# 查看状态
-pm2 status
+DB_PASSWORD=your_secure_password_here
+JWT_SECRET=your_jwt_secret_here
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+```
+
+## 文件清单
+
+| 文件 | 用途 |
+| ------ | ------ |
+| `apps/api/Dockerfile` | API 镜像构建 |
+| `apps/admin/Dockerfile` | Admin 镜像构建 |
+| `docker-compose.yml` | 容器编排 |
+| `nginx/nginx.conf` | 反向代理配置 |
+| `Jenkinsfile` | CI/CD 流水线 |
+| `.env.production` | 环境变量模板 |
+
+## 部署流程
+
+### 1. 服务器环境准备
+
+```bash
+# 安装 Docker
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+
+# 安装 Docker Compose
+sudo apt install docker-compose-plugin
+
+# 安装 Jenkins
+docker run -d --name jenkins -p 8080:8080 -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  jenkins/jenkins:lts
+```
+
+### 2. SSL 证书申请（Let's Encrypt）
+
+```bash
+# 安装 certbot
+sudo apt install certbot
+
+# 申请证书（需先停止 Nginx）
+sudo certbot certonly --standalone -d your-domain.com
+
+# 证书位置
+# /etc/letsencrypt/live/your-domain.com/fullchain.pem
+# /etc/letsencrypt/live/your-domain.com/privkey.pem
+
+# 复制到项目 nginx/ssl 目录
+mkdir -p nginx/ssl
+sudo cp /etc/letsencrypt/live/your-domain.com/*.pem nginx/ssl/
+```
+
+### 3. GitHub Personal Access Token
+
+1. 访问 GitHub Settings > Developer settings > Personal access tokens
+2. 生成新 token，权限勾选 `repo`（完整仓库访问）
+3. 复制 token 保存
+
+### 4. Jenkins 配置
+
+1. 访问 `http://server-ip:8080`，完成 Jenkins 初始化
+2. 安装插件：GitHub Integration、Docker Pipeline
+3. 添加凭据：
+   - `github-personal-token`：GitHub Personal Access Token
+   - `match-db-password`：数据库密码
+   - `match-jwt-secret`：JWT 密钥
+4. 创建 Pipeline 项目，配置 GitHub webhook URL：`http://server-ip:8080/github-webhook/`
+
+### 5. 部署启动
+
+```bash
+# 克隆代码
+git clone https://github.com/your-username/match.git
+cd match
+
+# 配置环境变量
+cp .env.production.example .env.production
+# 编辑 .env.production 填入实际值
+
+# 启动服务
+docker compose up -d
 
 # 查看日志
-pm2 logs match-api
-
-# 重启应用
-pm2 restart match-api
-
-# 停止应用
-pm2 stop match-api
-
-# 监控
-pm2 monit
+docker compose logs -f
 ```
 
-### 7. 自动部署脚本（可选）
+### 6. GitHub Webhook 配置
 
-创建 `deploy.sh`：
+1. 进入仓库 Settings > Webhooks
+2. 添加 webhook：
+   - Payload URL：`http://server-ip:8080/github-webhook/`
+   - Content type：`application/json`
+   - Events：Just the push event
 
-```bash
-#!/bin/bash
-cd /var/www/match
-git pull
-pnpm install
-pnpm prisma:generate
-pnpm prisma:migrate
-pnpm build:api
-pm2 restart match-api
-echo "Deploy completed!"
-```
+## 验证方式
 
-### 8. 关键注意事项
-
-1. **数据库**：确保 PostgreSQL 可从服务器访问
-2. **环境变量**：生产环境使用强密码的 JWT_SECRET
-3. **端口**：确保防火墙开放 80/443 端口
-4. **日志**：配置日志轮转避免磁盘占满
-5. **备份**：定期备份数据库
-
-## 小程序部署
-
-微信小程序通过微信开发者工具部署：
-
-1. 构建：`pnpm build:miniapp`
-2. 通过微信开发者工具上传
-3. 在微信公众平台提交审核
+1. 访问 `https://your-domain.com` 查看 admin 前端
+2. 访问 `https://your-domain.com/api/health` 检查 API
+3. 推送代码到 GitHub，观察 Jenkins 自动构建
+4. 检查 `docker compose ps` 确认所有容器运行正常
