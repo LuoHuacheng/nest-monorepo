@@ -131,7 +131,7 @@ services:
       context: .
       dockerfile: apps/admin/Dockerfile
     environment:
-      API_URL: http://api:4001
+      API_URL: http://111.228.29.123:4001
     ports:
       - "4000:4000"
     depends_on:

@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 
 // 配置 baseUrl
 client.setConfig({
-  baseUrl: "http://localhost:4001",
+  baseUrl: import.meta.env.API_URL,
   throwOnError: true,
 });
 

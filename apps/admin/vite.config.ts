@@ -11,6 +11,13 @@ const config = defineConfig({
   plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
   server: {
     port: 4000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:4001",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
 
