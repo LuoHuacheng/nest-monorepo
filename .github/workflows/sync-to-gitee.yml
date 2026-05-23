@@ -1,0 +1,17 @@
+name: Sync to Gitee
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync to Gitee
+        uses: 交给机器人/gitee-sync@v1
+        with:
+          github: ${{ github.repository }}
+          gitee: ${{ secrets.GITEE_USERNAME }}/nest-monorepo
+          gitee-token: ${{ secrets.GITEE_TOKEN }}
