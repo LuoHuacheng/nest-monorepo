@@ -28,4 +28,3 @@ packages/*/.turbo/
 
 # Deployment
 nginx/ssl/
-.env.production

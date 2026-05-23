@@ -6,6 +6,7 @@ pipeline {
         DB_PASSWORD = credentials('match-db-password')
         JWT_SECRET = credentials('match-jwt-secret')
         GITHUB_TOKEN = credentials('github-personal-token')
+        REGISTRY = credentials('docker-registry')
     }
 
     triggers {
@@ -16,7 +17,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: "https://${GITHUB_TOKEN}@github.com/your-username/match.git"
+                    url: "https://${GITHUB_TOKEN}@github.com/LuoHuacheng/nest-monorepo.git"
             }
         }
 
@@ -31,7 +32,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh '${DOCKER_COMPOSE} build'
+                sh '${DOCKER_COMPOSE} build api'
+                sh '${DOCKER_COMPOSE} build admin'
             }
         }
 
