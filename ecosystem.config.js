@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       name: 'match-admin',
-      script: 'apps/admin/dist/server/server.js',
+      script: 'server.mjs',
       cwd: '/opt/match',
       instances: 1,
       memory: 200,
