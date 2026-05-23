@@ -10,7 +10,6 @@ coverage/
 .turbo
 
 # API (backend)
-apps/api/generated/prisma/
 apps/api/uploads/
 
 # Admin
