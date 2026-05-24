@@ -25,24 +25,6 @@
     "oxlint": "^1.65.0",
     "turbo": "^2.9.14"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@nestjs/core",
-      "@prisma/engines",
-      "@scarf/scarf",
-      "bcrypt",
-      "esbuild",
-      "lightningcss",
-      "lefthook",
-      "prisma",
-      "unrs-resolver",
-      "@weapp-tailwindcss/merge",
-      "weapp-tailwindcss"
-    ],
-    "overrides": {
-      "@types/sass": "1.43.1"
-    }
-  },
   "packageManager": "pnpm@10.18.0",
   "engines": {
     "node": ">=22"
