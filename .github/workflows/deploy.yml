@@ -49,6 +49,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "."
           target: "/opt/match"
+          tar_args: "--exclude-from=.scpignore"
           strip_components: 0
           overwrite: true
 
