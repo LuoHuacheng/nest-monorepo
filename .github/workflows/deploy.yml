@@ -14,8 +14,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          registry-url: 'https://registry.npmmirror.com'
+          node-version: "22"
+          registry-url: "https://registry.npmmirror.com"
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
@@ -76,8 +76,8 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/match
-            pnpm install --frozen-lockfile
-            pnpm prisma migrate deploy
+            CI=true pnpm install --frozen-lockfile
+            pnpm prisma:migrate
 
       - name: Restart PM2
         uses: appleboy/ssh-action@v1.0.3
