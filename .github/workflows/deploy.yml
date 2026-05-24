@@ -61,6 +61,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/match
+            pnpm install --frozen-lockfile
             pnpm prisma migrate deploy
 
       - name: Restart PM2
