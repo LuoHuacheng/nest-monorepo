@@ -43,8 +43,11 @@ jobs:
 
       - name: Copy files to server
         run: |
+          echo "${{ secrets.SERVER_SSH_KEY }}" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+
           rsync -avz --delete \
-            -e "ssh -o StrictHostKeyChecking=no -i ${{ secrets.SERVER_SSH_KEY }}" \
+            -e "ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key" \
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='apps/api/src' \
@@ -62,6 +65,8 @@ jobs:
             --exclude='*.lock' \
             --exclude='pnpm-workspace.yaml' \
             ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/opt/match/
+
+          rm -f /tmp/deploy_key
 
       - name: Run Prisma Migrate
         uses: appleboy/ssh-action@v1.0.3
