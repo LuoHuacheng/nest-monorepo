@@ -25,5 +25,3 @@ apps/admin/todos.json
 packages/*/dist/
 packages/*/.turbo/
 
-# Deployment
-nginx/ssl/
