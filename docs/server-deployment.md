@@ -27,7 +27,40 @@ sudo systemctl start postgresql
 sudo systemctl enable postgresql
 ```
 
-### 1.2 创建数据库用户
+### 1.2 PostgreSQL 低内存配置
+
+编辑 `/etc/postgresql/16/main/postgresql.conf`（或使用 `SHOW config_file;` 查看实际路径）：
+
+```ini
+# 降低共享缓冲区
+shared_buffers = 64MB
+
+# 降低工作内存
+work_mem = 4MB
+
+# 降低维护工作内存
+maintenance_work_mem = 32MB
+
+# 最大连接数
+max_connections = 50
+
+# 关闭大页
+huge_pages = off
+
+# 关闭完全同步提交（性能优化）
+synchronous_commit = off
+
+# 降低检查点频率
+checkpoint_timeout = 10min
+```
+
+重启 PostgreSQL 使配置生效：
+
+```bash
+sudo systemctl restart postgresql
+```
+
+### 1.3 创建数据库用户
 
 ```bash
 sudo su - postgres
@@ -43,7 +76,7 @@ EOF
 exit
 ```
 
-### 1.3 创建部署用户
+### 1.4 创建部署用户
 
 ```bash
 # 创建用户
@@ -53,7 +86,7 @@ sudo adduser deploy
 echo "deploy ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/deploy
 ```
 
-### 1.4 安装 PM2
+### 1.5 安装 PM2
 
 ```bash
 sudo npm install -g pm2
@@ -310,12 +343,12 @@ pm2 start ecosystem.config.js
 
 | 服务 | 内存限制 | 说明 |
 | ------ | --------- | ------ |
-| PostgreSQL | 256MB | 数据库 |
-| match-api (NestJS) | 400MB | 处理 API 请求 |
-| match-admin (SSR) | 200MB | 前台管理界面 |
-| 系统+Nginx+其他 | ~1.1GB | 剩余给系统 |
+| PostgreSQL | 128MB | 数据库（低内存配置） |
+| match-api (NestJS) | 256MB | 处理 API 请求 |
+| match-admin (SSR) | 128MB | 前台管理界面 |
+| 系统+Nginx+其他 | ~1.4GB | 剩余给系统 |
 
-总内存需求：~1.9GB，留有余量给系统。
+总内存需求：~1.6GB，保留约 400MB 缓冲区防止 OOM。
 
 ---
 
