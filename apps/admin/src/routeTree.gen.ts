@@ -8,462 +8,451 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
-import { Route as AuthenticatedRolesRouteImport } from './routes/_authenticated/roles'
-import { Route as AuthenticatedOrganizersRouteImport } from './routes/_authenticated/organizers'
-import { Route as AuthenticatedAthleticCentersRouteImport } from './routes/_authenticated/athletic-centers'
-import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
-import { Route as AuthenticatedSettingsClientConfigRouteImport } from './routes/_authenticated/settings/client-config'
-import { Route as AuthenticatedPacersTestsRouteImport } from './routes/_authenticated/pacers/tests'
-import { Route as AuthenticatedPacersListRouteImport } from './routes/_authenticated/pacers/list'
-import { Route as AuthenticatedPacersEventsRouteImport } from './routes/_authenticated/pacers/events'
-import { Route as AuthenticatedOrdersOnlineRouteImport } from './routes/_authenticated/orders/online'
-import { Route as AuthenticatedOrdersEventsRouteImport } from './routes/_authenticated/orders/events'
-import { Route as AuthenticatedEventsShuttleBusesRouteImport } from './routes/_authenticated/events/shuttle-buses'
-import { Route as AuthenticatedEventsResultsRouteImport } from './routes/_authenticated/events/results'
-import { Route as AuthenticatedEventsRegistrationCardsRouteImport } from './routes/_authenticated/events/registration-cards'
-import { Route as AuthenticatedEventsListRouteImport } from './routes/_authenticated/events/list'
-import { Route as AuthenticatedEventsInviteCodesRouteImport } from './routes/_authenticated/events/invite-codes'
-import { Route as AuthenticatedEventsCreateRouteImport } from './routes/_authenticated/events/create'
-import { Route as AuthenticatedEventsEditIdRouteImport } from './routes/_authenticated/events/edit.$id'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as AuthenticatedRouteImport } from "./routes/_authenticated";
+import { Route as AuthenticatedIndexRouteImport } from "./routes/_authenticated/index";
+import { Route as AuthenticatedUsersRouteImport } from "./routes/_authenticated/users";
+import { Route as AuthenticatedRolesRouteImport } from "./routes/_authenticated/roles";
+import { Route as AuthenticatedOrganizersRouteImport } from "./routes/_authenticated/organizers";
+import { Route as AuthenticatedAthleticCentersRouteImport } from "./routes/_authenticated/athletic-centers";
+import { Route as AuthenticatedSettingsNotificationsRouteImport } from "./routes/_authenticated/settings/notifications";
+import { Route as AuthenticatedSettingsClientConfigRouteImport } from "./routes/_authenticated/settings/client-config";
+import { Route as AuthenticatedPacersTestsRouteImport } from "./routes/_authenticated/pacers/tests";
+import { Route as AuthenticatedPacersListRouteImport } from "./routes/_authenticated/pacers/list";
+import { Route as AuthenticatedPacersEventsRouteImport } from "./routes/_authenticated/pacers/events";
+import { Route as AuthenticatedOrdersOnlineRouteImport } from "./routes/_authenticated/orders/online";
+import { Route as AuthenticatedOrdersEventsRouteImport } from "./routes/_authenticated/orders/events";
+import { Route as AuthenticatedEventsShuttleBusesRouteImport } from "./routes/_authenticated/events/shuttle-buses";
+import { Route as AuthenticatedEventsResultsRouteImport } from "./routes/_authenticated/events/results";
+import { Route as AuthenticatedEventsRegistrationCardsRouteImport } from "./routes/_authenticated/events/registration-cards";
+import { Route as AuthenticatedEventsListRouteImport } from "./routes/_authenticated/events/list";
+import { Route as AuthenticatedEventsInviteCodesRouteImport } from "./routes/_authenticated/events/invite-codes";
+import { Route as AuthenticatedEventsCreateRouteImport } from "./routes/_authenticated/events/create";
+import { Route as AuthenticatedEventsEditIdRouteImport } from "./routes/_authenticated/events/edit.$id";
 
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
+  id: "/users",
+  path: "/users",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 const AuthenticatedRolesRoute = AuthenticatedRolesRouteImport.update({
-  id: '/roles',
-  path: '/roles',
+  id: "/roles",
+  path: "/roles",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 const AuthenticatedOrganizersRoute = AuthenticatedOrganizersRouteImport.update({
-  id: '/organizers',
-  path: '/organizers',
+  id: "/organizers",
+  path: "/organizers",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedAthleticCentersRoute =
-  AuthenticatedAthleticCentersRouteImport.update({
-    id: '/athletic-centers',
-    path: '/athletic-centers',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
+} as any);
+const AuthenticatedAthleticCentersRoute = AuthenticatedAthleticCentersRouteImport.update({
+  id: "/athletic-centers",
+  path: "/athletic-centers",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
-    id: '/settings/notifications',
-    path: '/settings/notifications',
+    id: "/settings/notifications",
+    path: "/settings/notifications",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedSettingsClientConfigRoute =
-  AuthenticatedSettingsClientConfigRouteImport.update({
-    id: '/settings/client-config',
-    path: '/settings/client-config',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedPacersTestsRoute =
-  AuthenticatedPacersTestsRouteImport.update({
-    id: '/pacers/tests',
-    path: '/pacers/tests',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedPacersListRoute = AuthenticatedPacersListRouteImport.update({
-  id: '/pacers/list',
-  path: '/pacers/list',
+  } as any);
+const AuthenticatedSettingsClientConfigRoute = AuthenticatedSettingsClientConfigRouteImport.update({
+  id: "/settings/client-config",
+  path: "/settings/client-config",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedPacersEventsRoute =
-  AuthenticatedPacersEventsRouteImport.update({
-    id: '/pacers/events',
-    path: '/pacers/events',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedOrdersOnlineRoute =
-  AuthenticatedOrdersOnlineRouteImport.update({
-    id: '/orders/online',
-    path: '/orders/online',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedOrdersEventsRoute =
-  AuthenticatedOrdersEventsRouteImport.update({
-    id: '/orders/events',
-    path: '/orders/events',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedEventsShuttleBusesRoute =
-  AuthenticatedEventsShuttleBusesRouteImport.update({
-    id: '/events/shuttle-buses',
-    path: '/events/shuttle-buses',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedEventsResultsRoute =
-  AuthenticatedEventsResultsRouteImport.update({
-    id: '/events/results',
-    path: '/events/results',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
+} as any);
+const AuthenticatedPacersTestsRoute = AuthenticatedPacersTestsRouteImport.update({
+  id: "/pacers/tests",
+  path: "/pacers/tests",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedPacersListRoute = AuthenticatedPacersListRouteImport.update({
+  id: "/pacers/list",
+  path: "/pacers/list",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedPacersEventsRoute = AuthenticatedPacersEventsRouteImport.update({
+  id: "/pacers/events",
+  path: "/pacers/events",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedOrdersOnlineRoute = AuthenticatedOrdersOnlineRouteImport.update({
+  id: "/orders/online",
+  path: "/orders/online",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedOrdersEventsRoute = AuthenticatedOrdersEventsRouteImport.update({
+  id: "/orders/events",
+  path: "/orders/events",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedEventsShuttleBusesRoute = AuthenticatedEventsShuttleBusesRouteImport.update({
+  id: "/events/shuttle-buses",
+  path: "/events/shuttle-buses",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedEventsResultsRoute = AuthenticatedEventsResultsRouteImport.update({
+  id: "/events/results",
+  path: "/events/results",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 const AuthenticatedEventsRegistrationCardsRoute =
   AuthenticatedEventsRegistrationCardsRouteImport.update({
-    id: '/events/registration-cards',
-    path: '/events/registration-cards',
+    id: "/events/registration-cards",
+    path: "/events/registration-cards",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 const AuthenticatedEventsListRoute = AuthenticatedEventsListRouteImport.update({
-  id: '/events/list',
-  path: '/events/list',
+  id: "/events/list",
+  path: "/events/list",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedEventsInviteCodesRoute =
-  AuthenticatedEventsInviteCodesRouteImport.update({
-    id: '/events/invite-codes',
-    path: '/events/invite-codes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedEventsCreateRoute =
-  AuthenticatedEventsCreateRouteImport.update({
-    id: '/events/create',
-    path: '/events/create',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedEventsEditIdRoute =
-  AuthenticatedEventsEditIdRouteImport.update({
-    id: '/events/edit/$id',
-    path: '/events/edit/$id',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
+} as any);
+const AuthenticatedEventsInviteCodesRoute = AuthenticatedEventsInviteCodesRouteImport.update({
+  id: "/events/invite-codes",
+  path: "/events/invite-codes",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedEventsCreateRoute = AuthenticatedEventsCreateRouteImport.update({
+  id: "/events/create",
+  path: "/events/create",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+const AuthenticatedEventsEditIdRoute = AuthenticatedEventsEditIdRouteImport.update({
+  id: "/events/edit/$id",
+  path: "/events/edit/$id",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
-  '/login': typeof LoginRoute
-  '/athletic-centers': typeof AuthenticatedAthleticCentersRoute
-  '/organizers': typeof AuthenticatedOrganizersRoute
-  '/roles': typeof AuthenticatedRolesRoute
-  '/users': typeof AuthenticatedUsersRoute
-  '/events/create': typeof AuthenticatedEventsCreateRoute
-  '/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
-  '/events/list': typeof AuthenticatedEventsListRoute
-  '/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
-  '/events/results': typeof AuthenticatedEventsResultsRoute
-  '/events/shuttle-buses': typeof AuthenticatedEventsShuttleBusesRoute
-  '/orders/events': typeof AuthenticatedOrdersEventsRoute
-  '/orders/online': typeof AuthenticatedOrdersOnlineRoute
-  '/pacers/events': typeof AuthenticatedPacersEventsRoute
-  '/pacers/list': typeof AuthenticatedPacersListRoute
-  '/pacers/tests': typeof AuthenticatedPacersTestsRoute
-  '/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
-  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
+  "/": typeof AuthenticatedIndexRoute;
+  "/login": typeof LoginRoute;
+  "/athletic-centers": typeof AuthenticatedAthleticCentersRoute;
+  "/organizers": typeof AuthenticatedOrganizersRoute;
+  "/roles": typeof AuthenticatedRolesRoute;
+  "/users": typeof AuthenticatedUsersRoute;
+  "/events/create": typeof AuthenticatedEventsCreateRoute;
+  "/events/invite-codes": typeof AuthenticatedEventsInviteCodesRoute;
+  "/events/list": typeof AuthenticatedEventsListRoute;
+  "/events/registration-cards": typeof AuthenticatedEventsRegistrationCardsRoute;
+  "/events/results": typeof AuthenticatedEventsResultsRoute;
+  "/events/shuttle-buses": typeof AuthenticatedEventsShuttleBusesRoute;
+  "/orders/events": typeof AuthenticatedOrdersEventsRoute;
+  "/orders/online": typeof AuthenticatedOrdersOnlineRoute;
+  "/pacers/events": typeof AuthenticatedPacersEventsRoute;
+  "/pacers/list": typeof AuthenticatedPacersListRoute;
+  "/pacers/tests": typeof AuthenticatedPacersTestsRoute;
+  "/settings/client-config": typeof AuthenticatedSettingsClientConfigRoute;
+  "/settings/notifications": typeof AuthenticatedSettingsNotificationsRoute;
+  "/events/edit/$id": typeof AuthenticatedEventsEditIdRoute;
 }
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/athletic-centers': typeof AuthenticatedAthleticCentersRoute
-  '/organizers': typeof AuthenticatedOrganizersRoute
-  '/roles': typeof AuthenticatedRolesRoute
-  '/users': typeof AuthenticatedUsersRoute
-  '/': typeof AuthenticatedIndexRoute
-  '/events/create': typeof AuthenticatedEventsCreateRoute
-  '/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
-  '/events/list': typeof AuthenticatedEventsListRoute
-  '/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
-  '/events/results': typeof AuthenticatedEventsResultsRoute
-  '/events/shuttle-buses': typeof AuthenticatedEventsShuttleBusesRoute
-  '/orders/events': typeof AuthenticatedOrdersEventsRoute
-  '/orders/online': typeof AuthenticatedOrdersOnlineRoute
-  '/pacers/events': typeof AuthenticatedPacersEventsRoute
-  '/pacers/list': typeof AuthenticatedPacersListRoute
-  '/pacers/tests': typeof AuthenticatedPacersTestsRoute
-  '/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
-  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
+  "/login": typeof LoginRoute;
+  "/athletic-centers": typeof AuthenticatedAthleticCentersRoute;
+  "/organizers": typeof AuthenticatedOrganizersRoute;
+  "/roles": typeof AuthenticatedRolesRoute;
+  "/users": typeof AuthenticatedUsersRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/events/create": typeof AuthenticatedEventsCreateRoute;
+  "/events/invite-codes": typeof AuthenticatedEventsInviteCodesRoute;
+  "/events/list": typeof AuthenticatedEventsListRoute;
+  "/events/registration-cards": typeof AuthenticatedEventsRegistrationCardsRoute;
+  "/events/results": typeof AuthenticatedEventsResultsRoute;
+  "/events/shuttle-buses": typeof AuthenticatedEventsShuttleBusesRoute;
+  "/orders/events": typeof AuthenticatedOrdersEventsRoute;
+  "/orders/online": typeof AuthenticatedOrdersOnlineRoute;
+  "/pacers/events": typeof AuthenticatedPacersEventsRoute;
+  "/pacers/list": typeof AuthenticatedPacersListRoute;
+  "/pacers/tests": typeof AuthenticatedPacersTestsRoute;
+  "/settings/client-config": typeof AuthenticatedSettingsClientConfigRoute;
+  "/settings/notifications": typeof AuthenticatedSettingsNotificationsRoute;
+  "/events/edit/$id": typeof AuthenticatedEventsEditIdRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/_authenticated/athletic-centers': typeof AuthenticatedAthleticCentersRoute
-  '/_authenticated/organizers': typeof AuthenticatedOrganizersRoute
-  '/_authenticated/roles': typeof AuthenticatedRolesRoute
-  '/_authenticated/users': typeof AuthenticatedUsersRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/events/create': typeof AuthenticatedEventsCreateRoute
-  '/_authenticated/events/invite-codes': typeof AuthenticatedEventsInviteCodesRoute
-  '/_authenticated/events/list': typeof AuthenticatedEventsListRoute
-  '/_authenticated/events/registration-cards': typeof AuthenticatedEventsRegistrationCardsRoute
-  '/_authenticated/events/results': typeof AuthenticatedEventsResultsRoute
-  '/_authenticated/events/shuttle-buses': typeof AuthenticatedEventsShuttleBusesRoute
-  '/_authenticated/orders/events': typeof AuthenticatedOrdersEventsRoute
-  '/_authenticated/orders/online': typeof AuthenticatedOrdersOnlineRoute
-  '/_authenticated/pacers/events': typeof AuthenticatedPacersEventsRoute
-  '/_authenticated/pacers/list': typeof AuthenticatedPacersListRoute
-  '/_authenticated/pacers/tests': typeof AuthenticatedPacersTestsRoute
-  '/_authenticated/settings/client-config': typeof AuthenticatedSettingsClientConfigRoute
-  '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/_authenticated/events/edit/$id': typeof AuthenticatedEventsEditIdRoute
+  __root__: typeof rootRouteImport;
+  "/_authenticated": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/_authenticated/athletic-centers": typeof AuthenticatedAthleticCentersRoute;
+  "/_authenticated/organizers": typeof AuthenticatedOrganizersRoute;
+  "/_authenticated/roles": typeof AuthenticatedRolesRoute;
+  "/_authenticated/users": typeof AuthenticatedUsersRoute;
+  "/_authenticated/": typeof AuthenticatedIndexRoute;
+  "/_authenticated/events/create": typeof AuthenticatedEventsCreateRoute;
+  "/_authenticated/events/invite-codes": typeof AuthenticatedEventsInviteCodesRoute;
+  "/_authenticated/events/list": typeof AuthenticatedEventsListRoute;
+  "/_authenticated/events/registration-cards": typeof AuthenticatedEventsRegistrationCardsRoute;
+  "/_authenticated/events/results": typeof AuthenticatedEventsResultsRoute;
+  "/_authenticated/events/shuttle-buses": typeof AuthenticatedEventsShuttleBusesRoute;
+  "/_authenticated/orders/events": typeof AuthenticatedOrdersEventsRoute;
+  "/_authenticated/orders/online": typeof AuthenticatedOrdersOnlineRoute;
+  "/_authenticated/pacers/events": typeof AuthenticatedPacersEventsRoute;
+  "/_authenticated/pacers/list": typeof AuthenticatedPacersListRoute;
+  "/_authenticated/pacers/tests": typeof AuthenticatedPacersTestsRoute;
+  "/_authenticated/settings/client-config": typeof AuthenticatedSettingsClientConfigRoute;
+  "/_authenticated/settings/notifications": typeof AuthenticatedSettingsNotificationsRoute;
+  "/_authenticated/events/edit/$id": typeof AuthenticatedEventsEditIdRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/login'
-    | '/athletic-centers'
-    | '/organizers'
-    | '/roles'
-    | '/users'
-    | '/events/create'
-    | '/events/invite-codes'
-    | '/events/list'
-    | '/events/registration-cards'
-    | '/events/results'
-    | '/events/shuttle-buses'
-    | '/orders/events'
-    | '/orders/online'
-    | '/pacers/events'
-    | '/pacers/list'
-    | '/pacers/tests'
-    | '/settings/client-config'
-    | '/settings/notifications'
-    | '/events/edit/$id'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/login"
+    | "/athletic-centers"
+    | "/organizers"
+    | "/roles"
+    | "/users"
+    | "/events/create"
+    | "/events/invite-codes"
+    | "/events/list"
+    | "/events/registration-cards"
+    | "/events/results"
+    | "/events/shuttle-buses"
+    | "/orders/events"
+    | "/orders/online"
+    | "/pacers/events"
+    | "/pacers/list"
+    | "/pacers/tests"
+    | "/settings/client-config"
+    | "/settings/notifications"
+    | "/events/edit/$id";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/login'
-    | '/athletic-centers'
-    | '/organizers'
-    | '/roles'
-    | '/users'
-    | '/'
-    | '/events/create'
-    | '/events/invite-codes'
-    | '/events/list'
-    | '/events/registration-cards'
-    | '/events/results'
-    | '/events/shuttle-buses'
-    | '/orders/events'
-    | '/orders/online'
-    | '/pacers/events'
-    | '/pacers/list'
-    | '/pacers/tests'
-    | '/settings/client-config'
-    | '/settings/notifications'
-    | '/events/edit/$id'
+    | "/login"
+    | "/athletic-centers"
+    | "/organizers"
+    | "/roles"
+    | "/users"
+    | "/"
+    | "/events/create"
+    | "/events/invite-codes"
+    | "/events/list"
+    | "/events/registration-cards"
+    | "/events/results"
+    | "/events/shuttle-buses"
+    | "/orders/events"
+    | "/orders/online"
+    | "/pacers/events"
+    | "/pacers/list"
+    | "/pacers/tests"
+    | "/settings/client-config"
+    | "/settings/notifications"
+    | "/events/edit/$id";
   id:
-    | '__root__'
-    | '/_authenticated'
-    | '/login'
-    | '/_authenticated/athletic-centers'
-    | '/_authenticated/organizers'
-    | '/_authenticated/roles'
-    | '/_authenticated/users'
-    | '/_authenticated/'
-    | '/_authenticated/events/create'
-    | '/_authenticated/events/invite-codes'
-    | '/_authenticated/events/list'
-    | '/_authenticated/events/registration-cards'
-    | '/_authenticated/events/results'
-    | '/_authenticated/events/shuttle-buses'
-    | '/_authenticated/orders/events'
-    | '/_authenticated/orders/online'
-    | '/_authenticated/pacers/events'
-    | '/_authenticated/pacers/list'
-    | '/_authenticated/pacers/tests'
-    | '/_authenticated/settings/client-config'
-    | '/_authenticated/settings/notifications'
-    | '/_authenticated/events/edit/$id'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/_authenticated"
+    | "/login"
+    | "/_authenticated/athletic-centers"
+    | "/_authenticated/organizers"
+    | "/_authenticated/roles"
+    | "/_authenticated/users"
+    | "/_authenticated/"
+    | "/_authenticated/events/create"
+    | "/_authenticated/events/invite-codes"
+    | "/_authenticated/events/list"
+    | "/_authenticated/events/registration-cards"
+    | "/_authenticated/events/results"
+    | "/_authenticated/events/shuttle-buses"
+    | "/_authenticated/orders/events"
+    | "/_authenticated/orders/online"
+    | "/_authenticated/pacers/events"
+    | "/_authenticated/pacers/list"
+    | "/_authenticated/pacers/tests"
+    | "/_authenticated/settings/client-config"
+    | "/_authenticated/settings/notifications"
+    | "/_authenticated/events/edit/$id";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  LoginRoute: typeof LoginRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/users': {
-      id: '/_authenticated/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthenticatedUsersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/roles': {
-      id: '/_authenticated/roles'
-      path: '/roles'
-      fullPath: '/roles'
-      preLoaderRoute: typeof AuthenticatedRolesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/organizers': {
-      id: '/_authenticated/organizers'
-      path: '/organizers'
-      fullPath: '/organizers'
-      preLoaderRoute: typeof AuthenticatedOrganizersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/athletic-centers': {
-      id: '/_authenticated/athletic-centers'
-      path: '/athletic-centers'
-      fullPath: '/athletic-centers'
-      preLoaderRoute: typeof AuthenticatedAthleticCentersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/settings/notifications': {
-      id: '/_authenticated/settings/notifications'
-      path: '/settings/notifications'
-      fullPath: '/settings/notifications'
-      preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/settings/client-config': {
-      id: '/_authenticated/settings/client-config'
-      path: '/settings/client-config'
-      fullPath: '/settings/client-config'
-      preLoaderRoute: typeof AuthenticatedSettingsClientConfigRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/pacers/tests': {
-      id: '/_authenticated/pacers/tests'
-      path: '/pacers/tests'
-      fullPath: '/pacers/tests'
-      preLoaderRoute: typeof AuthenticatedPacersTestsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/pacers/list': {
-      id: '/_authenticated/pacers/list'
-      path: '/pacers/list'
-      fullPath: '/pacers/list'
-      preLoaderRoute: typeof AuthenticatedPacersListRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/pacers/events': {
-      id: '/_authenticated/pacers/events'
-      path: '/pacers/events'
-      fullPath: '/pacers/events'
-      preLoaderRoute: typeof AuthenticatedPacersEventsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/orders/online': {
-      id: '/_authenticated/orders/online'
-      path: '/orders/online'
-      fullPath: '/orders/online'
-      preLoaderRoute: typeof AuthenticatedOrdersOnlineRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/orders/events': {
-      id: '/_authenticated/orders/events'
-      path: '/orders/events'
-      fullPath: '/orders/events'
-      preLoaderRoute: typeof AuthenticatedOrdersEventsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/shuttle-buses': {
-      id: '/_authenticated/events/shuttle-buses'
-      path: '/events/shuttle-buses'
-      fullPath: '/events/shuttle-buses'
-      preLoaderRoute: typeof AuthenticatedEventsShuttleBusesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/results': {
-      id: '/_authenticated/events/results'
-      path: '/events/results'
-      fullPath: '/events/results'
-      preLoaderRoute: typeof AuthenticatedEventsResultsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/registration-cards': {
-      id: '/_authenticated/events/registration-cards'
-      path: '/events/registration-cards'
-      fullPath: '/events/registration-cards'
-      preLoaderRoute: typeof AuthenticatedEventsRegistrationCardsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/list': {
-      id: '/_authenticated/events/list'
-      path: '/events/list'
-      fullPath: '/events/list'
-      preLoaderRoute: typeof AuthenticatedEventsListRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/invite-codes': {
-      id: '/_authenticated/events/invite-codes'
-      path: '/events/invite-codes'
-      fullPath: '/events/invite-codes'
-      preLoaderRoute: typeof AuthenticatedEventsInviteCodesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/create': {
-      id: '/_authenticated/events/create'
-      path: '/events/create'
-      fullPath: '/events/create'
-      preLoaderRoute: typeof AuthenticatedEventsCreateRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/events/edit/$id': {
-      id: '/_authenticated/events/edit/$id'
-      path: '/events/edit/$id'
-      fullPath: '/events/edit/$id'
-      preLoaderRoute: typeof AuthenticatedEventsEditIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated/": {
+      id: "/_authenticated/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/users": {
+      id: "/_authenticated/users";
+      path: "/users";
+      fullPath: "/users";
+      preLoaderRoute: typeof AuthenticatedUsersRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/roles": {
+      id: "/_authenticated/roles";
+      path: "/roles";
+      fullPath: "/roles";
+      preLoaderRoute: typeof AuthenticatedRolesRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/organizers": {
+      id: "/_authenticated/organizers";
+      path: "/organizers";
+      fullPath: "/organizers";
+      preLoaderRoute: typeof AuthenticatedOrganizersRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/athletic-centers": {
+      id: "/_authenticated/athletic-centers";
+      path: "/athletic-centers";
+      fullPath: "/athletic-centers";
+      preLoaderRoute: typeof AuthenticatedAthleticCentersRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/settings/notifications": {
+      id: "/_authenticated/settings/notifications";
+      path: "/settings/notifications";
+      fullPath: "/settings/notifications";
+      preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/settings/client-config": {
+      id: "/_authenticated/settings/client-config";
+      path: "/settings/client-config";
+      fullPath: "/settings/client-config";
+      preLoaderRoute: typeof AuthenticatedSettingsClientConfigRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/pacers/tests": {
+      id: "/_authenticated/pacers/tests";
+      path: "/pacers/tests";
+      fullPath: "/pacers/tests";
+      preLoaderRoute: typeof AuthenticatedPacersTestsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/pacers/list": {
+      id: "/_authenticated/pacers/list";
+      path: "/pacers/list";
+      fullPath: "/pacers/list";
+      preLoaderRoute: typeof AuthenticatedPacersListRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/pacers/events": {
+      id: "/_authenticated/pacers/events";
+      path: "/pacers/events";
+      fullPath: "/pacers/events";
+      preLoaderRoute: typeof AuthenticatedPacersEventsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/orders/online": {
+      id: "/_authenticated/orders/online";
+      path: "/orders/online";
+      fullPath: "/orders/online";
+      preLoaderRoute: typeof AuthenticatedOrdersOnlineRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/orders/events": {
+      id: "/_authenticated/orders/events";
+      path: "/orders/events";
+      fullPath: "/orders/events";
+      preLoaderRoute: typeof AuthenticatedOrdersEventsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/shuttle-buses": {
+      id: "/_authenticated/events/shuttle-buses";
+      path: "/events/shuttle-buses";
+      fullPath: "/events/shuttle-buses";
+      preLoaderRoute: typeof AuthenticatedEventsShuttleBusesRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/results": {
+      id: "/_authenticated/events/results";
+      path: "/events/results";
+      fullPath: "/events/results";
+      preLoaderRoute: typeof AuthenticatedEventsResultsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/registration-cards": {
+      id: "/_authenticated/events/registration-cards";
+      path: "/events/registration-cards";
+      fullPath: "/events/registration-cards";
+      preLoaderRoute: typeof AuthenticatedEventsRegistrationCardsRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/list": {
+      id: "/_authenticated/events/list";
+      path: "/events/list";
+      fullPath: "/events/list";
+      preLoaderRoute: typeof AuthenticatedEventsListRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/invite-codes": {
+      id: "/_authenticated/events/invite-codes";
+      path: "/events/invite-codes";
+      fullPath: "/events/invite-codes";
+      preLoaderRoute: typeof AuthenticatedEventsInviteCodesRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/create": {
+      id: "/_authenticated/events/create";
+      path: "/events/create";
+      fullPath: "/events/create";
+      preLoaderRoute: typeof AuthenticatedEventsCreateRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
+    "/_authenticated/events/edit/$id": {
+      id: "/_authenticated/events/edit/$id";
+      path: "/events/edit/$id";
+      fullPath: "/events/edit/$id";
+      preLoaderRoute: typeof AuthenticatedEventsEditIdRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAthleticCentersRoute: typeof AuthenticatedAthleticCentersRoute
-  AuthenticatedOrganizersRoute: typeof AuthenticatedOrganizersRoute
-  AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
-  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedEventsCreateRoute: typeof AuthenticatedEventsCreateRoute
-  AuthenticatedEventsInviteCodesRoute: typeof AuthenticatedEventsInviteCodesRoute
-  AuthenticatedEventsListRoute: typeof AuthenticatedEventsListRoute
-  AuthenticatedEventsRegistrationCardsRoute: typeof AuthenticatedEventsRegistrationCardsRoute
-  AuthenticatedEventsResultsRoute: typeof AuthenticatedEventsResultsRoute
-  AuthenticatedEventsShuttleBusesRoute: typeof AuthenticatedEventsShuttleBusesRoute
-  AuthenticatedOrdersEventsRoute: typeof AuthenticatedOrdersEventsRoute
-  AuthenticatedOrdersOnlineRoute: typeof AuthenticatedOrdersOnlineRoute
-  AuthenticatedPacersEventsRoute: typeof AuthenticatedPacersEventsRoute
-  AuthenticatedPacersListRoute: typeof AuthenticatedPacersListRoute
-  AuthenticatedPacersTestsRoute: typeof AuthenticatedPacersTestsRoute
-  AuthenticatedSettingsClientConfigRoute: typeof AuthenticatedSettingsClientConfigRoute
-  AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
-  AuthenticatedEventsEditIdRoute: typeof AuthenticatedEventsEditIdRoute
+  AuthenticatedAthleticCentersRoute: typeof AuthenticatedAthleticCentersRoute;
+  AuthenticatedOrganizersRoute: typeof AuthenticatedOrganizersRoute;
+  AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute;
+  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute;
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+  AuthenticatedEventsCreateRoute: typeof AuthenticatedEventsCreateRoute;
+  AuthenticatedEventsInviteCodesRoute: typeof AuthenticatedEventsInviteCodesRoute;
+  AuthenticatedEventsListRoute: typeof AuthenticatedEventsListRoute;
+  AuthenticatedEventsRegistrationCardsRoute: typeof AuthenticatedEventsRegistrationCardsRoute;
+  AuthenticatedEventsResultsRoute: typeof AuthenticatedEventsResultsRoute;
+  AuthenticatedEventsShuttleBusesRoute: typeof AuthenticatedEventsShuttleBusesRoute;
+  AuthenticatedOrdersEventsRoute: typeof AuthenticatedOrdersEventsRoute;
+  AuthenticatedOrdersOnlineRoute: typeof AuthenticatedOrdersOnlineRoute;
+  AuthenticatedPacersEventsRoute: typeof AuthenticatedPacersEventsRoute;
+  AuthenticatedPacersListRoute: typeof AuthenticatedPacersListRoute;
+  AuthenticatedPacersTestsRoute: typeof AuthenticatedPacersTestsRoute;
+  AuthenticatedSettingsClientConfigRoute: typeof AuthenticatedSettingsClientConfigRoute;
+  AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute;
+  AuthenticatedEventsEditIdRoute: typeof AuthenticatedEventsEditIdRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -475,8 +464,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedEventsCreateRoute: AuthenticatedEventsCreateRoute,
   AuthenticatedEventsInviteCodesRoute: AuthenticatedEventsInviteCodesRoute,
   AuthenticatedEventsListRoute: AuthenticatedEventsListRoute,
-  AuthenticatedEventsRegistrationCardsRoute:
-    AuthenticatedEventsRegistrationCardsRoute,
+  AuthenticatedEventsRegistrationCardsRoute: AuthenticatedEventsRegistrationCardsRoute,
   AuthenticatedEventsResultsRoute: AuthenticatedEventsResultsRoute,
   AuthenticatedEventsShuttleBusesRoute: AuthenticatedEventsShuttleBusesRoute,
   AuthenticatedOrdersEventsRoute: AuthenticatedOrdersEventsRoute,
@@ -484,30 +472,28 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPacersEventsRoute: AuthenticatedPacersEventsRoute,
   AuthenticatedPacersListRoute: AuthenticatedPacersListRoute,
   AuthenticatedPacersTestsRoute: AuthenticatedPacersTestsRoute,
-  AuthenticatedSettingsClientConfigRoute:
-    AuthenticatedSettingsClientConfigRoute,
-  AuthenticatedSettingsNotificationsRoute:
-    AuthenticatedSettingsNotificationsRoute,
+  AuthenticatedSettingsClientConfigRoute: AuthenticatedSettingsClientConfigRoute,
+  AuthenticatedSettingsNotificationsRoute: AuthenticatedSettingsNotificationsRoute,
   AuthenticatedEventsEditIdRoute: AuthenticatedEventsEditIdRoute,
-}
+};
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

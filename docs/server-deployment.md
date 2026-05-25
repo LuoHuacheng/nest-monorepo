@@ -68,7 +68,13 @@ echo "deploy ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/deploy
 sudo npm install -g pm2
 ```
 
-### 1.6 创建项目目录
+### 1.6 安装 Nginx
+
+```bash
+sudo apt install -y nginx
+```
+
+### 1.7 创建项目目录
 
 ```bash
 sudo mkdir -p /opt/match
@@ -148,6 +154,16 @@ server {
     listen 80;
     server_name _;
 
+    # Admin 静态文件
+    root /opt/match/apps/admin/dist;
+    index index.html;
+
+    # Admin SPA 路由
+    location /admin/ {
+        try_files $uri $uri/ /admin/index.html;
+    }
+
+    # API 代理
     location /api/ {
         proxy_pass http://127.0.0.1:4001/;
         proxy_http_version 1.1;
@@ -156,15 +172,15 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
-    location /admin/ {
-        proxy_pass http://127.0.0.1:4000/admin/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
+    # 根路径重定向
     location = / {
         return 302 /admin/;
+    }
+
+    # 静态资源缓存
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
     }
 }
 ```
@@ -193,55 +209,41 @@ pm2 logs
 ## 常用命令
 
 ```bash
-# 查看进程
+# API 服务管理
 pm2 list
-
-# 查看日志
 pm2 logs match-api
-pm2 logs match-admin
+pm2 restart match-api
 
-# 重启服务
-pm2 restart all
-
-# 停止服务
-pm2 stop all
-
-# 删除所有进程
-pm2 delete all
+# Nginx 管理
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
 ---
 
 ## 回滚方案
 
-如果部署失败：
-
 ```bash
-# SSH 登录服务器
 ssh deploy@SERVER_HOST
 cd /opt/match
 
-# 查看 git 历史
-git log --oneline -10
-
-# 回滚到上一个版本
+# 回滚代码
 git reset --hard HEAD~1
 git pull
 
 # 重新构建
 pnpm build
-pm2 restart all
+pm2 restart match-api
 ```
 
 ---
 
 ## 资源占用（2核2G）
 
-| 服务 | 内存限制 | 说明 |
-| ------ | ---------- | ------ |
+| 服务 | 内存 | 说明 |
+| ------ | ------ | ------ |
 | PostgreSQL | ~80MB | 低内存配置 |
-| match-api | 200MB | NestJS |
-| match-admin | 100MB | TanStack Start |
-| Nginx + 系统 | ~1.5GB | 剩余给系统 |
+| match-api | ~120MB | NestJS |
+| Nginx + 系统 | ~1.7GB | 剩余给系统 |
 
-总计约 1.8GB，保留 200MB 缓冲区。
+总计约 1.9GB，保留 100MB 缓冲区。

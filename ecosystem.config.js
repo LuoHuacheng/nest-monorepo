@@ -14,21 +14,6 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '200M'
-    },
-    {
-      name: 'match-admin',
-      script: 'apps/admin/dist/server/server.js',
-      cwd: '/opt/match',
-      instances: 1,
-      memory: '100M',
-      node_args: '--max-old-space-size=80',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 4000
-      },
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '100M'
     }
   ]
 }
