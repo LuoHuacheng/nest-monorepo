@@ -27,7 +27,8 @@ pnpm test -- --testPathPattern=auth  # 运行匹配路径的单个测试
 
 # Prisma
 pnpm prisma:generate        # 生成 Prisma Client（输出到 generated/prisma/）
-pnpm prisma:migrate         # 运行数据库迁移
+pnpm prisma:migrate         # 运行数据库迁移（开发用，需 DATABASE_URL）
+pnpm prisma:migrate:prod    # 生产部署用迁移（只执行已存在的迁移文件）
 pnpm prisma:seed            # 导入种子数据
 ```
 

@@ -77,7 +77,7 @@ jobs:
           script: |
             cd /opt/match
             CI=true pnpm install --no-frozen-lockfile
-            pnpm prisma:migrate
+            pnpm --filter api prisma:migrate:prod
 
       - name: Restart PM2
         uses: appleboy/ssh-action@v1.0.3
