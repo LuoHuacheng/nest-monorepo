@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  NODE_VERSION: '22'
+  NODE_VERSION: "22"
 
 jobs:
   deploy:
@@ -19,21 +19,21 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.18.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         env:
           # 使用国内镜像加速
-          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
-          ELECTRON_MIRROR: 'https://npmmirror.com/mirrors/electron/'
-          ELECTRON_BUILDER_BINARIES_MIRROR: 'https://npmmirror.com/mirrors/electron-builder-binaries/'
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+          ELECTRON_MIRROR: "https://npmmirror.com/mirrors/electron/"
+          ELECTRON_BUILDER_BINARIES_MIRROR: "https://npmmirror.com/mirrors/electron-builder-binaries/"
 
       - name: Build
         run: pnpm build
