@@ -76,6 +76,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/match
+            set -a && source .env && set +a
             CI=true pnpm install --no-frozen-lockfile
             pnpm --filter api prisma:migrate:prod
 
